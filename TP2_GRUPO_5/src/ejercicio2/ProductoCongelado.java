@@ -12,7 +12,12 @@ public class ProductoCongelado extends Producto {
         return temperaturaCongelacion;
     }
 
-    @Override
+    
+    public void setTemperaturaCongelacion(double temperaturaCongelacion) {
+		this.temperaturaCongelacion = temperaturaCongelacion;
+	}
+
+	@Override
     public String toString() {
         return super.toString() +
                ", Temperatura de congelación recomendada: " + temperaturaCongelacion + "°C";

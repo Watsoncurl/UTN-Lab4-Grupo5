@@ -18,7 +18,16 @@ public class ProductoFresco extends Producto {
         return paisOrigen;
     }
 
-    @Override
+    
+    public void setFechaEnvasado(String fechaEnvasado) {
+		this.fechaEnvasado = fechaEnvasado;
+	}
+
+	public void setPaisOrigen(String paisOrigen) {
+		this.paisOrigen = paisOrigen;
+	}
+
+	@Override
     public String toString() {
         return super.toString() +
                ", Fecha de envasado: " + fechaEnvasado +

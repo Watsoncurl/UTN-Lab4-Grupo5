@@ -12,7 +12,12 @@ public class ProductoRefrigerado extends Producto {
         return codigoOrganismo;
     }
 
-    @Override
+    
+    public void setCodigoOrganismo(String codigoOrganismo) {
+		this.codigoOrganismo = codigoOrganismo;
+	}
+
+	@Override
     public String toString() {
         return super.toString() +
                ", Código organismo de supervisión: " + codigoOrganismo;
