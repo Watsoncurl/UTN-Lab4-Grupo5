@@ -25,7 +25,11 @@ public class Producto {
 	//Metodo toString
 	@Override
 	public String toString() {
-		return "Producto Fecha Caducidad: " + fechaCaducidad + ", Número Lote: " + numeroLote;
+	    return "Fecha de Caducidad: " + fechaCaducidad + ", NÃºmero de Lote: " + numeroLote;
+	}
+	
+	public void mostrar() {
+	    System.out.println(this.toString());
 	}
 
 

@@ -28,9 +28,13 @@ public class ProductoFresco extends Producto {
 	}
 
 	@Override
-    public String toString() {
-        return super.toString() +
-               ", Fecha de envasado: " + fechaEnvasado +
-               ", País de origen: " + paisOrigen;
-    }
+	public String toString() {
+	    return "Producto Fresco - " + super.toString() +
+	           ", Fecha de Envasado: " + fechaEnvasado +
+	           ", País de Origen: " + paisOrigen;
+	}
+	
+	public void mostrar() {
+	    System.out.println(this.toString());
+	}
 }

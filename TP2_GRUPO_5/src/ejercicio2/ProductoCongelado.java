@@ -14,13 +14,20 @@ public class ProductoCongelado extends Producto {
 
     
     public void setTemperaturaCongelacion(double temperaturaCongelacion) {
-		this.temperaturaCongelacion = temperaturaCongelacion;
+    	if (temperaturaCongelacion > 0) {
+            System.out.println("Advertencia: La temperatura de congelación debería ser menor o igual a 0°C");
+        }
+        this.temperaturaCongelacion = temperaturaCongelacion;
 	}
 
 	@Override
-    public String toString() {
-        return super.toString() +
-               ", Temperatura de congelación recomendada: " + temperaturaCongelacion + "°C";
-    }
+	public String toString() {
+	    return "Producto Congelado - " + super.toString() +
+	           ", Temperatura de Congelación Recomendada: " + temperaturaCongelacion + "°C";
+	}
+	
+	public void mostrar() {
+	    System.out.println(this.toString());
+	}
 }
 

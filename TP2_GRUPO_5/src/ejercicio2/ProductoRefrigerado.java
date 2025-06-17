@@ -18,9 +18,12 @@ public class ProductoRefrigerado extends Producto {
 	}
 
 	@Override
-    public String toString() {
-        return super.toString() +
-               ", Código organismo de supervisión: " + codigoOrganismo;
-    }
+	public String toString() {
+	    return "Producto Refrigerado - " + super.toString() +
+	           ", Código del Organismo de Supervisión: " + codigoOrganismo;
+	}
+	public void mostrar() {
+	    System.out.println(this.toString());
+	}
 }
 
