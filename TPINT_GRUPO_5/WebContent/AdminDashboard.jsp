@@ -1,59 +1,99 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Dashboard</title> 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-<!--  <link rel="stylesheet" href="Estilo.css"> -->
+  <title>Dashboard Administrativo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet">
 </head>
 <body>
-<!--  
-	<jsp:include page="AdminMenu.html" />
-  -->
-	
-	<my:navbar 
-	    brandName="Banco" 
-	    logoPath="bank.png" 
-	  />
-	
-	<div class="container mt-4">
-    	<div class="row g-3">
-     		<div class="col-md-2">
-      	 		 <a href="#" class="btn btn-outline-primary w-100">
-      	 		 <i class="bi bi-person-fill me-1"></i>
-      	 		 Clientes</a>
-     	 	</div>
-     	 	<div class="col-md-2">
-     	   		<a href="#" class="btn btn-outline-success w-100">
-     	   		<i class="bi bi-wallet-fill me-1"></i>
-     	   		Cuentas</a>
-     	 	</div>
-    	  	<div class="col-md-2">
-      	  		<a href="#" class="btn btn-outline-warning w-100">
-      	  		<i class="bi bi-cash-coin me-1"></i>
-      	  		Préstamos</a>
-      		</div>
-     	 	<div class="col-md-2">
-      	  		<a href="#" class="btn btn-outline-info w-100">
-      	  		<i class="bi bi-arrow-left-right me-1"></i>
-      	  		Movimientos</a>
-      		</div>
-      		<div class="col-md-2">
-       	 		<a href="#" class="btn btn-outline-danger w-100">
-       	 		<i class="bi bi-bar-chart-fill me-1"></i>
-       	 		Informes</a>
-    	  	</div>
-   		 </div>
-  	</div>
-	
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	
-	
+  <my:navbar activeTab="dashboard" userRole="admin" />
 
+  <div class="container mt-5">
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <h2 class="fw-bold"><i class="bi bi-speedometer2 me-2"></i>Panel de Administración</h2>
+        <p class="lead text-muted">Gestión integral del sistema bancario</p>
+      </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <!-- Tarjeta Clientes -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card h-100 border-primary shadow-sm text-center">
+          <div class="card-body">
+            <i class="bi bi-people-fill text-primary fs-1 mb-3"></i>
+            <h5 class="card-title">Clientes</h5>
+            <p class="card-text text-muted">Gestión de clientes del banco</p>
+            <a href="${pageContext.request.contextPath}/AdminClientes.jsp" class="btn btn-outline-primary stretched-link">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta Cuentas -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card h-100 border-success shadow-sm text-center">
+          <div class="card-body">
+            <i class="bi bi-wallet2 text-success fs-1 mb-3"></i>
+            <h5 class="card-title">Cuentas</h5>
+            <p class="card-text text-muted">Administración de cuentas</p>
+            <a href="${pageContext.request.contextPath}/AdminCuentas.jsp" class="btn btn-outline-success stretched-link">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta Préstamos -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card h-100 border-warning shadow-sm text-center">
+          <div class="card-body">
+            <i class="bi bi-cash-stack text-warning fs-1 mb-3"></i>
+            <h5 class="card-title">Préstamos</h5>
+            <p class="card-text text-muted">Gestión de préstamos</p>
+            <a href="${pageContext.request.contextPath}/AdminPrestamos.jsp" class="btn btn-outline-warning stretched-link">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta Movimientos -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card h-100 border-info shadow-sm text-center">
+          <div class="card-body">
+            <i class="bi bi-arrow-left-right text-info fs-1 mb-3"></i>
+            <h5 class="card-title">Movimientos</h5>
+            <p class="card-text text-muted">Registro de transacciones</p>
+            <a href="${pageContext.request.contextPath}/AdminMovimientos.jsp" class="btn btn-outline-info stretched-link">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta Informes -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card h-100 border-danger shadow-sm text-center">
+          <div class="card-body">
+            <i class="bi bi-graph-up text-danger fs-1 mb-3"></i>
+            <h5 class="card-title">Informes</h5>
+            <p class="card-text text-muted">Reportes y estadísticas</p>
+            <a href="${pageContext.request.contextPath}/AdminInformes.jsp" class="btn btn-outline-danger stretched-link">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <my:footer />
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>

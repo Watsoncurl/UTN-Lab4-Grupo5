@@ -1,0 +1,101 @@
+:root {
+  /* Paleta de colores */
+  --color-primary: #1A1F36;    /* Azul oscuro */
+  --color-bg: #F5F6FA;         /* Gris claro */
+  --color-card: #FFFFFF;        /* Blanco */
+  --color-accent: #2F80ED;     /* Azul acento */
+  --color-success: #27AE60;     /* Verde */
+  --color-error: #EB5757;       /* Rojo */
+  --color-text: #1A1F36;       /* Texto principal */
+  --color-text-light: #FFFFFF;  /* Texto claro */
+}
+
+/* Estructura base */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1; /* Ocupa todo el espacio disponible */
+}
+
+/* Estilos personalizados para el navbar */
+.navbar-centering-container {
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  justify-content: center;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-centering-container {
+    position: static;
+    order: 2;
+    margin: 1rem 0;
+  }
+  
+  .navbar-collapse {
+    flex-direction: column;
+  }
+  
+  .navbar-nav {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .nav-item {
+    margin: 0.25rem 0;
+  }
+  
+  .d-flex {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+}
+
+/* Estilos del footer */
+.footer-custom {
+  width: 100%;
+  padding: 1rem 0;
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+}
+
+/* Botones */
+.btn-custom-primary {
+  background-color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-text-light) !important;
+}
+
+.btn-custom-outline {
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
+  background-color: transparent !important;
+}
+
+/* =========== loginForm ===========*/
+
+.auth-card {
+  background-color: var(--color-card);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.auth-title {
+  color: var(--color-primary);
+}
+
+.auth-input {
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+}
+
