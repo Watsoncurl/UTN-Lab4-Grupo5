@@ -28,7 +28,7 @@
             <i class="bi bi-people-fill text-primary fs-1 mb-3"></i>
             <h5 class="card-title">Clientes</h5>
             <p class="card-text text-muted">Gestión de clientes del banco</p>
-            <a href="${pageContext.request.contextPath}/AdminClientes.jsp" class="btn btn-outline-primary stretched-link">
+            <a href="${pageContext.request.contextPath}/admin/clientes" class="btn btn-outline-primary stretched-link">
               <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
             </a>
           </div>

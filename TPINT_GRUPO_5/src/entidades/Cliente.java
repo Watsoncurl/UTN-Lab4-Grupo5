@@ -1,5 +1,7 @@
 package entidades;
 
+import java.time.LocalDate;
+
 public class Cliente {
 	
 	private int idCliente;
@@ -9,7 +11,7 @@ public class Cliente {
 	private String apellido;
 	private String sexo;
 	private String nacionalidad;
-	private String fechaNac;
+	private LocalDate fechaNac;
 	private String direccion;
 	private String localidad;
 	private String provincia;
@@ -18,11 +20,10 @@ public class Cliente {
 	private boolean estado;
 	
 	public Cliente() {}
-	
+
 	public Cliente(int idCliente, String dni, String cuil, String nombre, String apellido, String sexo,
-			String nacionalidad, String fechaNac ,String direccion, String localidad, String provincia, String email, String telefono,
+			String nacionalidad, LocalDate fechaNac, String direccion, String localidad, String provincia, String email, String telefono,
 			boolean estado) {
-		super();
 		this.idCliente = idCliente;
 		this.dni = dni;
 		this.cuil = cuil;
@@ -95,6 +96,14 @@ public class Cliente {
 		this.nacionalidad = nacionalidad;
 	}
 
+	public LocalDate getFechaNac() {
+		return fechaNac;
+	}
+
+	public void setFechaNac(LocalDate fechaNac) {
+		this.fechaNac = fechaNac;
+	}
+
 	public String getDireccion() {
 		return direccion;
 	}
@@ -143,23 +152,11 @@ public class Cliente {
 		this.estado = estado;
 	}
 
-	public String getFechaNac() {
-		return fechaNac;
-	}
-
-	public void setFechaNac(String fechaNac) {
-		this.fechaNac = fechaNac;
-	}
-
-	//toString
 	@Override
 	public String toString() {
 		return "Cliente [idCliente=" + idCliente + ", dni=" + dni + ", cuil=" + cuil + ", nombre=" + nombre
-				+ ", apellido=" + apellido + ", sexo=" + sexo + ", nacionalidad=" + nacionalidad + ", direccion="
-				+ direccion + ", localidad=" + localidad + ", provincia=" + provincia + ", email=" + email
-				+ ", telefono=" + telefono + ", estado=" + estado + "]";
+				+ ", apellido=" + apellido + ", sexo=" + sexo + ", nacionalidad=" + nacionalidad + ", fechaNac=" + fechaNac
+				+ ", direccion=" + direccion + ", localidad=" + localidad + ", provincia=" + provincia
+				+ ", email=" + email + ", telefono=" + telefono + ", estado=" + estado + "]";
 	}
-	
-	
-
 }

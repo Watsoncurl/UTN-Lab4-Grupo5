@@ -37,7 +37,7 @@
             if ("admin".equals(role)) {
           %>
               <li class="nav-item px-2">
-                <a class="nav-link <%= "clientes".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/AdminClientes.jsp">Clientes</a>
+                <a class="nav-link <%= "clientes".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/admin/clientes">Clientes</a>
               </li>
               <li class="nav-item px-2">
                 <a class="nav-link <%= "cuentas".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/AdminCuentas.jsp">Cuentas</a>

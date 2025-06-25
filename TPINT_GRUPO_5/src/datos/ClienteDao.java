@@ -6,9 +6,9 @@ import entidades.Cliente;
 
 public interface ClienteDao {
 	
-	public List<Cliente> listarTodos();
-	public boolean insertar();
-	public boolean modificar();
-	public boolean eliminar();
+	List<Cliente> listarTodos();
+	boolean insertar(Cliente cliente);
+	boolean modificar(Cliente cliente);
+	boolean eliminar(int idCliente);
 
 }
