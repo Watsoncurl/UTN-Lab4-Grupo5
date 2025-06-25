@@ -1,7 +1,6 @@
-/negocioImpl/
-/negocio/
-/servlets/
 /datosImpl/
-/entidades/
 /main/
-/datos/
+/entidades/
+/servlets/
+/negocio/
+/negocioImpl/
