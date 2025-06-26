@@ -31,25 +31,26 @@
                 <i class="bi bi-people-fill text-primary fs-1 mb-3"></i>
                 <h5 class="card-title">Clientes</h5>
                 <p class="card-text text-muted">Gestión de clientes del banco</p>
-                <a href="${pageContext.request.contextPath}/admin/clientes" class="btn btn-outline-primary stretched-link">
-                  <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
-                </a>
+                <a href="${pageContext.request.contextPath}/ListarClientesServlet" class="btn btn-outline-primary stretched-link">
+  <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+</a>
+
               </div>
             </div>
           </div>
-          <!-- Tarjeta Cuentas -->
-          <div class="col-md-3 col-sm-6">
-            <div class="card h-100 border-success shadow-sm text-center">
-              <div class="card-body">
-                <i class="bi bi-wallet2 text-success fs-1 mb-3"></i>
-                <h5 class="card-title">Cuentas</h5>
-                <p class="card-text text-muted">Administración de cuentas</p>
-                <a href="${pageContext.request.contextPath}/AdminCuentas.jsp" class="btn btn-outline-success stretched-link">
-                  <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
-                </a>
-              </div>
-            </div>
-          </div>
+         <!-- Tarjeta Cuentas -->
+<div class="col-md-3 col-sm-6">
+  <div class="card h-100 border-success shadow-sm text-center">
+    <div class="card-body">
+      <i class="bi bi-wallet2 text-success fs-1 mb-3"></i>
+      <h5 class="card-title">Cuentas</h5>
+      <p class="card-text text-muted">Administración de cuentas</p>
+      <a href="${pageContext.request.contextPath}/ListarCuentasServlet" class="btn btn-outline-success stretched-link">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+      </a>
+    </div>
+  </div>
+</div>
           <!-- Tarjeta Préstamos -->
           <div class="col-md-3 col-sm-6">
             <div class="card h-100 border-warning shadow-sm text-center">

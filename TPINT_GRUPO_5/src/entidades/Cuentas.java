@@ -1,84 +1,103 @@
 package entidades;
 
 public class Cuentas {
+    private int id_cuenta;
+    private int id_cliente; 
+    private String nro_cuenta;
+    private String cbu;
+    private double saldo;
+    private boolean estado;
+    private String cliente; 
+    private String tipo_cuenta; 
 
-	private int id_cuenta;
-	private int id_cliente;
-	private tipo_cuenta id_tipo_cuenta;
-	private String nro_cuenta;
-	private String cbu;
-	private float saldo;
-	private boolean estado;
-	
-	
-	public Cuentas() {}
-	
-	public Cuentas(int id_cuenta, int id_cliente, tipo_cuenta id_tipo_cuenta, String nro_cuenta, String cbu, float saldo, boolean estado) {
-		super();
-		this.id_cuenta = id_cuenta;
-		this.id_cliente = id_cliente;
-		this.id_tipo_cuenta = id_tipo_cuenta;
-		this.nro_cuenta = nro_cuenta;
-		this.cbu = cbu;
-		this.saldo = saldo;
-		this.estado = estado;
-	}
+    public Cuentas() {}
 
-	
-	public int getId_cuenta() {
-		return id_cuenta;
-	}
+    public Cuentas(int id_cuenta, int id_cliente, String nro_cuenta, String cbu, double saldo, boolean estado, String cliente, String tipo_cuenta) {
+        this.id_cuenta = id_cuenta;
+        this.id_cliente = id_cliente;
+        this.nro_cuenta = nro_cuenta;
+        this.cbu = cbu;
+        this.saldo = saldo;
+        this.estado = estado;
+        this.cliente = cliente;
+        this.tipo_cuenta = tipo_cuenta;
+    }
 
-	public void setId_cuenta(int id_cuenta) {
-		this.id_cuenta = id_cuenta;
-	}
+    public int getId_cuenta() {
+        return id_cuenta;
+    }
 
-	public int getId_cliente() {
-		return id_cliente;
-	}
+    public void setId_cuenta(int id_cuenta) {
+        this.id_cuenta = id_cuenta;
+    }
 
-	public void setId_cliente(int id_cliente) {
-		this.id_cliente = id_cliente;
-	}
+    public int getId_cliente() {
+        return id_cliente;
+    }
 
-	public int getId_tipo_cuenta() {
-		return id_tipo_cuenta.getId_tipo_cuenta();
-	}
+    public void setId_cliente(int id_cliente) {
+        this.id_cliente = id_cliente;
+    }
 
-	public void setId_tipo_cuenta(int id_tipo_cuenta) {
-		this.id_tipo_cuenta.setId_tipo_cuenta(id_tipo_cuenta);
-	}
 
-	public String getNro_cuenta() {
-		return nro_cuenta;
-	}
+    public String getNro_cuenta() {
+        return nro_cuenta;
+    }
 
-	public void setNro_cuenta(String nro_cuenta) {
-		this.nro_cuenta = nro_cuenta;
-	}
+    public void setNro_cuenta(String nro_cuenta) {
+        this.nro_cuenta = nro_cuenta;
+    }
 
-	public String getCbu() {
-		return cbu;
-	}
+    public String getCbu() {
+        return cbu;
+    }
 
-	public void setCbu(String cbu) {
-		this.cbu = cbu;
-	}
+    public void setCbu(String cbu) {
+        this.cbu = cbu;
+    }
 
-	public float getSaldo() {
-		return saldo;
-	}
+    public double getSaldo() {
+        return saldo;
+    }
 
-	public void setSaldo(float saldo) {
-		this.saldo = saldo;
-	}
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
 
-	public boolean isEstado() {
-		return estado;
-	}
+    public boolean isEstado() {
+        return estado;
+    }
 
-	public void setEstado(boolean estado) {
-		this.estado = estado;
-	}
-	
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+    public String getTipo_cuenta() {
+        return tipo_cuenta;
+    }
+
+    public void setTipo_cuenta(String tipo_cuenta) {
+        this.tipo_cuenta = tipo_cuenta;
+    }
+
+    @Override
+    public String toString() {
+        return "Cuentas{" +
+                "id_cuenta=" + id_cuenta +
+                ", id_cliente=" + id_cliente +
+                ", nro_cuenta='" + nro_cuenta + '\'' +
+                ", cbu='" + cbu + '\'' +
+                ", saldo=" + saldo +
+                ", estado=" + estado +
+                ", cliente='" + cliente + '\'' +
+                ", tipo_cuenta='" + tipo_cuenta + '\'' +
+                '}';
+    }
 }

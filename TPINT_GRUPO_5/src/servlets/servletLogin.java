@@ -18,78 +18,67 @@ public class servletLogin extends HttpServlet {
         String contrasena = request.getParameter("contrasena");
 
         System.out.println("Usuario: " + usuario); // ***
-        System.out.println("Contraseña: " + contrasena); // ***
+        System.out.println("Contraseï¿½a: " + contrasena); // ***
 
         Connection conexion = null;
         PreparedStatement consulta = null;
         ResultSet resultados = null;
 
         try {
-            // 1. Obtener la conexión a la base de datos
+            
             Conexion connect = Conexion.getConexion();
             conexion = connect.getSQLConexion();
 
-            // 2. Preparar la consulta SQL para obtener el rol del usuario
+            
             String sql = "SELECT id_tipo_usuario FROM Usuarios WHERE usuario = ? AND contrasena = SHA2(?, 256) AND estado = TRUE";
             consulta = conexion.prepareStatement(sql);
             consulta.setString(1, usuario);
             consulta.setString(2, contrasena);
 
-            // 3. Ejecutar la consulta
+      
             resultados = consulta.executeQuery();
 
-            boolean usuarioEncontrado = resultados.next(); // ***
-            System.out.println("Usuario encontrado: " + usuarioEncontrado); // ***
+            boolean usuarioEncontrado = resultados.next(); 
+            System.out.println("Usuario encontrado: " + usuarioEncontrado); 
 
-            // 4. Verificar si se encontró un usuario y obtener su rol
+         
             if (usuarioEncontrado) {
                 int idTipoUsuario = resultados.getInt("id_tipo_usuario");
-                System.out.println("idTipoUsuario: " + idTipoUsuario); // ***
+                System.out.println("idTipoUsuario: " + idTipoUsuario); 
 
-                // 5. Crear una sesión HTTP y guardar información del usuario
+                
                 HttpSession session = request.getSession();
-                session.setAttribute("usuario", usuario); // Guarda el nombre de usuario
-                session.setAttribute("idTipoUsuario", idTipoUsuario); // Guarda el rol (id_tipo_usuario)
-
-                // 6. Redirigir según el rol
-                if (idTipoUsuario == 1) { // 1 = Admin
-                    response.sendRedirect("AdminDashboard.jsp"); // Redirige al AdminDashboard
+                session.setAttribute("usuario", usuario); 
+                session.setAttribute("idTipoUsuario", idTipoUsuario); 
+                
+                
+                if (idTipoUsuario == 1) { 
+                    response.sendRedirect("AdminDashboard.jsp"); 
                 } else {
-                    response.sendRedirect("cliente/Dashboard.jsp"); // Redirige al Dashboard del Cliente (o a donde corresponda)
+                    response.sendRedirect("ClienteDashboard.jsp"); 
                 }
             } else {
-                // Usuario o contraseña incorrectos
-                request.setAttribute("error", "Usuario o contraseña incorrectos.");
-                request.getRequestDispatcher("index.jsp").forward(request, response);
+                
+                request.setAttribute("error", "Usuario o contraseÃ±a incorrectos.");
+                request.getRequestDispatcher("Login.jsp").forward(request, response);
             }
 
-            conexion.commit(); // Confirmar la transacción
+            conexion.commit(); 
 
         } catch (SQLException e) {
-            // Manejo de la excepción
-            System.err.println("Error al iniciar sesión: " + e.getMessage());
-            request.setAttribute("error", "Error al iniciar sesión: " + e.getMessage());
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+           
+            System.err.println("Error al iniciar sesiï¿½n: " + e.getMessage());
+            request.setAttribute("error", "Error al iniciar sesiï¿½n: " + e.getMessage());
+            request.getRequestDispatcher("Login.jsp").forward(request, response);
 
             if (conexion != null) {
                 try {
-                    Conexion.getConexion().rollbackConexion(); // Rollback
+                    Conexion.getConexion().rollbackConexion();
                 } catch (Exception ex) {
                     System.err.println("Error al hacer rollback: " + ex.getMessage());
                 }
             }
 
-        } finally {
-            // 7. Cerrar los recursos
-            try {
-                if (resultados != null) resultados.close();
-                if (consulta != null) consulta.close();
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar recursos: " + e.getMessage());
-            }
-            if (conexion != null) {
-                Conexion.getConexion().cerrarConexion();
-            }
-        }
+        } 
     }
 }

@@ -21,13 +21,13 @@
                     </div>
                     
                     <div class="card-body">
-                        <form class="row g-3 needs-validation" novalidate>
+                        <form action="AgregarCliente" method="post" class="row g-3 needs-validation" novalidate>
                             <!-- Primera fila -->
                             <div class="col-md-6">
                                 <label for="nombre" class="form-label">Nombre</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                    <input type="text" class="form-control" id="nombre" required placeholder="Nombre...">
+                                    <input type="text" class="form-control" id="nombre" name="Nombre" required placeholder="Nombre...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese el nombre
                                     </div>
@@ -38,7 +38,7 @@
                                 <label for="apellido" class="form-label">Apellido</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                    <input type="text" class="form-control" id="apellido" required placeholder="Apellido...">
+                                    <input type="text" class="form-control" id="apellido" name="Apellido" required placeholder="Apellido...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese el apellido
                                     </div>
@@ -50,7 +50,7 @@
                                 <label for="dni" class="form-label">DNI</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
-                                    <input type="text" class="form-control" id="dni" required placeholder="DNI...">
+                                    <input type="text" class="form-control" id="dni" name="DNI" required placeholder="DNI...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese el DNI
                                     </div>
@@ -61,7 +61,7 @@
                                 <label for="cuil" class="form-label">CUIL</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
-                                    <input type="text" class="form-control" id="cuil" required placeholder="Cuil...">
+                                    <input type="text" class="form-control" id="cuil" name="CUIL" required placeholder="Cuil...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese el CUIL
                                     </div>
@@ -72,7 +72,7 @@
                                 <label for="telefono" class="form-label">Teléfono</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                    <input type="text" class="form-control" id="telefono" required placeholder="Telefono...">
+                                    <input type="text" class="form-control" id="telefono" name="Telefono" required placeholder="Telefono...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese el teléfono
                                     </div>
@@ -84,7 +84,7 @@
                                 <label for="email" class="form-label">Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" class="form-control" id="email" required placeholder="Email...">
+                                    <input type="email" class="form-control" id="email" name="Email" required placeholder="Email...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese un email válido
                                     </div>
@@ -95,7 +95,7 @@
                                 <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                                    <input type="date" class="form-control" id="fechaNacimiento" required>
+                                    <input type="date" class="form-control" id="fechaNacimiento" name="FechaNac" required>
                                     <div class="invalid-feedback">
                                         Por favor ingrese la fecha de nacimiento
                                     </div>
@@ -107,7 +107,7 @@
                                 <label for="nacionalidad" class="form-label">Nacionalidad</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-globe"></i></span>
-                                    <input type="text" class="form-control" id="nacionalidad" required placeholder="Nacionalidad...">
+                                    <input type="text" class="form-control" id="nacionalidad" name="Nacionalidad" required placeholder="Nacionalidad...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese la nacionalidad
                                     </div>
@@ -116,7 +116,7 @@
                             
                             <div class="col-md-3">
                                 <label for="sexo" class="form-label">Sexo</label>
-                                <select class="form-select" id="sexo" required>
+                                <select class="form-select" id="sexo" name="Sexo" required>
                                     <option value="">Seleccione...</option>
                                     <option value="M">Masculino</option>
                                     <option value="F">Femenino</option>
@@ -131,7 +131,7 @@
                                 <label for="provincia" class="form-label">Provincia</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                    <input type="text" class="form-control" id="provincia" required placeholder="Provincia...">
+                                    <input type="text" class="form-control" id="provincia" name="Provincia" required placeholder="Provincia...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese la provincia
                                     </div>
@@ -143,7 +143,7 @@
                                 <label for="localidad" class="form-label">Localidad</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                    <input type="text" class="form-control" id="localidad" required placeholder="Localidad...">
+                                    <input type="text" class="form-control" id="localidad" name="Localidad" required placeholder="Localidad...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese la localidad
                                     </div>
@@ -154,7 +154,7 @@
                                 <label for="direccion" class="form-label">Dirección</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-house"></i></span>
-                                    <input type="text" class="form-control" id="direccion" required placeholder="Direccion...">
+                                    <input type="text" class="form-control" id="direccion" name="Direccion" required placeholder="Direccion...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese la dirección
                                     </div>
@@ -166,7 +166,7 @@
                                 <label for="usuario" class="form-label">Usuario</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                                    <input type="text" class="form-control" id="usuario" required placeholder="Usuario...">
+                                    <input type="text" class="form-control" id="usuario" name="Usuario" required placeholder="Usuario...">
                                     <div class="invalid-feedback">
                                         Por favor ingrese el usuario
                                     </div>
@@ -177,7 +177,7 @@
                                 <label for="contrasenia" class="form-label">Contraseña</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                    <input type="password" class="form-control" id="contrasenia" required placeholder="******">
+                                    <input type="password" class="form-control" id="contrasenia" name="Contrasenia" required placeholder="******">
                                     <button class="btn btn-outline-secondary toggle-password" type="button">
                                         <i class="bi bi-eye"></i>
                                     </button>
@@ -189,7 +189,7 @@
                             
                             <!-- Botón de submit -->
                             <div class="col-12 text-end mt-4">
-                                <button class="btn btn-primary px-4" type="submit">
+                                <button class="btn btn-primary px-4" type="submit" name="btnGuardar">
                                     <i class="bi bi-save me-2"></i>Guardar Cliente
                                 </button>
                             </div>
@@ -231,6 +231,6 @@
                 }, false)
             })
         })()
-    </script>
+	</script>
 </body>
 </html>

@@ -10,16 +10,19 @@
 </head>
 <body>
   <my:navbar activeTab="login" userRole="" />
-  <main class="container p-4 rounded-3 bg-card" style="max-width: 500px; width: 100%;">
-    <%-- Display error message --%>
+
+  <main class="container p-4 rounded-3 bg-card" style="max-width: 400px; width: 100%;">
+    <my:loginForm />
+	
     <c:if test="${not empty error}">
-      <div class="alert alert-danger" role="alert">
-        <c:out value="${error}" />
+      <div class="d-flex justify-content-center mt-3">
+        <div class="alert alert-danger text-center w-100">
+          <c:out value="${error}" />
+        </div>
       </div>
     </c:if>
-
-    <my:loginForm/>
   </main>
+
   <my:footer />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
