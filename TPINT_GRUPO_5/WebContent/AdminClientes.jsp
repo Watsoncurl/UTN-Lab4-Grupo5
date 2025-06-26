@@ -17,6 +17,7 @@
 <body>
 	<my:navbar activeTab="clientes" userRole="admin" />
 	<div class="container mt-4">
+		<%-- Barra de busqueda --%>
 		<div class="row mb-3 g-2">
 			<div class="col-md-6">
 				<input type="search" class="form-control"
@@ -43,6 +44,27 @@
 				</a>
 			</div>
 		</div>
+		
+		<%-- Mostrar mensajes de operación --%>
+		<c:if test="${not empty sessionScope.mensaje}">
+			<div class="alert alert-success alert-dismissible fade show">
+				${sessionScope.mensaje}
+				<button type="button" class="btn-close" data-bs-dismiss="alert"
+					aria-label="Close"></button>
+			</div>
+			<c:remove var="mensaje" scope="session" />
+		</c:if>
+
+		<c:if test="${not empty sessionScope.error}">
+			<div class="alert alert-danger alert-dismissible fade show">
+				${sessionScope.error}
+				<button type="button" class="btn-close" data-bs-dismiss="alert"
+					aria-label="Close"></button>
+			</div>
+			<c:remove var="error" scope="session" />
+		</c:if>
+		
+		<%-- Tabla de clientes --%>
 		<div class="table-responsive">
 			<table class="table table-hover border shadow-sm">
 				<thead class="table-light">
@@ -103,6 +125,7 @@
 				</tbody>
 			</table>
 		</div>
+		<%-- Paginación --%>
 		<nav class="mt-3">
 			<ul class="pagination justify-content-center">
 				<li class="page-item disabled"><span class="page-link">Anterior</span>
@@ -115,24 +138,7 @@
 				</li>
 			</ul>
 		</nav>
-		<%-- Mostrar mensajes de operación --%>
-		<c:if test="${not empty sessionScope.mensaje}">
-			<div class="alert alert-success alert-dismissible fade show">
-				${sessionScope.mensaje}
-				<button type="button" class="btn-close" data-bs-dismiss="alert"
-					aria-label="Close"></button>
-			</div>
-			<c:remove var="mensaje" scope="session" />
-		</c:if>
-
-		<c:if test="${not empty sessionScope.error}">
-			<div class="alert alert-danger alert-dismissible fade show">
-				${sessionScope.error}
-				<button type="button" class="btn-close" data-bs-dismiss="alert"
-					aria-label="Close"></button>
-			</div>
-			<c:remove var="error" scope="session" />
-		</c:if>
+		
 	</div>
 	<my:footer />
 	<script
