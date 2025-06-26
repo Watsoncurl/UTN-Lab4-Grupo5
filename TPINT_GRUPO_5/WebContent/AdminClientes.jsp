@@ -95,29 +95,30 @@
 									</c:otherwise>
 								</c:choose></td>
 							<td class="text-end">
-								<div class="btn-group" role="group">
-									<button class="btn btn-sm btn-outline-primary">
-										<i class="bi bi-eye"></i>
-									</button>
-									<!-- Botón Editar -->
-									<a
-										href="${pageContext.request.contextPath}/ServletEditarCliente?id=${cliente.idCliente}"
-										class="btn btn-sm btn-outline-secondary"> <i
-										class="bi bi-pencil"></i>
-									</a>
-
-									<!-- Formulario para eliminar -->
-									<form
-										action="${pageContext.request.contextPath}/ListarClientesServlet"
-										method="post" style="display: inline;">
-										<input type="hidden" name="id" value="${cliente.idCliente}">
-										<input type="hidden" name="accion" value="eliminar">
-										<button type="submit" class="btn btn-sm btn-outline-danger"
-											onclick="return confirm('¿Está seguro que desea eliminar permanentemente este cliente?');">
-											<i class="bi bi-trash"></i>
-										</button>
-									</form>
-								</div>
+							  <div class="btn-group" role="group">
+							    <!-- Botón Ver (modo visualización) -->
+							    <a href="${pageContext.request.contextPath}/ServletEditarCliente?id=${cliente.idCliente}&modo=ver"
+							       class="btn btn-sm btn-outline-primary">
+							      <i class="bi bi-eye"></i>
+							    </a>
+							    
+							    <!-- Botón Editar (modo edición) -->
+							    <a href="${pageContext.request.contextPath}/ServletEditarCliente?id=${cliente.idCliente}&modo=editar"
+							       class="btn btn-sm btn-outline-secondary">
+							      <i class="bi bi-pencil"></i>
+							    </a>
+							
+							    <!-- Formulario para eliminar -->
+							    <form action="${pageContext.request.contextPath}/ListarClientesServlet"
+							          method="post" style="display: inline;">
+							      <input type="hidden" name="id" value="${cliente.idCliente}">
+							      <input type="hidden" name="accion" value="eliminar">
+							      <button type="submit" class="btn btn-sm btn-outline-danger"
+							              onclick="return confirm('¿Está seguro que desea eliminar permanentemente este cliente?');">
+							        <i class="bi bi-trash"></i>
+							      </button>
+							    </form>
+							  </div>
 							</td>
 
 						</tr>

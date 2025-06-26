@@ -11,97 +11,113 @@ import negocioImpl.ClientesNegocioImpl;
 @WebServlet("/ServletEditarCliente")
 public class ServletEditarCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+    private ClientesNegocio clienteNegocio;
 
-	@Override
-	public void init() throws ServletException {
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        clienteNegocio = new ClientesNegocioImpl();
+    }
 
-	}
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String idParam = request.getParameter("id");
+        String modo = request.getParameter("modo");
+        
+        try {
+            // Validaci贸n b谩sica
+            if (idParam == null || idParam.isEmpty()) {
+                manejarError(request, response, "ID de cliente no proporcionado");
+                return;
+            }
+            
+            int id = Integer.parseInt(idParam);
+            Cliente cliente = clienteNegocio.obtenerPorId(id);
+            
+            if (cliente == null) {
+                manejarError(request, response, "Cliente no encontrado");
+                return;
+            }
+            
+            // Establecer atributos para la vista
+            request.setAttribute("cliente", cliente);
+            
+            // Determinar el modo (con valor por defecto "ver")
+            String modoVista = "ver".equals(modo) ? "ver" : "editar".equals(modo) ? "editar" : "ver";
+            request.setAttribute("modo", modoVista);
+            
+            // Redirigir a la vista
+            request.getRequestDispatcher("AdminEditarCliente.jsp").forward(request, response);
+            
+        } catch (NumberFormatException e) {
+            manejarError(request, response, "ID de cliente inv谩lido");
+        } catch (Exception e) {
+            manejarError(request, response, "Error al procesar la solicitud: " + e.getMessage());
+        }
+    }
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		System.out.println("ID recibido: " + request.getParameter("id"));
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        // Verificar si es un cambio de modo
+        if ("true".equals(request.getParameter("cambiarModo"))) {
+            String id = request.getParameter("idCliente");
+            String modo = request.getParameter("nuevoModo");
+            response.sendRedirect("ServletEditarCliente?id=" + id + "&modo=" + modo);
+            return;
+        }
+        
+        // Procesar actualizaci贸n del cliente
+        try {
+            Cliente clienteActualizado = mapearClienteDesdeRequest(request);
+            
+            boolean exito = clienteNegocio.actualizar(clienteActualizado);
+            
+            if (exito) {
+                request.getSession().setAttribute("mensaje", "Cliente actualizado exitosamente.");
+                // Redirigir a la vista en modo visualizaci贸n despu茅s de editar
+                response.sendRedirect("ServletEditarCliente?id=" + clienteActualizado.getIdCliente() + "&modo=ver");
+            } else {
+                request.getSession().setAttribute("error", "No se pudo actualizar el cliente.");
+                // Volver a la vista de edici贸n con los datos ingresados
+                request.setAttribute("cliente", clienteActualizado);
+                request.setAttribute("modo", "editar");
+                request.getRequestDispatcher("AdminEditarCliente.jsp").forward(request, response);
+            }
+            
+        } catch (NumberFormatException e) {
+            manejarError(request, response, "Error en el formato de los datos: " + e.getMessage());
+        } catch (Exception e) {
+            manejarError(request, response, "Error al actualizar cliente: " + e.getMessage());
+        }
+    }
 
-		try {
-			String idParam = request.getParameter("id");
-			if (idParam != null && !idParam.isEmpty()) {
-				int id = Integer.parseInt(idParam);
-				ClientesNegocio ClienteNegocio = new ClientesNegocioImpl();
-				Cliente cliente = ClienteNegocio.obtenerPorId(id);
-				if (cliente != null) {
-					request.setAttribute("cliente", cliente);
-					request.getRequestDispatcher("AdminEditarCliente.jsp").forward(request, response);
-				} else {
-					request.getSession().setAttribute("error", "Cliente no encontrado");
-					response.sendRedirect("ListarClientesServlet");
-				}
-			} else {
-				request.getSession().setAttribute("error", "ID inv醠ido");
-				response.sendRedirect("ListarClientesServlet");
-			}
-
-		} catch (Exception e) {
-			request.getSession().setAttribute("error", "Error al cargar cliente: " + e.getMessage());
-			response.sendRedirect("ListarClientesServlet");
-		}
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		System.out.println("DEBUG ServletEditarCliente (POST): Procesando actualizaci髇 de cliente.");
-		ClientesNegocio ClienteNegocio = new ClientesNegocioImpl();
-
-		try {
-			int idCliente = Integer.parseInt(request.getParameter("idCliente"));
-			String dni = request.getParameter("dni");
-			String cuil = request.getParameter("cuil");
-			String nombre = request.getParameter("nombre");
-			String apellido = request.getParameter("apellido");
-			String sexo = request.getParameter("sexo");
-			String nacionalidad = request.getParameter("nacionalidad");
-			String fechaNac = request.getParameter("fechaNac");
-			String direccion = request.getParameter("direccion");
-			String localidad = request.getParameter("localidad");
-			String provincia = request.getParameter("provincia");
-			String email = request.getParameter("email");
-			String telefono = request.getParameter("telefono");
-
-			Cliente clienteActualizado = new Cliente();
-			clienteActualizado.setIdCliente(idCliente);
-			clienteActualizado.setDni(dni);
-			clienteActualizado.setCuil(cuil);
-			clienteActualizado.setNombre(nombre);
-			clienteActualizado.setApellido(apellido);
-			clienteActualizado.setSexo(sexo);
-			clienteActualizado.setNacionalidad(nacionalidad);
-			clienteActualizado.setFechaNac(fechaNac);
-			clienteActualizado.setDireccion(direccion);
-			clienteActualizado.setLocalidad(localidad);
-			clienteActualizado.setProvincia(provincia);
-			clienteActualizado.setEmail(email);
-			clienteActualizado.setTelefono(telefono);
-			clienteActualizado.setEstado(true);
-
-			boolean exito = ClienteNegocio.actualizar(clienteActualizado);
-
-			if (exito) {
-				request.getSession().setAttribute("mensaje", "Cliente actualizado exitosamente.");
-				response.sendRedirect("ListarClientesServlet");
-			} else {
-				request.getSession().setAttribute("error", "No se pudo actualizar el cliente. Intente nuevamente.");
-				response.sendRedirect("ListarClientesServlet");
-			}
-
-		} catch (NumberFormatException e) {
-			request.getSession().setAttribute("error",
-					"Error en el formato de alg鷑 dato del formulario: " + e.getMessage());
-			response.sendRedirect("ListarClientesServlet");
-		} catch (Exception e) {
-			System.err.println("Error en ServletEditarCliente (POST): " + e.getMessage());
-			e.printStackTrace();
-			request.getSession().setAttribute("error", "Error al actualizar cliente: " + e.getMessage());
-			response.sendRedirect("ListarClientesServlet");
-		}
-	}
+    private Cliente mapearClienteDesdeRequest(HttpServletRequest request) {
+        Cliente cliente = new Cliente();
+        cliente.setIdCliente(Integer.parseInt(request.getParameter("idCliente")));
+        cliente.setDni(request.getParameter("dni"));
+        cliente.setCuil(request.getParameter("cuil"));
+        cliente.setNombre(request.getParameter("nombre"));
+        cliente.setApellido(request.getParameter("apellido"));
+        cliente.setSexo(request.getParameter("sexo"));
+        cliente.setNacionalidad(request.getParameter("nacionalidad"));
+        cliente.setFechaNac(request.getParameter("fechaNac"));
+        cliente.setDireccion(request.getParameter("direccion"));
+        cliente.setLocalidad(request.getParameter("localidad"));
+        cliente.setProvincia(request.getParameter("provincia"));
+        cliente.setEmail(request.getParameter("email"));
+        cliente.setTelefono(request.getParameter("telefono"));
+        cliente.setEstado(true); // Siempre true porque solo editamos clientes activos
+        
+        return cliente;
+    }
+	
+	private void manejarError(HttpServletRequest request, HttpServletResponse response, String mensaje)
+            throws IOException {
+        request.getSession().setAttribute("error", mensaje);
+        response.sendRedirect("ListarClientesServlet");
+    }
 }
