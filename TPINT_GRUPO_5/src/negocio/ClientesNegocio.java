@@ -9,5 +9,7 @@ public interface ClientesNegocio {
     Cliente obtenerPorId(int id);
     boolean crear(Cliente cliente);
     boolean actualizar(Cliente cliente);
-    boolean eliminar(int id); 
+    boolean eliminar(int id);
+	List<Cliente> listarPaginados(int inicio, int cantidad);
+	int contarTotalClientes(); 
 }

@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import datosImpl.ClientesDaoImpl;
 import datosImpl.Conexion;
 import entidades.Cliente;
+import entidades.TiposUsuario;
+import entidades.Usuario;
+import negocio.ClientesNegocio;
+import negocio.UsuarioNegocio;
 import negocioImpl.ClientesNegocioImpl;
+import negocioImpl.UsuarioNegocioImpl;
 
 /**
  * Servlet implementation class AgregarCliente
@@ -21,29 +27,35 @@ import negocioImpl.ClientesNegocioImpl;
 @WebServlet("/AgregarCliente")
 public class AgregarCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public AgregarCliente() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private ClientesNegocio clientesNegocio;
+	private UsuarioNegocio usuarioNegocio;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public AgregarCliente() {
+		super();
+		this.clientesNegocio = new ClientesNegocioImpl();
+		this.usuarioNegocio = new UsuarioNegocioImpl();
+
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		if (request.getParameter("btnGuardar") != null) {
-			
-			/// Parametros de la pagina web
+
+
 			String dni = request.getParameter("DNI").trim();
 			String cuil = request.getParameter("CUIL").trim();
 			String nombre = request.getParameter("Nombre").trim();
@@ -56,7 +68,9 @@ public class AgregarCliente extends HttpServlet {
 			String provincia = request.getParameter("Provincia").trim();
 			String email = request.getParameter("Email").trim();
 			String telefono = request.getParameter("Telefono").trim();
-			
+			String usuario = request.getParameter("Usuario").trim();
+			String contrasenia = request.getParameter("Contrasenia").trim();
+
 			System.out.println(dni);
 			System.out.println(cuil);
 			System.out.println(nombre);
@@ -69,55 +83,119 @@ public class AgregarCliente extends HttpServlet {
 			System.out.println(direccion);
 			System.out.println(localidad);
 			System.out.println(provincia);
-			
+			System.out.println(usuario);
+			System.out.println(contrasenia);
+
 			Connection conexion = null;
-            PreparedStatement stmt = null;
-            
-            try {
-                conexion = Conexion.getConexion().getSQLConexion();
-                conexion.setAutoCommit(true);  
-                String sql = "INSERT INTO clientes (dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento ,direccion, localidad, provincia, email, telefono, estado) "
-            			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                stmt = conexion.prepareStatement(sql);
-                
-                stmt.setString(1, dni);
-                stmt.setString(2, cuil);
-                stmt.setString(3, nombre);
-                stmt.setString(4, apellido);
-                stmt.setString(5, sexo);
-                stmt.setString(6, nacionalidad);
-                stmt.setString(7, fechaNac);
-                stmt.setString(8, direccion);
-                stmt.setString(9, localidad);
-                stmt.setString(10, provincia);
-                stmt.setString(11, email);
-                stmt.setString(12, telefono);
-                stmt.setBoolean(13, true);
+			boolean operacionExitosa = false;
 
-                int filasAfectadas = stmt.executeUpdate();
+			try {
 
-                if (filasAfectadas > 0) {
-                    System.out.println("Cliente agregado correctamente.");
-                } else {
-                    System.out.println("No se údo agregar al cliente");
-                }
+				conexion = Conexion.getConexion().getSQLConexion();
 
-            } catch (Exception e) {
-                System.err.println("Error al agregar cliente: " + e.getMessage());
-            } finally {
-                try {
-                    if (stmt != null) stmt.close();
-                } catch (Exception e) {
-                    System.err.println("Error al cerrar statement: " + e.getMessage());
-                }
-                if (conexion != null) {
-                    Conexion.getConexion().cerrarConexion();
-                }
-            }
+				if (conexion != null) {
+					conexion.setAutoCommit(false);
+				} else {
+					System.err.println("Error: No se pudo establecer conexión a la base de datos.");
+					request.setAttribute("mensaje", "Error interno del servidor: Fallo de conexión.");
+					request.getRequestDispatcher("AgregarCliente.jsp").forward(request, response);
+					return;
+				}
+
+				Cliente clienteNuevo = new Cliente();
+				clienteNuevo.setDni(dni);
+				clienteNuevo.setCuil(cuil);
+				clienteNuevo.setNombre(nombre);
+				clienteNuevo.setApellido(apellido);
+				clienteNuevo.setSexo(sexo);
+				clienteNuevo.setNacionalidad(nacionalidad);
+				clienteNuevo.setFechaNac(fechaNac);
+				clienteNuevo.setDireccion(direccion);
+				clienteNuevo.setLocalidad(localidad);
+				clienteNuevo.setProvincia(provincia);
+				clienteNuevo.setEmail(email);
+				clienteNuevo.setTelefono(telefono);
+				clienteNuevo.setEstado(true);
+
+				if (clientesNegocio.crear(clienteNuevo)) {
+					System.out.println(
+							"DEBUG: Cliente insertado en DB, IdCliente generado: " + clienteNuevo.getIdCliente());
+
+					Usuario nuevoUsuario = new Usuario();
+					nuevoUsuario.setUsuario(usuario);
+					nuevoUsuario.setPassword(contrasenia);
+					nuevoUsuario.setEstado(true);
+
+					nuevoUsuario.setCliente(clienteNuevo);
+
+					TiposUsuario tipoUsuarioCliente = new TiposUsuario();
+					tipoUsuarioCliente.setIdTipoUsuario(2);
+					nuevoUsuario.setTipoUsuario(tipoUsuarioCliente);
+
+					if (usuarioNegocio.agregarUsuario(nuevoUsuario)) {
+
+						conexion.commit();
+						operacionExitosa = true;
+						System.out.println("Cliente y Usuario agregados exitosamente. Transacción confirmada.");
+						request.setAttribute("mensaje", "Cliente y Usuario registrados con éxito!");
+						response.sendRedirect(request.getContextPath() + "/ListarClientesServlet");
+					} else {
+
+						System.err.println("ERROR: No se pudo agregar el usuario. Realizando rollback.");
+						request.setAttribute("mensaje", "Error al registrar el usuario. El cliente no fue guardado.");
+						conexion.rollback();
+					}
+				} else {
+
+					System.err.println("ERROR: No se pudo agregar el cliente. Realizando rollback.");
+					request.setAttribute("mensaje", "Error al registrar el cliente. No se guardó nada.");
+					conexion.rollback();
+				}
+
+			} catch (SQLException e) {
+				System.err.println("Error de SQL durante la transacción: " + e.getMessage());
+				e.printStackTrace();
+				request.setAttribute("mensaje", "Error de base de datos. Por favor, intente de nuevo más tarde.");
+				try {
+					if (conexion != null && !conexion.getAutoCommit()) {
+						conexion.rollback();
+						System.out.println("DEBUG: Rollback realizado debido a SQLException.");
+					}
+				} catch (SQLException rb_e) {
+					System.err.println("Error al realizar rollback después de SQLException: " + rb_e.getMessage());
+				}
+			} catch (Exception e) {
+
+				System.err.println("Error inesperado al procesar registro de cliente/usuario: " + e.getMessage());
+				e.printStackTrace();
+				request.setAttribute("mensaje", "Ha ocurrido un error inesperado. Por favor, intente de nuevo.");
+				try {
+					if (conexion != null && !conexion.getAutoCommit()) {
+						conexion.rollback();
+						System.out.println("DEBUG: Rollback realizado debido a Exception general.");
+					}
+				} catch (SQLException rb_e) {
+					System.err.println("Error al realizar rollback después de Exception general: " + rb_e.getMessage());
+				}
+			} finally {
+
+				try {
+					if (conexion != null) {
+					    conexion.setAutoCommit(true);
+					    System.out.println("DEBUG: Auto-commit restaurado.");
+					}
+				} catch (SQLException e) {
+					System.err
+							.println("Error al cerrar conexión o restaurar auto-commit en finally: " + e.getMessage());
+				}
+
+				if (!operacionExitosa && !response.isCommitted()) {
+					request.getRequestDispatcher("AgregarCliente.jsp").forward(request, response);
+				}
+			}
+		} else {
+
+			response.sendRedirect(request.getContextPath() + "/ListarClientesServlet");
 		}
-		
-		//request.getRequestDispatcher("AgregarCliente.jsp").forward(request, response);
-		response.sendRedirect(request.getContextPath() + "/AgregarCliente.jsp");
 	}
-
 }

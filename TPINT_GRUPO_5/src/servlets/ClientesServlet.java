@@ -34,7 +34,7 @@ public class ClientesServlet extends HttpServlet {
 
         if ("eliminar".equals(accion)) {
             int idEliminar = Integer.parseInt(request.getParameter("id"));
-            boolean eliminado = clientesNegocio.eliminarCliente(idEliminar);
+            boolean eliminado = clientesNegocio.eliminar(idEliminar);
             mensaje = eliminado ? "Cliente eliminado correctamente" : "Error al eliminar cliente";
         }
 

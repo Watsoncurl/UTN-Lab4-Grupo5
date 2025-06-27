@@ -27,7 +27,6 @@ public class ServletEditarCliente extends HttpServlet {
         String modo = request.getParameter("modo");
         
         try {
-            // Validación básica
             if (idParam == null || idParam.isEmpty()) {
                 manejarError(request, response, "ID de cliente no proporcionado");
                 return;
@@ -41,14 +40,14 @@ public class ServletEditarCliente extends HttpServlet {
                 return;
             }
             
-            // Establecer atributos para la vista
+
             request.setAttribute("cliente", cliente);
             
-            // Determinar el modo (con valor por defecto "ver")
+
             String modoVista = "ver".equals(modo) ? "ver" : "editar".equals(modo) ? "editar" : "ver";
             request.setAttribute("modo", modoVista);
             
-            // Redirigir a la vista
+
             request.getRequestDispatcher("AdminEditarCliente.jsp").forward(request, response);
             
         } catch (NumberFormatException e) {
@@ -61,16 +60,14 @@ public class ServletEditarCliente extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Verificar si es un cambio de modo
+
         if ("true".equals(request.getParameter("cambiarModo"))) {
             String id = request.getParameter("idCliente");
             String modo = request.getParameter("nuevoModo");
             response.sendRedirect("ServletEditarCliente?id=" + id + "&modo=" + modo);
             return;
         }
-        
-        // Procesar actualización del cliente
+
         try {
             Cliente clienteActualizado = mapearClienteDesdeRequest(request);
             
@@ -78,11 +75,11 @@ public class ServletEditarCliente extends HttpServlet {
             
             if (exito) {
                 request.getSession().setAttribute("mensaje", "Cliente actualizado exitosamente.");
-                // Redirigir a la vista en modo visualización después de editar
+        
                 response.sendRedirect("ServletEditarCliente?id=" + clienteActualizado.getIdCliente() + "&modo=ver");
             } else {
                 request.getSession().setAttribute("error", "No se pudo actualizar el cliente.");
-                // Volver a la vista de edición con los datos ingresados
+
                 request.setAttribute("cliente", clienteActualizado);
                 request.setAttribute("modo", "editar");
                 request.getRequestDispatcher("AdminEditarCliente.jsp").forward(request, response);
@@ -110,7 +107,7 @@ public class ServletEditarCliente extends HttpServlet {
         cliente.setProvincia(request.getParameter("provincia"));
         cliente.setEmail(request.getParameter("email"));
         cliente.setTelefono(request.getParameter("telefono"));
-        cliente.setEstado(true); // Siempre true porque solo editamos clientes activos
+        cliente.setEstado(true);
         
         return cliente;
     }

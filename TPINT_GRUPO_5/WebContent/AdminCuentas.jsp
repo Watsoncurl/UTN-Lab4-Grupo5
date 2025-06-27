@@ -12,6 +12,7 @@
 <body>
   <my:navbar activeTab="cuentas" userRole="admin" />
   <div class="container mt-4">
+    <%-- Barra de búsqueda y filtros --%>
     <div class="row mb-3 g-2">
       <div class="col-md-6">
         <input type="search" class="form-control" placeholder="Buscar (Nro. Cuenta, CBU, Cliente)">
@@ -33,11 +34,30 @@
         </select>
       </div>
       <div class="col-md-2">
-          <a href="AdminAgregarCuenta.jsp" class="btn btn-success w-100">
-              <i class="bi bi-plus-circle"></i> Nueva
-          </a>
+        <a href="AdminAgregarCuenta.jsp" class="btn btn-success w-100">
+          <i class="bi bi-plus-circle"></i> Nueva
+        </a>
       </div>
     </div>
+    
+    <%-- Mostrar mensajes de operación --%>
+    <c:if test="${not empty sessionScope.mensaje}">
+      <div class="alert alert-success alert-dismissible fade show">
+        ${sessionScope.mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <c:remove var="mensaje" scope="session" />
+    </c:if>
+
+    <c:if test="${not empty sessionScope.error}">
+      <div class="alert alert-danger alert-dismissible fade show">
+        ${sessionScope.error}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <c:remove var="error" scope="session" />
+    </c:if>
+    
+    <%-- Tabla de cuentas --%>
     <div class="table-responsive">
       <table class="table table-hover border shadow-sm">
         <thead class="table-light">
@@ -54,8 +74,8 @@
           <c:forEach var="cuenta" items="${listaCuentas}">
             <tr>
               <td>${cuenta.nro_cuenta}</td>
-              <td>${cuenta.cliente}</td>  <%--  Muestra el nombre del cliente  --%>
-              <td>${cuenta.tipo_cuenta}</td>  <%--  Muestra el tipo de cuenta --%>
+              <td>${cuenta.cliente}</td>
+              <td>${cuenta.tipo_cuenta}</td>
               <td class="text-end">$${cuenta.saldo}</td>
               <td class="text-center align-middle">
                 <c:choose>
@@ -69,15 +89,28 @@
               </td>
               <td class="text-end">
                 <div class="btn-group" role="group">
-                  <button class="btn btn-sm btn-outline-primary">
+                  <%-- Botón Ver (modo visualización) --%>
+                  <a href="${pageContext.request.contextPath}/ServletEditarCuenta?nroCuenta=${cuenta.nro_cuenta}&modo=ver"
+                     class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-eye"></i>
-                  </button>
-                  <button class="btn btn-sm btn-outline-secondary">
+                  </a>
+                  
+                  <%-- Botón Editar (modo edición) --%>
+                  <a href="${pageContext.request.contextPath}/ServletEditarCuenta?nroCuenta=${cuenta.nro_cuenta}&modo=editar"
+                     class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-pencil"></i>
-                  </button>
-                  <button class="btn btn-sm btn-outline-danger">
-                    <i class="bi bi-trash"></i>
-                  </button>
+                  </a>
+                  
+                  <%-- Formulario para eliminar --%>
+                  <form action="${pageContext.request.contextPath}/ListarCuentasServlet"
+                        method="post" style="display: inline;">
+                    <input type="hidden" name="nroCuenta" value="${cuenta.nro_cuenta}">
+                    <input type="hidden" name="accion" value="eliminar">
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('¿Está seguro que desea eliminar permanentemente esta cuenta?');">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
                 </div>
               </td>
             </tr>
@@ -85,20 +118,33 @@
         </tbody>
       </table>
     </div>
-    <nav class="mt-3">
-      <ul class="pagination justify-content-center">
-        <li class="page-item disabled">
-          <span class="page-link">Anterior</span>
-        </li>
-        <li class="page-item active"><span class="page-link">1</span></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">10</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">Siguiente</a>
-        </li>
-      </ul>
-    </nav>
+    <!-- 
+    <%-- Paginación --%>
+    <c:if test="${totalPaginas > 1}">
+      <nav class="mt-3">
+        <ul class="pagination justify-content-center">
+          <%-- Botón Anterior --%>
+          <li class="page-item ${paginaActual == 1 ? 'disabled' : ''}">
+            <a class="page-link" 
+               href="ListarCuentasServlet?pagina=${paginaActual - 1}">Anterior</a>
+          </li>
+          
+          <%-- Páginas --%>
+          <c:forEach begin="1" end="${totalPaginas}" var="i">
+            <li class="page-item ${paginaActual == i ? 'active' : ''}">
+              <a class="page-link" href="ListarCuentasServlet?pagina=${i}">${i}</a>
+            </li>
+          </c:forEach>
+          
+          <%-- Botón Siguiente --%>
+          <li class="page-item ${paginaActual == totalPaginas ? 'disabled' : ''}">
+            <a class="page-link" 
+               href="ListarCuentasServlet?pagina=${paginaActual + 1}">Siguiente</a>
+          </li>
+        </ul>
+      </nav>
+    </c:if>
+     -->
   </div>
   <my:footer />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

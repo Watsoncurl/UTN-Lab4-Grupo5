@@ -63,7 +63,6 @@ public class servletLogin extends HttpServlet {
                 request.getRequestDispatcher("Login.jsp").forward(request, response);
             }
 
-            conexion.commit(); 
 
         } catch (SQLException e) {
            

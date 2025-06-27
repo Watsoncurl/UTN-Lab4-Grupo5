@@ -1,5 +1,7 @@
 package entidades;
 
+import java.sql.Timestamp;
+
 public class Cuentas {
     private int id_cuenta;
     private int id_cliente; 
@@ -9,10 +11,11 @@ public class Cuentas {
     private boolean estado;
     private String cliente; 
     private String tipo_cuenta; 
+    private Timestamp fecha_creacion; // ← Agregado
 
     public Cuentas() {}
 
-    public Cuentas(int id_cuenta, int id_cliente, String nro_cuenta, String cbu, double saldo, boolean estado, String cliente, String tipo_cuenta) {
+    public Cuentas(int id_cuenta, int id_cliente, String nro_cuenta, String cbu, double saldo, boolean estado, String cliente, String tipo_cuenta, Timestamp fecha_creacion) {
         this.id_cuenta = id_cuenta;
         this.id_cliente = id_cliente;
         this.nro_cuenta = nro_cuenta;
@@ -21,6 +24,7 @@ public class Cuentas {
         this.estado = estado;
         this.cliente = cliente;
         this.tipo_cuenta = tipo_cuenta;
+        this.fecha_creacion = fecha_creacion; // ← Agregado
     }
 
     public int getId_cuenta() {
@@ -38,7 +42,6 @@ public class Cuentas {
     public void setId_cliente(int id_cliente) {
         this.id_cliente = id_cliente;
     }
-
 
     public String getNro_cuenta() {
         return nro_cuenta;
@@ -79,12 +82,21 @@ public class Cuentas {
     public void setCliente(String cliente) {
         this.cliente = cliente;
     }
+
     public String getTipo_cuenta() {
         return tipo_cuenta;
     }
 
     public void setTipo_cuenta(String tipo_cuenta) {
         this.tipo_cuenta = tipo_cuenta;
+    }
+
+    public Timestamp getFecha_creacion() {
+        return fecha_creacion;
+    }
+
+    public void setFecha_creacion(Timestamp fecha_creacion) {
+        this.fecha_creacion = fecha_creacion;
     }
 
     @Override
@@ -98,6 +110,7 @@ public class Cuentas {
                 ", estado=" + estado +
                 ", cliente='" + cliente + '\'' +
                 ", tipo_cuenta='" + tipo_cuenta + '\'' +
+                ", fecha_creacion=" + fecha_creacion +
                 '}';
     }
 }

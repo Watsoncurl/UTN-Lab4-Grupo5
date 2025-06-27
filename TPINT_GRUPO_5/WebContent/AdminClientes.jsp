@@ -126,19 +126,32 @@
 				</tbody>
 			</table>
 		</div>
+		
 		<%-- Paginación --%>
-		<nav class="mt-3">
-			<ul class="pagination justify-content-center">
-				<li class="page-item disabled"><span class="page-link">Anterior</span>
-				</li>
-				<li class="page-item active"><span class="page-link">1</span></li>
-				<li class="page-item"><a class="page-link" href="#">2</a></li>
-				<li class="page-item"><a class="page-link" href="#">3</a></li>
-				<li class="page-item"><a class="page-link" href="#">10</a></li>
-				<li class="page-item"><a class="page-link" href="#">Siguiente</a>
-				</li>
-			</ul>
-		</nav>
+		<c:if test="${totalPaginas > 1}">
+		  <nav class="mt-3">
+		    <ul class="pagination justify-content-center">
+		      <%-- Botón Anterior --%>
+		      <li class="page-item ${paginaActual == 1 ? 'disabled' : ''}">
+		        <a class="page-link" 
+		           href="ListarClientesServlet?pagina=${paginaActual - 1}">Anterior</a>
+		      </li>
+		      
+		      <%-- Páginas --%>
+		      <c:forEach begin="1" end="${totalPaginas}" var="i">
+		        <li class="page-item ${paginaActual == i ? 'active' : ''}">
+		          <a class="page-link" href="ListarClientesServlet?pagina=${i}">${i}</a>
+		        </li>
+		      </c:forEach>
+		      
+		      <%-- Botón Siguiente --%>
+		      <li class="page-item ${paginaActual == totalPaginas ? 'disabled' : ''}">
+		        <a class="page-link" 
+		           href="ListarClientesServlet?pagina=${paginaActual + 1}">Siguiente</a>
+		      </li>
+		    </ul>
+		  </nav>
+		</c:if>
 		
 	</div>
 	<my:footer />

@@ -13,6 +13,7 @@ import negocioImpl.ClientesNegocioImpl;
 
 @WebServlet("/ListarClientesServlet")
 public class ServletCliente extends HttpServlet {
+    private static final int REGISTROS_POR_PAGINA = 7;
     private ClientesNegocio clienteNegocio;
     
     @Override
@@ -25,13 +26,41 @@ public class ServletCliente extends HttpServlet {
             throws ServletException, IOException {
         
         try {
-            List<Cliente> listaClientes = clienteNegocio.listarTodos();
+            // 1. Obtener parámetros de paginación
+            int pagina = obtenerPagina(request);
+            
+            // 2. Calcular inicio para la consulta
+            int inicio = (pagina - 1) * REGISTROS_POR_PAGINA;
+            
+            // 3. Obtener clientes paginados
+            List<Cliente> listaClientes = clienteNegocio.listarPaginados(inicio, REGISTROS_POR_PAGINA);
+            
+            // 4. Obtener total de clientes y calcular páginas
+            int totalClientes = clienteNegocio.contarTotalClientes();
+            int totalPaginas = (int) Math.ceil((double) totalClientes / REGISTROS_POR_PAGINA);
+            
+            // 5. Establecer atributos para la vista
             request.setAttribute("listaClientes", listaClientes);
+            request.setAttribute("paginaActual", pagina);
+            request.setAttribute("totalPaginas", totalPaginas);
+            
         } catch (Exception e) {
             request.setAttribute("error", "Error al listar clientes: " + e.getMessage());
+            e.printStackTrace();
         }
         
+        // 6. Redirigir a la vista
         request.getRequestDispatcher("AdminClientes.jsp").forward(request, response);
+    }
+    
+    // Método auxiliar para obtener el número de página
+    private int obtenerPagina(HttpServletRequest request) {
+        String paginaParam = request.getParameter("pagina");
+        try {
+            return paginaParam != null ? Integer.parseInt(paginaParam) : 1;
+        } catch (NumberFormatException e) {
+            return 1; // Valor por defecto si hay error en el parámetro
+        }
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
@@ -39,7 +68,6 @@ public class ServletCliente extends HttpServlet {
         
         String accion = request.getParameter("accion");
         String idParam = request.getParameter("id");
-
 
         if ("eliminar".equals(accion) && idParam != null) {
             try {
@@ -57,10 +85,13 @@ public class ServletCliente extends HttpServlet {
                 request.getSession().setAttribute("error", "Error al eliminar cliente: " + e.getMessage());
             }
             
-            response.sendRedirect(request.getContextPath() + "/ListarClientesServlet");
-            return;
+
+            String pagina = request.getParameter("paginaActual");
+            String urlRedireccion = request.getContextPath() + "/ListarClientesServlet";
+            if (pagina != null && !pagina.isEmpty()) {
+                urlRedireccion += "?pagina=" + pagina;
+            }
+            response.sendRedirect(urlRedireccion);
         }
-        
-        
     }
 }

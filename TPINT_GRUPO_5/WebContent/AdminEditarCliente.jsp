@@ -278,9 +278,9 @@
                     <button class="btn btn-primary px-4 me-2" type="submit">
                       <i class="bi bi-save me-2"></i>Guardar
                     </button>
-                    <a href="ServletEditarCliente?id=${cliente.idCliente}&modo=ver" class="btn btn-secondary px-4">
-                      <i class="bi bi-x-circle me-2"></i>Cancelar
-                    </a>
+                    <a href="ListarClientesServlet" class="btn btn-secondary px-4">
+					  <i class="bi bi-x-circle me-2"></i>Cancelar
+					</a>
                   </c:when>
                   <c:otherwise>
                     <a href="ListarClientesServlet" class="btn btn-primary px-4 me-2">

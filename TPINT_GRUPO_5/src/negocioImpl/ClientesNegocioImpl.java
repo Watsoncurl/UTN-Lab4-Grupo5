@@ -30,6 +30,16 @@ public class ClientesNegocioImpl implements ClientesNegocio {
 	public List<Cliente> listarTodos() {
 		return clienteDao.obtenerTodos();
 	}
+	
+    @Override
+    public List<Cliente> listarPaginados(int inicio, int cantidad) {
+        return clienteDao.listarPaginados(inicio, cantidad);
+    }
+    
+    @Override
+    public int contarTotalClientes() {
+        return clienteDao.contar();
+    }
 
 	@Override
 	public Cliente obtenerPorId(int id) {
@@ -39,8 +49,7 @@ public class ClientesNegocioImpl implements ClientesNegocio {
 
 	@Override
 	public boolean crear(Cliente cliente) {
-		// TODO Auto-generated method stub
-		return false;
+		return clienteDao.insertar(cliente);
 	}
 
 	@Override

@@ -96,8 +96,44 @@ public class ClientesDaoImpl implements ClienteDao {
 
 	@Override
 	public boolean insertar(Cliente cliente) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		String sql = "INSERT INTO Clientes (dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, email, telefono, estado) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+
+    try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        ps.setString(1, cliente.getDni());
+        ps.setString(2, cliente.getCuil());
+        ps.setString(3, cliente.getNombre());
+        ps.setString(4, cliente.getApellido());
+        ps.setString(5, cliente.getSexo());
+        ps.setString(6, cliente.getNacionalidad());
+        ps.setString(7, cliente.getFechaNac());
+        ps.setString(8, cliente.getDireccion());
+        ps.setString(9, cliente.getLocalidad());
+        ps.setString(10, cliente.getProvincia());
+        ps.setString(11, cliente.getEmail());
+        ps.setString(12, cliente.getTelefono());
+        ps.setBoolean(13, cliente.isEstado());
+
+        int filasAfectadas = ps.executeUpdate();
+
+        if (filasAfectadas > 0) {
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    cliente.setIdCliente(rs.getInt(1));
+                    System.out.println("Cliente insertado con ID: " + cliente.getIdCliente());
+                    conexion.commit();
+                    return true;
+                }
+            }
+        }
+        return false;
+    } catch (SQLException e) {
+        System.err.println("Error al insertar cliente: " + e.getMessage());
+        e.printStackTrace();
+        return false;
+    }
 	}
 
 	@Override
@@ -145,4 +181,46 @@ public class ClientesDaoImpl implements ClienteDao {
 			return false;
 		}
 	}
+
+	@Override
+	public List<Cliente> listarPaginados(int inicio, int cantidad) {
+		List<Cliente> listaClientes = new ArrayList<>();
+        String sql = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, "
+                   + "fecha_nacimiento, direccion, localidad, provincia, email, telefono, estado "
+                   + "FROM Clientes ORDER BY apellido, nombre LIMIT ?, ?";
+        
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, inicio);
+            ps.setInt(2, cantidad);
+            
+            try (ResultSet resultados = ps.executeQuery()) {
+                while (resultados.next()) {
+                    listaClientes.add(mapearCliente(resultados));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar clientes paginados: " + e.getMessage());
+        }
+        return listaClientes;
+	}
+
+	@Override
+	public int contar() {
+		String sql = "SELECT COUNT(*) AS total FROM Clientes";
+        return ejecutarConsultaContador(sql);
+	}
+	
+	// Método auxiliar para ejecutar consultas de conteo
+    private int ejecutarConsultaContador(String sql) {
+        int total = 0;
+        try (Statement stmt = conexion.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al contar registros: " + e.getMessage());
+        }
+        return total;
+    }
 }

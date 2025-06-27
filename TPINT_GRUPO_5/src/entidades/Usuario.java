@@ -1,66 +1,81 @@
 package entidades;
 
 public class Usuario {
-	
+
 	private int IdUsuario;
-	private int IdCliente;
-	private int IdTipoUsuario;
+	private Cliente Cliente;
+	private TiposUsuario TipoUsuario;
 	private String Usuario;
 	private String Password;
-	private int Estado;
-	
-	
-	public Usuario() {};
-	
-	
-	
-	public Usuario(int idUsuario, int idCliente, int idTipoUsuario, String usuario, String password, int estado) {
+	private boolean Estado;
+
+	public Usuario() {
+	};
+
+	public Usuario(int idUsuario, Cliente cliente, TiposUsuario tipoUsuario, String usuario, String password,
+			boolean estado) {
 		super();
 		IdUsuario = idUsuario;
-		IdCliente = idCliente;
-		IdTipoUsuario = idTipoUsuario;
+		Cliente = cliente;
+		TipoUsuario = tipoUsuario;
 		Usuario = usuario;
 		Password = password;
 		Estado = estado;
 	}
-
-
 
 	public int getIdUsuario() {
 		return IdUsuario;
 	}
+
 	public void setIdUsuario(int idUsuario) {
 		IdUsuario = idUsuario;
 	}
-	public int getIdCliente() {
-		return IdCliente;
+
+	public Cliente getCliente() {
+		return Cliente;
 	}
-	public void setIdCliente(int idCliente) {
-		IdCliente = idCliente;
+
+	public void setCliente(Cliente cliente) {
+		Cliente = cliente;
 	}
-	public int getIdTipoUsuario() {
-		return IdTipoUsuario;
+
+	public TiposUsuario getTipoUsuario() {
+		return TipoUsuario;
 	}
-	public void setIdTipoUsuario(int idTipoUsuario) {
-		IdTipoUsuario = idTipoUsuario;
+
+	public void setTipoUsuario(TiposUsuario tipoUsuario) {
+		TipoUsuario = tipoUsuario;
 	}
+
 	public String getUsuario() {
 		return Usuario;
 	}
+
 	public void setUsuario(String usuario) {
 		Usuario = usuario;
 	}
+
 	public String getPassword() {
 		return Password;
 	}
+
 	public void setPassword(String password) {
 		Password = password;
 	}
-	public int getEstado() {
+
+	public boolean getEstado() {
 		return Estado;
 	}
-	public void setEstado(int estado) {
+
+	public void setEstado(boolean estado) {
 		Estado = estado;
-	}	
+	}
+	 @Override
+	    public String toString() {
+	        return "Usuario [IdUsuario=" + IdUsuario +
+	               ", Cliente=" + (Cliente != null ? Cliente.getIdCliente() : "NULL") + 
+	               ", TipoUsuario=" + (TipoUsuario != null ? TipoUsuario.getIdTipoUsuario() : "NULL") +
+	               ", Usuario=" + Usuario + ", Estado=" + Estado + "]";
+	    }
 
 }
