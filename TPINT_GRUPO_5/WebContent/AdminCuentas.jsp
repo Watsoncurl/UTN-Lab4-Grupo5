@@ -30,7 +30,6 @@
           <option selected>Todos los estados</option>
           <option>Activas</option>
           <option>Inactivas</option>
-          <option>Bloqueadas</option>
         </select>
       </div>
       <div class="col-md-2">
