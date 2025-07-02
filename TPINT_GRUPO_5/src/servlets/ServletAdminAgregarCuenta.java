@@ -7,44 +7,30 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import datosImpl.ClientesDaoImpl;
-import datosImpl.Conexion;
-import entidades.Cliente;
-import negocioImpl.ClientesNegocioImpl;
-import negocioImpl.CuentasNegocioImpl;
 import entidades.Cuentas;
-import entidades.tipo_cuenta;
+import negocioImpl.CuentasNegocioImpl;
 
-/**
- * Servlet implementation class ServletAdminAgregarCuenta
- */
 @WebServlet("/ServletAdminAgregarCuenta")
 public class ServletAdminAgregarCuenta extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor. 
-     */
+
     public ServletAdminAgregarCuenta() {
-        // TODO Auto-generated constructor stub
+        
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("btnCrearCuenta")!= null) {
-			/// Parametros de la pagina web
+	
 			int idCliente = Integer.parseInt(request.getParameter("id_cliente"));
-			String idTipoCuenta = Integer.parseInt(request.getParameter("id_tipo_cuenta"));
+			String idTipoCuenta = (request.getParameter("id_tipo_cuenta"));
 			String nroCuenta = request.getParameter("nro_cuenta");
 			String cbu = request.getParameter("cbu");
 			

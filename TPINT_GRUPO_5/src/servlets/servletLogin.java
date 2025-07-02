@@ -13,7 +13,10 @@ import datosImpl.Conexion;
 @WebServlet("/LoginServlet")
 public class servletLogin extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	private static final long serialVersionUID = 1L;
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String usuario = request.getParameter("usuario");
         String contrasena = request.getParameter("contrasena");
 

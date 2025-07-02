@@ -19,7 +19,6 @@
             Nadia Hospitaleche, Iván Ignacio Lecumberry, Hernán Darío Molina, 
             Lucía Griselda Monges, Facundo Ezequiel Romano, Nicolás Marcelo Romero
           </span>
-        </p>
       </div>
     </div>
   </div>

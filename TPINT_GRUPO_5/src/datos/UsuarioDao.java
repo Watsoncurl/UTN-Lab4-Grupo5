@@ -1,5 +1,5 @@
 package datos;
-import java.util.List;
+
 
 import entidades.Usuario;
 public interface UsuarioDao {

@@ -39,7 +39,7 @@
 				</select>
 			</div>
 			<div class="col-md-2">
-				<a href="AgregarCliente.jsp" class="btn btn-success w-100"> <i
+				<a href="AgregarCliente" class="btn btn-success w-100"><i
 					class="bi bi-plus-circle"></i> Nuevo
 				</a>
 			</div>
@@ -85,42 +85,38 @@
 							<td><c:out value="${cliente.apellido}, ${cliente.nombre}" /></td>
 							<td><c:out value="${cliente.email}" /></td>
 							<td><c:out value="${cliente.telefono}" /></td>
-							<td><c:out value="${cliente.localidad}" /></td>
-							<td class="text-center align-middle"><c:choose>
+							<td><c:out value="${cliente.localidadNombre}" /></td> <!-- Corregido -->
+							<td class="text-center align-middle">
+								<c:choose>
 									<c:when test="${cliente.estado}">
 										<span class="badge bg-success">Activo</span>
 									</c:when>
 									<c:otherwise>
 										<span class="badge bg-danger">Inactivo</span>
 									</c:otherwise>
-								</c:choose></td>
-							<td class="text-end">
-							  <div class="btn-group" role="group">
-							    <!-- Botón Ver (modo visualización) -->
-							    <a href="${pageContext.request.contextPath}/ServletEditarCliente?id=${cliente.idCliente}&modo=ver"
-							       class="btn btn-sm btn-outline-primary">
-							      <i class="bi bi-eye"></i>
-							    </a>
-							    
-							    <!-- Botón Editar (modo edición) -->
-							    <a href="${pageContext.request.contextPath}/ServletEditarCliente?id=${cliente.idCliente}&modo=editar"
-							       class="btn btn-sm btn-outline-secondary">
-							      <i class="bi bi-pencil"></i>
-							    </a>
-							
-							    <!-- Formulario para eliminar -->
-							    <form action="${pageContext.request.contextPath}/ListarClientesServlet"
-							          method="post" style="display: inline;">
-							      <input type="hidden" name="id" value="${cliente.idCliente}">
-							      <input type="hidden" name="accion" value="eliminar">
-							      <button type="submit" class="btn btn-sm btn-outline-danger"
-							              onclick="return confirm('¿Está seguro que desea eliminar permanentemente este cliente?');">
-							        <i class="bi bi-trash"></i>
-							      </button>
-							    </form>
-							  </div>
+								</c:choose>
 							</td>
-
+							<td class="text-end">
+								<div class="btn-group" role="group">
+									<a href="${pageContext.request.contextPath}/ServletEditarCliente?id=${cliente.idCliente}&modo=ver"
+									   class="btn btn-sm btn-outline-primary">
+									  <i class="bi bi-eye"></i>
+									</a>
+									<a href="${pageContext.request.contextPath}/ServletEditarCliente?id=${cliente.idCliente}&modo=editar"
+									   class="btn btn-sm btn-outline-secondary">
+									  <i class="bi bi-pencil"></i>
+									</a>
+									<form action="${pageContext.request.contextPath}/ListarClientesServlet"
+										  method="post" style="display: inline;">
+									  <input type="hidden" name="id" value="${cliente.idCliente}">
+									  <input type="hidden" name="accion" value="eliminar">
+									  <button type="submit" class="btn btn-sm btn-outline-danger"
+											  onclick="return confirm('¿Está seguro que desea eliminar permanentemente este cliente?');">
+										<i class="bi bi-trash"></i>
+									  </button>
+									</form>
+								</div>
+							</td>
 						</tr>
 					</c:forEach>
 				</tbody>

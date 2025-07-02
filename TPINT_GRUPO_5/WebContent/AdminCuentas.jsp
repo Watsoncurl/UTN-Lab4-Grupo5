@@ -102,14 +102,12 @@
                   </a>
                   
                   <%-- Formulario para eliminar --%>
-                  <form action="${pageContext.request.contextPath}/ListarCuentasServlet"
-                        method="post" style="display: inline;">
-                    <input type="hidden" name="nroCuenta" value="${cuenta.nro_cuenta}">
-                    <input type="hidden" name="accion" value="eliminar">
-                    <button type="submit" class="btn btn-sm btn-outline-danger"
-                            onclick="return confirm('¿Está seguro que desea eliminar permanentemente esta cuenta?');">
-                      <i class="bi bi-trash"></i>
-                    </button>
+				  <form action="${pageContext.request.contextPath}/EliminarCuentaServlet" method="post" style="display:inline;">
+				      <input type="hidden" name="nro_cuenta" value="${cuenta.nro_cuenta}" />
+				      <button type="submit" class="btn btn-sm btn-outline-danger"
+				              onclick="return confirm('¿Está seguro que desea eliminar esta cuenta?');">
+				        <i class="bi bi-trash"></i>
+				      </button>
                   </form>
                 </div>
               </td>

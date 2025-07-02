@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
@@ -28,9 +29,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person"></i></span>
                                     <input type="text" class="form-control" id="nombre" name="Nombre" required placeholder="Nombre...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese el nombre
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese el nombre</div>
                                 </div>
                             </div>
                             
@@ -39,9 +38,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person"></i></span>
                                     <input type="text" class="form-control" id="apellido" name="Apellido" required placeholder="Apellido...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese el apellido
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese el apellido</div>
                                 </div>
                             </div>
                             
@@ -51,9 +48,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
                                     <input type="text" class="form-control" id="dni" name="DNI" required placeholder="DNI...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese el DNI
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese el DNI</div>
                                 </div>
                             </div>
                             
@@ -62,9 +57,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
                                     <input type="text" class="form-control" id="cuil" name="CUIL" required placeholder="Cuil...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese el CUIL
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese el CUIL</div>
                                 </div>
                             </div>
                             
@@ -73,9 +66,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-telephone"></i></span>
                                     <input type="text" class="form-control" id="telefono" name="Telefono" required placeholder="Telefono...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese el teléfono
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese el teléfono</div>
                                 </div>
                             </div>
                             
@@ -85,9 +76,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                                     <input type="email" class="form-control" id="email" name="Email" required placeholder="Email...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese un email válido
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese un email válido</div>
                                 </div>
                             </div>
                             
@@ -96,9 +85,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                     <input type="date" class="form-control" id="fechaNacimiento" name="FechaNac" required>
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese la fecha de nacimiento
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese la fecha de nacimiento</div>
                                 </div>
                             </div>
                             
@@ -108,9 +95,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-globe"></i></span>
                                     <input type="text" class="form-control" id="nacionalidad" name="Nacionalidad" required placeholder="Nacionalidad...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese la nacionalidad
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese la nacionalidad</div>
                                 </div>
                             </div>
                             
@@ -122,32 +107,27 @@
                                     <option value="F">Femenino</option>
                                     <option value="O">Otro</option>
                                 </select>
-                                <div class="invalid-feedback">
-                                    Por favor seleccione el sexo
-                                </div>
+                                <div class="invalid-feedback">Por favor seleccione el sexo</div>
                             </div>
                             
                             <div class="col-md-3">
                                 <label for="provincia" class="form-label">Provincia</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                    <input type="text" class="form-control" id="provincia" name="Provincia" required placeholder="Provincia...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese la provincia
-                                    </div>
-                                </div>
+                                <select class="form-select" id="provincia" name="Provincia" required>
+                                    <option value="">Seleccione una provincia...</option>
+                                    <c:forEach var="prov" items="${provincias}">
+                                        <option value="${prov.idProvincia}">${prov.nombre}</option>
+                                    </c:forEach>
+                                </select>
+                                <div class="invalid-feedback">Por favor seleccione la provincia</div>
                             </div>
                             
-                            <!-- Quinta fila -->
+                            
                             <div class="col-md-6">
                                 <label for="localidad" class="form-label">Localidad</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                    <input type="text" class="form-control" id="localidad" name="Localidad" required placeholder="Localidad...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese la localidad
-                                    </div>
-                                </div>
+                                <select class="form-select" id="localidad" name="Localidad" required>
+                                    <option value="">Seleccione una localidad...</option>
+                                </select>
+                                <div class="invalid-feedback">Por favor seleccione la localidad</div>
                             </div>
                             
                             <div class="col-md-6">
@@ -155,9 +135,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-house"></i></span>
                                     <input type="text" class="form-control" id="direccion" name="Direccion" required placeholder="Direccion...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese la dirección
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese la dirección</div>
                                 </div>
                             </div>
                             
@@ -167,9 +145,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
                                     <input type="text" class="form-control" id="usuario" name="Usuario" required placeholder="Usuario...">
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese el usuario
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese el usuario</div>
                                 </div>
                             </div>
                             
@@ -181,9 +157,7 @@
                                     <button class="btn btn-outline-secondary toggle-password" type="button">
                                         <i class="bi bi-eye"></i>
                                     </button>
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese la contraseña
-                                    </div>
+                                    <div class="invalid-feedback">Por favor ingrese la contraseña</div>
                                 </div>
                             </div>
                             
@@ -204,7 +178,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Toggle para mostrar/ocultar contraseña
+
         document.querySelector('.toggle-password').addEventListener('click', function() {
             const passwordField = document.getElementById('contrasenia');
             const icon = this.querySelector('i');
@@ -217,7 +191,7 @@
             }
         });
         
-        // Validación de formulario
+       
         (function() {
             'use strict'
             const forms = document.querySelectorAll('.needs-validation')
@@ -231,6 +205,31 @@
                 }, false)
             })
         })()
+
+     
+        document.getElementById('provincia').addEventListener('change', function() {
+            const idProvincia = this.value;
+            const localidadSelect = document.getElementById('localidad');
+
+        
+            localidadSelect.innerHTML = '<option value="">Seleccione una localidad...</option>';
+
+            if (!idProvincia) return; 
+
+            fetch('${pageContext.request.contextPath}/LocalidadesPorProvincia?idProvincia=' + idProvincia)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(localidad => {
+                        const option = document.createElement('option');
+                        option.value = localidad.idLocalidad;
+                        option.text = localidad.nombre;
+                        localidadSelect.add(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar localidades:', error);
+                });
+        });
 	</script>
 </body>
 </html>

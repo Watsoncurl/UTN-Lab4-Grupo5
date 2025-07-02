@@ -1,77 +1,65 @@
 package servlets;
 
 import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import datosImpl.Conexion;
-import entidades.Cuentas; // Importa la clase Cuentas
+
+import entidades.Cuentas;
+import negocio.CuentasNegocio;
+import negocioImpl.CuentasNegocioImpl;
 
 @WebServlet("/ListarCuentasServlet")
 public class ServletCuenta extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Cuentas> listaCuentas = new ArrayList<>();
-        Connection conexion = null;
-        Statement consulta = null;
-        ResultSet resultados = null;
+
+	private static final long serialVersionUID = 1L;
+	private static final int REGISTROS_POR_PAGINA = 7;
+    private CuentasNegocio cuentasNegocio;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        cuentasNegocio = new CuentasNegocioImpl();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-            Conexion connect = Conexion.getConexion();
-            conexion = connect.getSQLConexion();
-            System.out.println("Conexiï¿½n a la base de datos: " + (conexion != null ? "Exitosa" : "Fallida"));
+            // 1. Obtener número de página desde el request
+            int pagina = obtenerPagina(request);
 
-            String sql = "SELECT " +
-                    "c.nro_cuenta, " +
-                    "CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, " +
-                    "t.descripcion AS tipo_cuenta, " +
-                    "c.saldo, " +
-                    "c.estado " +
-                    "FROM Cuentas c " +
-                    "INNER JOIN Clientes cl ON cl.id_cliente = c.id_cliente " +
-                    "INNER JOIN Tipos_Cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta";
+            // 2. Calcular índice de inicio para la consulta
+            int inicio = (pagina - 1) * REGISTROS_POR_PAGINA;
 
-            consulta = conexion.createStatement();
-            resultados = consulta.executeQuery(sql);
-            System.out.println("Consulta SQL ejecutada: " + sql);
+            // 3. Obtener lista paginada de cuentas
+            List<Cuentas> listaCuentas = cuentasNegocio.listarPaginadas(inicio, REGISTROS_POR_PAGINA);
 
-            int contador = 0;
-            while (resultados.next()) {
-                Cuentas cuenta = new Cuentas();
-                cuenta.setNro_cuenta(resultados.getString("nro_cuenta"));
-                cuenta.setCliente(resultados.getString("cliente")); 
-                cuenta.setTipo_cuenta(resultados.getString("tipo_cuenta"));  
-                cuenta.setSaldo(resultados.getDouble("saldo")); 
-                cuenta.setEstado(resultados.getBoolean("estado"));
+            // 4. Calcular total de páginas
+            int totalCuentas = cuentasNegocio.contarTotalCuentas();
+            int totalPaginas = (int) Math.ceil((double) totalCuentas / REGISTROS_POR_PAGINA);
 
-                listaCuentas.add(cuenta);
-                contador++;
-
-                System.out.println("Cuenta creada: " + cuenta); 
-            }
-            System.out.println("Nï¿½mero de cuentas encontradas: " + contador);
+            // 5. Establecer atributos
             request.setAttribute("listaCuentas", listaCuentas);
-            request.getRequestDispatcher("AdminCuentas.jsp").forward(request, response);
-
-        } catch (SQLException e) {
-            System.err.println("Error al listar cuentas: " + e.getMessage());
-            System.err.println("SQL State: " + e.getSQLState());
-            System.err.println("Error Code: " + e.getErrorCode());
+            request.setAttribute("paginaActual", pagina);
+            request.setAttribute("totalPaginas", totalPaginas);
+        } catch (Exception e) {
+            e.printStackTrace();
             request.setAttribute("error", "Error al listar cuentas: " + e.getMessage());
-            request.getRequestDispatcher("AdminCuentas.jsp").forward(request, response);
-        } finally {
-            try {
-                if (resultados != null) resultados.close();
-                if (consulta != null) consulta.close();
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar recursos: " + e.getMessage());
-            }
-            if (conexion != null) {
-                Conexion.getConexion().cerrarConexion();
-            }
+        }
+
+        // 6. Redirigir a la vista
+        request.getRequestDispatcher("AdminCuentas.jsp").forward(request, response);
+    }
+
+    private int obtenerPagina(HttpServletRequest request) {
+        String paginaParam = request.getParameter("pagina");
+        try {
+            return paginaParam != null ? Integer.parseInt(paginaParam) : 1;
+        } catch (NumberFormatException e) {
+            return 1;
         }
     }
 }

@@ -1,18 +1,15 @@
 package negocioImpl;
 
+import java.util.List;
 import entidades.Cuentas;
 import negocio.CuentasNegocio;
 import datos.CuentasDao;
 import datosImpl.CuentasDaoImpl;
 
+public class CuentasNegocioImpl implements CuentasNegocio {
 
-public class CuentasNegocioImpl implements CuentasNegocio{
-	private CuentasDao cuentasDao;
-    
-    public CuentasNegocioImpl() {
-        this.cuentasDao = new CuentasDaoImpl();
-    }
-	
+    private CuentasDao cuentasDao = new CuentasDaoImpl();
+
     @Override
     public boolean crearCuenta(Cuentas cuenta) {
         if (cuentasDao.existeNroCuenta(cuenta.getNro_cuenta())) {
@@ -28,7 +25,7 @@ public class CuentasNegocioImpl implements CuentasNegocio{
         }
         return cuentasDao.crearCuenta(cuenta);
     }
-
+    
     @Override
     public Cuentas obtenerPorNroCuenta(String nroCuenta) {
         return cuentasDao.obtenerPorNroCuenta(nroCuenta);
@@ -52,4 +49,13 @@ public class CuentasNegocioImpl implements CuentasNegocio{
         return cuentasDao.actualizarPorNroCuenta(cuenta);
     }
 
+    @Override
+    public List<Cuentas> listarPaginadas(int inicio, int cantidad) {
+        return cuentasDao.listarPaginadas(inicio, cantidad);
+    }
+
+    @Override
+    public int contarTotalCuentas() {
+        return cuentasDao.contarTotalCuentas();
+    }
 }

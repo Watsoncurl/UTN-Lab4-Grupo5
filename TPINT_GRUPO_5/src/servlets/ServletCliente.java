@@ -13,7 +13,9 @@ import negocioImpl.ClientesNegocioImpl;
 
 @WebServlet("/ListarClientesServlet")
 public class ServletCliente extends HttpServlet {
-    private static final int REGISTROS_POR_PAGINA = 7;
+
+	private static final long serialVersionUID = 1L;
+	private static final int REGISTROS_POR_PAGINA = 7;
     private ClientesNegocio clienteNegocio;
     
     @Override

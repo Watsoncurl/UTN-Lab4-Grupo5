@@ -1,7 +1,6 @@
 package negocio;
 
 import entidades.Usuario;
-import java.util.List;
 
 public interface UsuarioNegocio {
     public boolean agregarUsuario(Usuario usuario);

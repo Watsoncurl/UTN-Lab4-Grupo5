@@ -35,7 +35,7 @@
                 <a class="nav-link <%= "clientes".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/ListarClientesServlet">Clientes</a>
               </li>
               <li class="nav-item px-2">
-                <a class="nav-link <%= "cuentas".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/AdminCuentas.jsp">Cuentas</a>
+                <a class="nav-link <%= "cuentas".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/ListarCuentasServlet">Cuentas</a>
               </li>
               <li class="nav-item px-2">
                 <a class="nav-link <%= "prestamos".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/AdminPrestamos.jsp">Préstamos</a>
