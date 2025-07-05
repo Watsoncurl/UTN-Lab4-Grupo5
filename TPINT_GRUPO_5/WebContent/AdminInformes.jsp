@@ -1,36 +1,24 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="java.util.*,java.text.DecimalFormat" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="java.util.*,java.text.DecimalFormat,datosImpl.MockDataProvider" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 
-
 <%
-  Map<String, Integer> cantidadClientesPorSegmento = new HashMap<>();
-  cantidadClientesPorSegmento.put("Básico", 120);
-  cantidadClientesPorSegmento.put("Plus", 45);
-  cantidadClientesPorSegmento.put("Premium", 15);
+  Map<String, Integer> cantidadClientesPorSegmento = MockDataProvider.getClientesPorSegmento();
+  Map<String, Double> montoTotalPorSegmento = MockDataProvider.getMontosPorSegmento();
+  Map<String, Double> porcentajeSaldoPorSegmento = MockDataProvider.calcularPorcentajeSaldo(montoTotalPorSegmento);
 
-  Map<String, Double> montoTotalPorSegmento = new HashMap<>();
-  montoTotalPorSegmento.put("Básico", 3200000.0);
-  montoTotalPorSegmento.put("Plus", 18500000.0);
-  montoTotalPorSegmento.put("Premium", 34500000.0);
-
-  // Cálculo del total
-  double totalBanco = 0;
-  for (double v : montoTotalPorSegmento.values()) totalBanco += v;
-
-  Map<String, Double> porcentajeSaldoPorSegmento = new HashMap<>();
-  for (Map.Entry<String, Double> entry : montoTotalPorSegmento.entrySet()) {
-    double porcentaje = (entry.getValue() / totalBanco) * 100;
-    porcentajeSaldoPorSegmento.put(entry.getKey(), Math.round(porcentaje * 10.0) / 10.0); // 1 decimal
-  }
-
-  // Fecha de reporte ficticia
   String fechaReporte = "01/07/2025";
-
-  // Guardamos en atributos de request para pasar al tag
   request.setAttribute("cantidadClientesPorSegmento", cantidadClientesPorSegmento);
   request.setAttribute("montoTotalPorSegmento", montoTotalPorSegmento);
   request.setAttribute("porcentajeSaldoPorSegmento", porcentajeSaldoPorSegmento);
   request.setAttribute("fechaReporte", fechaReporte);
+
+  // Datos del informe de crecimiento
+  request.setAttribute("nuevosClientesPorFecha", MockDataProvider.getNuevosClientesPorFecha());
+  request.setAttribute("nuevasCuentasPorFecha", MockDataProvider.getNuevasCuentasPorFecha());
+  request.setAttribute("cuentasPorTipo", MockDataProvider.getCuentasPorTipo());
+  request.setAttribute("tasaCrecimiento", MockDataProvider.getTasaCrecimiento());
+  request.setAttribute("fechaInicio", "01/06/2025");
+  request.setAttribute("fechaFin", "30/06/2025");
 %>
 
 <!DOCTYPE html>
@@ -66,6 +54,25 @@
 			  porcentajeSaldoPorSegmento="${porcentajeSaldoPorSegmento}" />
 		  </div>
 		</div>
+		
+		<div class="row mt-4">
+		  <div class="col-12">
+		    <my:customerGrowthReport
+			  titulo="Crecimiento y Adquisición de Clientes"
+			  icono="bi bi-person-plus-fill"
+			  colorHeader="bg-success"
+			  fechaInicio="${fechaInicio}"
+			  fechaFin="${fechaFin}"
+			  nuevosClientesPorFecha="${nuevosClientesPorFecha}"
+			  nuevasCuentasPorFecha="${nuevasCuentasPorFecha}"
+			  cuentasPorTipo="${cuentasPorTipo}"
+			  tasaCrecimiento="${tasaCrecimiento}"
+			  actualizacion="01/07/2025"
+			/>
+
+		  </div>
+		</div>
+				
 		    	
       <!-- Informe de Clientes -->
       <div class="col-md-6">
