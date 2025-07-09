@@ -174,6 +174,7 @@ public class CuentasDaoImpl implements CuentasDao {
 	
 	@Override
     public Cuentas obtenerPorNroCuenta(String nroCuenta) {
+
         if (nroCuenta == null || nroCuenta.trim().isEmpty()) {
             return null;
         }
@@ -195,13 +196,17 @@ public class CuentasDaoImpl implements CuentasDao {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapearCuenta(rs);
+                    
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error al buscar cuenta por número: " + e.getMessage());
+            System.err.println("Error al buscar cuenta por numero: " + e.getMessage());
             e.printStackTrace();
+            
         }
+        
         return null;
+        
     }
 
     @Override
@@ -277,12 +282,19 @@ public class CuentasDaoImpl implements CuentasDao {
 	
 	@Override
 	public boolean eliminarCuenta(String nroCuenta) {
-	    String sql = "DELETE FROM cuentas WHERE nro_cuenta = ?";
+	    String sql = "UPDATE cuentas SET estado = 0 WHERE nro_cuenta = ?";
 	    try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
 	        stmt.setString(1, nroCuenta);
-	        return stmt.executeUpdate() > 0;
+	        int filasAfectadas = stmt.executeUpdate();
+	        conexion.commit();
+	        return filasAfectadas > 0;
 	    } catch (SQLException e) {
 	        e.printStackTrace();
+	        try {
+	            conexion.rollback();
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
 	    }
 	    return false;
 	}
@@ -300,5 +312,157 @@ public class CuentasDaoImpl implements CuentasDao {
         cuenta.setCliente(rs.getString("cliente"));
         return cuenta;
     }
+	
+	public List<Cuentas> obtenerCuentasPorCliente(int idCliente){
+		List<Cuentas> lista = new ArrayList<>();
+		 String sql = "SELECT c.nro_cuenta, CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, " +
+                 "t.descripcion AS tipo_cuenta, c.saldo, c.estado " +
+                 "FROM cuentas c " +
+                 "INNER JOIN clientes cl ON cl.id_cliente = c.id_cliente " +
+                 "INNER JOIN tipos_cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta " +
+                 "WHERE c.id_cliente = ? AND c.estado = 1";
+
+    try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+        ps.setInt(1, idCliente);
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Cuentas cuenta = new Cuentas();
+            cuenta.setNro_cuenta(rs.getString("nro_cuenta"));
+            cuenta.setCliente(rs.getString("cliente"));
+            cuenta.setTipo_cuenta(rs.getString("tipo_cuenta"));
+            cuenta.setSaldo(rs.getDouble("saldo"));
+            cuenta.setEstado(rs.getBoolean("estado"));
+            lista.add(cuenta);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    for (Cuentas c : lista) {
+        System.out.println("DEBUG - Cuenta: " + c.getNro_cuenta() + " - Saldo: " + c.getSaldo());
+    }
+    return lista;
+	}
+	
+	@Override
+	public List<Cuentas> listarPaginadasFiltradas(int inicio, int cantidad, String busqueda, String tipoCuenta, Boolean estado) {
+	    List<Cuentas> lista = new ArrayList<>();
+	    StringBuilder sql = new StringBuilder();
+	    sql.append("SELECT c.nro_cuenta, CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, ")
+	       .append("t.descripcion AS tipo_cuenta, c.saldo, c.estado ")
+	       .append("FROM cuentas c ")
+	       .append("INNER JOIN clientes cl ON cl.id_cliente = c.id_cliente ")
+	       .append("INNER JOIN tipos_cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta ")
+	       .append("WHERE 1=1 ");
+
+	    if (busqueda != null && !busqueda.trim().isEmpty()) {
+	        sql.append("AND (c.nro_cuenta LIKE ? OR c.cbu LIKE ? OR CONCAT(cl.nombre, ' ', cl.apellido) LIKE ?) ");
+	    }
+	    if (tipoCuenta != null && !tipoCuenta.trim().isEmpty()) {
+	        sql.append("AND t.descripcion = ? ");
+	    }
+	    if (estado != null) {
+	        sql.append("AND c.estado = ? ");
+	    }
+
+	    sql.append("LIMIT ? OFFSET ?");
+
+	    try (PreparedStatement ps = conexion.prepareStatement(sql.toString())) {
+	        int paramIndex = 1;
+
+	        if (busqueda != null && !busqueda.trim().isEmpty()) {
+	            String likeParam = "%" + busqueda + "%";
+	            ps.setString(paramIndex++, likeParam);
+	            ps.setString(paramIndex++, likeParam);
+	            ps.setString(paramIndex++, likeParam);
+	        }
+	        if (tipoCuenta != null && !tipoCuenta.trim().isEmpty()) {
+	            ps.setString(paramIndex++, tipoCuenta);
+	        }
+	        if (estado != null) {
+	            ps.setBoolean(paramIndex++, estado);
+	        }
+
+	        ps.setInt(paramIndex++, cantidad);
+	        ps.setInt(paramIndex, inicio);
+
+	        ResultSet rs = ps.executeQuery();
+	        while (rs.next()) {
+	            Cuentas cuenta = new Cuentas();
+	            cuenta.setNro_cuenta(rs.getString("nro_cuenta"));
+	            cuenta.setCliente(rs.getString("cliente"));
+	            cuenta.setTipo_cuenta(rs.getString("tipo_cuenta"));
+	            cuenta.setSaldo(rs.getDouble("saldo"));
+	            cuenta.setEstado(rs.getBoolean("estado"));
+	            lista.add(cuenta);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return lista;
+	}
+
+	@Override
+	public int contarTotalCuentasFiltradas(String busqueda, String tipoCuenta, Boolean estado) {
+	    StringBuilder sql = new StringBuilder();
+	    sql.append("SELECT COUNT(*) AS total ")
+	       .append("FROM cuentas c ")
+	       .append("INNER JOIN clientes cl ON cl.id_cliente = c.id_cliente ")
+	       .append("INNER JOIN tipos_cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta ")
+	       .append("WHERE 1=1 ");
+
+	    if (busqueda != null && !busqueda.trim().isEmpty()) {
+	        sql.append("AND (c.nro_cuenta LIKE ? OR c.cbu LIKE ? OR CONCAT(cl.nombre, ' ', cl.apellido) LIKE ?) ");
+	    }
+	    if (tipoCuenta != null && !tipoCuenta.trim().isEmpty()) {
+	        sql.append("AND t.descripcion = ? ");
+	    }
+	    if (estado != null) {
+	        sql.append("AND c.estado = ? ");
+	    }
+
+	    try (PreparedStatement ps = conexion.prepareStatement(sql.toString())) {
+	        int paramIndex = 1;
+
+	        if (busqueda != null && !busqueda.trim().isEmpty()) {
+	            String likeParam = "%" + busqueda + "%";
+	            ps.setString(paramIndex++, likeParam);
+	            ps.setString(paramIndex++, likeParam);
+	            ps.setString(paramIndex++, likeParam);
+	        }
+	        if (tipoCuenta != null && !tipoCuenta.trim().isEmpty()) {
+	            ps.setString(paramIndex++, tipoCuenta);
+	        }
+	        if (estado != null) {
+	            ps.setBoolean(paramIndex++, estado);
+	        }
+
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            return rs.getInt("total");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return 0;
+	}
+	@Override
+	public boolean activarCuentaPorNroCuenta(String nroCuenta) {
+	    String query = "UPDATE cuentas SET estado = 1 WHERE nro_cuenta = ?";
+	    try (PreparedStatement stmt = conexion.prepareStatement(query)) {
+	        stmt.setString(1, nroCuenta);
+	        int filasAfectadas = stmt.executeUpdate();
+	        conexion.commit();
+	        return filasAfectadas > 0;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        try {
+	            conexion.rollback();
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	        return false;
+	    }
+	}
 
 }

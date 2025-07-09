@@ -15,8 +15,8 @@ import negocioImpl.CuentasNegocioImpl;
 @WebServlet("/ListarCuentasServlet")
 public class ServletCuenta extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
-	private static final int REGISTROS_POR_PAGINA = 7;
+    private static final long serialVersionUID = 1L;
+    private static final int REGISTROS_POR_PAGINA = 7;
     private CuentasNegocio cuentasNegocio;
 
     @Override
@@ -28,29 +28,48 @@ public class ServletCuenta extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // 1. Obtener número de página desde el request
             int pagina = obtenerPagina(request);
-
-            // 2. Calcular índice de inicio para la consulta
             int inicio = (pagina - 1) * REGISTROS_POR_PAGINA;
 
-            // 3. Obtener lista paginada de cuentas
-            List<Cuentas> listaCuentas = cuentasNegocio.listarPaginadas(inicio, REGISTROS_POR_PAGINA);
+            String busqueda = request.getParameter("busqueda");
+            String tipoCuenta = request.getParameter("tipoCuenta");
+            String estadoParam = request.getParameter("estado");
 
-            // 4. Calcular total de páginas
-            int totalCuentas = cuentasNegocio.contarTotalCuentas();
+            Boolean estadoFiltro = null;
+            if ("Activas".equalsIgnoreCase(estadoParam)) {
+                estadoFiltro = true;
+            } else if ("Inactivas".equalsIgnoreCase(estadoParam)) {
+                estadoFiltro = false;
+            }
+            int totalCuentas = cuentasNegocio.contarTotalCuentasFiltradas(
+                    (busqueda != null && !busqueda.isEmpty()) ? busqueda : null,
+                    (tipoCuenta != null && !tipoCuenta.isEmpty() && !"Todos los tipos".equals(tipoCuenta)) ? tipoCuenta : null,
+                    estadoFiltro
+            );
+
             int totalPaginas = (int) Math.ceil((double) totalCuentas / REGISTROS_POR_PAGINA);
+            if (pagina < 1) pagina = 1;
+            if (pagina > totalPaginas && totalPaginas != 0) pagina = totalPaginas;
 
-            // 5. Establecer atributos
+            List<Cuentas> listaCuentas = cuentasNegocio.listarPaginadasFiltradas(
+                    inicio, REGISTROS_POR_PAGINA,
+                    (busqueda != null && !busqueda.isEmpty()) ? busqueda : null,
+                    (tipoCuenta != null && !tipoCuenta.isEmpty() && !"Todos los tipos".equals(tipoCuenta)) ? tipoCuenta : null,
+                    estadoFiltro
+            );
+
             request.setAttribute("listaCuentas", listaCuentas);
             request.setAttribute("paginaActual", pagina);
             request.setAttribute("totalPaginas", totalPaginas);
+            request.setAttribute("busqueda", busqueda);
+            request.setAttribute("tipoCuenta", tipoCuenta);
+            request.setAttribute("estadoFiltro", estadoParam);
+
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error al listar cuentas: " + e.getMessage());
         }
 
-        // 6. Redirigir a la vista
         request.getRequestDispatcher("AdminCuentas.jsp").forward(request, response);
     }
 

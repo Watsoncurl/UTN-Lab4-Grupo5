@@ -52,22 +52,17 @@ public class ServletEditarCliente extends HttpServlet {
                 return;
             }
 
-            // Cargar provincias para el select
             List<Provincia> provincias = provinciaNegocio.obtenerTodas();
             request.setAttribute("provincias", provincias);
 
-            // Obtener idProvincia desde el nombre de la provincia del cliente (si no tienes idProvincia ya seteado)
             int idProvincia = 0;
             if (cliente.getProvincia() != null && !cliente.getProvincia().isEmpty()) {
                 idProvincia = provinciaNegocio.obtenerIdPorNombre(cliente.getProvincia());
             }
-            cliente.setIdProvincia(idProvincia); // asignar idProvincia al cliente
-
-            // Cargar localidades según idProvincia
+            cliente.setIdProvincia(idProvincia); 
             List<Localidad> localidades = localidadNegocio.obtenerPorProvincia(idProvincia);
             request.setAttribute("localidades", localidades);
 
-            // Obtener nombre localidad para mostrar en modo lectura
             if (cliente.getIdLocalidad() != 0) {
                 Localidad loc = localidadNegocio.obtenerPorId(cliente.getIdLocalidad());
                 if (loc != null) {
@@ -75,7 +70,6 @@ public class ServletEditarCliente extends HttpServlet {
                 }
             }
 
-            // Obtener nombre provincia para mostrar en modo lectura
             if (cliente.getIdProvincia() > 0) {
                 String nombreProvincia = provinciaNegocio.obtenerNombrePorId(cliente.getIdProvincia());
                 cliente.setProvincia(nombreProvincia);
@@ -89,7 +83,7 @@ public class ServletEditarCliente extends HttpServlet {
             request.getRequestDispatcher("AdminEditarCliente.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            manejarError(request, response, "ID de cliente inválido");
+            manejarError(request, response, "ID de cliente invï¿½lido");
         } catch (Exception e) {
             manejarError(request, response, "Error al procesar la solicitud: " + e.getMessage());
         }
@@ -109,13 +103,11 @@ public class ServletEditarCliente extends HttpServlet {
         try {
             Cliente clienteActualizado = mapearClienteDesdeRequest(request);
 
-            // Obtener nombre provincia para guardar en clienteActualizado
             if (clienteActualizado.getIdProvincia() > 0) {
                 String nombreProvincia = provinciaNegocio.obtenerNombrePorId(clienteActualizado.getIdProvincia());
                 clienteActualizado.setProvincia(nombreProvincia);
             }
 
-            // Obtener nombre localidad para guardar en clienteActualizado
             if (clienteActualizado.getIdLocalidad() > 0) {
                 Localidad loc = localidadNegocio.obtenerPorId(clienteActualizado.getIdLocalidad());
                 if (loc != null) {
@@ -134,11 +126,9 @@ public class ServletEditarCliente extends HttpServlet {
                 request.setAttribute("cliente", clienteActualizado);
                 request.setAttribute("modo", "editar");
 
-                // Recargar provincias para que el select funcione al mostrar el error
                 List<Provincia> provincias = provinciaNegocio.obtenerTodas();
                 request.setAttribute("provincias", provincias);
 
-                // Recargar localidades para que el select funcione al mostrar el error
                 List<Localidad> localidades = localidadNegocio.obtenerPorProvincia(clienteActualizado.getIdProvincia());
                 request.setAttribute("localidades", localidades);
 

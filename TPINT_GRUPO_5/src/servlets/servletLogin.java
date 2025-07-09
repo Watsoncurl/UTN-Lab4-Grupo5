@@ -21,7 +21,7 @@ public class servletLogin extends HttpServlet {
         String contrasena = request.getParameter("contrasena");
 
         System.out.println("Usuario: " + usuario); // ***
-        System.out.println("Contraseï¿½a: " + contrasena); // ***
+        System.out.println("Contrase a: " + contrasena); // ***
 
         Connection conexion = null;
         PreparedStatement consulta = null;
@@ -33,11 +33,11 @@ public class servletLogin extends HttpServlet {
             conexion = connect.getSQLConexion();
 
             
-            String sql = "SELECT id_tipo_usuario FROM Usuarios WHERE usuario = ? AND contrasena = SHA2(?, 256) AND estado = TRUE";
+            String sql = "SELECT id_tipo_usuario, id_cliente FROM Usuarios WHERE usuario = ? AND contrasena = SHA2(?, 256) AND estado = TRUE";
             consulta = conexion.prepareStatement(sql);
             consulta.setString(1, usuario);
             consulta.setString(2, contrasena);
-
+            
       
             resultados = consulta.executeQuery();
 
@@ -48,29 +48,32 @@ public class servletLogin extends HttpServlet {
             if (usuarioEncontrado) {
                 int idTipoUsuario = resultados.getInt("id_tipo_usuario");
                 System.out.println("idTipoUsuario: " + idTipoUsuario); 
-
+                
                 
                 HttpSession session = request.getSession();
                 session.setAttribute("usuario", usuario); 
                 session.setAttribute("idTipoUsuario", idTipoUsuario); 
                 
-                
                 if (idTipoUsuario == 1) { 
                     response.sendRedirect("AdminDashboard.jsp"); 
                 } else {
                     response.sendRedirect("ClienteDashboard.jsp"); 
+                    int idCliente = resultados.getInt("id_cliente");
+                    System.out.println("idCliente: " + idCliente);
+                    session.setAttribute("idCliente", idCliente);
+                    
                 }
             } else {
                 
-                request.setAttribute("error", "Usuario o contraseÃ±a incorrectos.");
+                request.setAttribute("error", "Usuario o contraseña incorrectos.");
                 request.getRequestDispatcher("Login.jsp").forward(request, response);
             }
 
 
         } catch (SQLException e) {
            
-            System.err.println("Error al iniciar sesiï¿½n: " + e.getMessage());
-            request.setAttribute("error", "Error al iniciar sesiï¿½n: " + e.getMessage());
+            System.err.println("Error al iniciar sesi n: " + e.getMessage());
+            request.setAttribute("error", "Error al iniciar sesi n: " + e.getMessage());
             request.getRequestDispatcher("Login.jsp").forward(request, response);
 
             if (conexion != null) {

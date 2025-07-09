@@ -13,4 +13,11 @@ public interface CuentasDao {
     boolean eliminarCuenta(String nroCuenta);
     List<Cuentas> listarPaginadas(int inicio, int cantidad);
     int contarTotalCuentas();
+    List<Cuentas> obtenerCuentasPorCliente(int idCliente);
+    
+    List<Cuentas> listarPaginadasFiltradas(int inicio, int cantidad, String busqueda, String tipoCuenta, Boolean estado);
+    int contarTotalCuentasFiltradas(String busqueda, String tipoCuenta, Boolean estado);
+    public boolean activarCuentaPorNroCuenta(String nroCuenta);
+
 }
+

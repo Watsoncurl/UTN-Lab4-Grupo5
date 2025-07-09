@@ -238,4 +238,54 @@ public class ClientesDaoImpl implements ClienteDao {
         }
         return total;
     }
+    
+    @Override
+    public List<Cliente> filtrarPorBusquedaEstadoYSexo(String busqueda,String estado, String sexo) {
+        List<Cliente> listaClientes = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+            "SELECT c.id_cliente, c.dni, c.cuil, c.nombre, c.apellido, c.sexo, c.nacionalidad, " +
+            "c.fecha_nacimiento, c.direccion, c.email, c.telefono, c.estado, c.id_localidad, " +
+            "l.nombre AS localidad, p.nombre AS provincia " +
+            "FROM Clientes c " +
+            "JOIN Localidades l ON c.id_localidad = l.id_localidad " +
+            "JOIN Provincias p ON l.id_provincia = p.id_provincia " +
+            "WHERE 1=1 "
+        );
+        
+	    if (busqueda != null && !busqueda.trim().isEmpty()) {
+	        sql.append("AND (c.dni LIKE ? OR c.email LIKE ? OR CONCAT(c.nombre, ' ', c.apellido) LIKE ?) ");
+	    }
+        if (estado != null && !estado.isEmpty()) {
+            sql.append("AND c.estado = ? ");
+        }
+        if (sexo != null && !sexo.isEmpty()) {
+            sql.append("AND c.sexo = ? ");
+        }
+        sql.append("ORDER BY c.apellido, c.nombre");
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+	        if (busqueda != null && !busqueda.trim().isEmpty()) {
+	            String likeParam = "%" + busqueda + "%";
+	            ps.setString(paramIndex++, likeParam);
+	            ps.setString(paramIndex++, likeParam);
+	            ps.setString(paramIndex++, likeParam);
+	        }
+            if (estado != null && !estado.isEmpty()) {
+                ps.setBoolean(paramIndex++, estado.equals("1"));
+            }
+            if (sexo != null && !sexo.isEmpty()) {
+                ps.setString(paramIndex++, sexo);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    listaClientes.add(mapearCliente(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al filtrar clientes: " + e.getMessage());
+        }
+        return listaClientes;
+    }
 }

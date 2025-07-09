@@ -10,4 +10,9 @@ public interface CuentasNegocio {
     boolean actualizar(Cuentas cuenta);
     List<Cuentas> listarPaginadas(int inicio, int cantidad);
     int contarTotalCuentas();
+    List<Cuentas> listarCuentasPorCliente(int idCliente);
+    public List<Cuentas> listarPaginadasFiltradas(int inicio, int cantidad, String busqueda, String tipoCuenta, Boolean estado);
+    public int contarTotalCuentasFiltradas(String busqueda, String tipoCuenta, Boolean estado); 
+    boolean activarCuentaPorNroCuenta(String nroCuenta);
+
 }

@@ -28,7 +28,7 @@
             <i class="bi bi-bank text-primary fs-1 mb-3"></i>
             <h5 class="card-title">Mis Cuentas</h5>
             <p class="card-text text-muted">Consulta y gestión de cuentas</p>
-            <a href="${pageContext.request.contextPath}/ClienteMisCuentas.jsp" class="btn btn-outline-primary stretched-link">
+            <a href="${pageContext.request.contextPath}/ServletMisCuentas" class="btn btn-outline-primary stretched-link">
               <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
             </a>
           </div>

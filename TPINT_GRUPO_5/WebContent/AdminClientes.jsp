@@ -18,32 +18,37 @@
 	<my:navbar activeTab="clientes" userRole="admin" />
 	<div class="container mt-4">
 		<%-- Barra de busqueda --%>
-		<div class="row mb-3 g-2">
-			<div class="col-md-6">
-				<input type="search" class="form-control"
-					placeholder="Buscar (DNI, Nombre, Apellido, Email)">
-			</div>
-			<div class="col-md-2">
-				<select class="form-select">
-					<option selected>Todos los estados</option>
-					<option>Activos</option>
-					<option>Inactivos</option>
-				</select>
-			</div>
-			<div class="col-md-2">
-				<select class="form-select">
-					<option selected>Todos los sexos</option>
-					<option>Masculino</option>
-					<option>Femenino</option>
-					<option>Otro</option>
-				</select>
-			</div>
-			<div class="col-md-2">
-				<a href="AgregarCliente" class="btn btn-success w-100"><i
-					class="bi bi-plus-circle"></i> Nuevo
-				</a>
-			</div>
-		</div>
+		<form id="formularioFiltro" method="get" action="ListarClientesServlet" class="row mb-3 g-2 align-items-center">
+
+		  <div class="col-md-4">
+		    <input type="search" name="busqueda" id="campoBusqueda" class="form-control"
+		           placeholder="Buscar (DNI, Nombre, Apellido, Email)" 
+		           value="${param.busqueda != null ? param.busqueda : ''}">
+		  </div>
+
+		  <div class="col-md-3">
+		    <select name="estado" id="selectEstado" class="form-select">
+		      <option value="" ${empty param.estado ? 'selected' : ''}>Todos los estados</option>
+		      <option value="1" ${param.estado == '1' ? 'selected' : ''}>Activos</option>
+		      <option value="0" ${param.estado == '0' ? 'selected' : ''}>Inactivos</option>
+		    </select>
+		  </div>
+
+		  <div class="col-md-3">
+		    <select name="sexo" id="selectSexo" class="form-select">
+		      <option value="" ${empty param.sexo ? 'selected' : ''}>Todos los sexos</option>
+		      <option value="M" ${param.sexo == 'M' ? 'selected' : ''}>Masculino</option>
+		      <option value="F" ${param.sexo == 'F' ? 'selected' : ''}>Femenino</option>
+		      <option value="O" ${param.sexo == 'O' ? 'selected' : ''}>Otro</option>
+		    </select>
+		  </div>
+
+		  <div class="col-md-2">
+		    <button id="btnFiltrar" class="btn btn-primary flex-grow-1"><i class="bi bi-search"></i></button>
+    		<a href="AgregarCliente" class="btn btn-success flex-grow-1"><i class="bi bi-plus-circle"></i> Nuevo</a>
+		  </div>
+
+		</form>
 		
 		<%-- Mostrar mensajes de operación --%>
 		<c:if test="${not empty sessionScope.mensaje}">
@@ -119,6 +124,7 @@
 							</td>
 						</tr>
 					</c:forEach>
+
 				</tbody>
 			</table>
 		</div>
@@ -153,5 +159,28 @@
 	<my:footer />
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+					<script>
+  						const campoBusqueda = document.getElementById("campoBusqueda");
+  					  	const selectEstado = document.getElementById("selectEstado");
+  					  	const selectSexo = document.getElementById("selectSexo");
+  						const formulario = document.getElementById("formularioFiltro");
+
+  						campoBusqueda.addEventListener("input", function () {
+    					if (this.value.trim() === "") {
+      						// Si el campo se vacía, reenviamos el formulario automáticamente
+      						formulario.submit();
+    					}
+    					});
+  						selectEstado.addEventListener("change", function () {
+  						    if (this.value === "") {
+  						      formulario.submit();
+  						    }
+  						 });
+  						selectSexo.addEventListener("change", function () {
+  						    if (this.value === "") {
+  						      formulario.submit();
+  						    }
+  						 });
+					</script>
 </body>
 </html>

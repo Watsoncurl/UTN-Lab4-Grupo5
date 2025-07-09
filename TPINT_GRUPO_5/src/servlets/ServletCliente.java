@@ -28,34 +28,45 @@ public class ServletCliente extends HttpServlet {
             throws ServletException, IOException {
         
         try {
-            // 1. Obtener parámetros de paginación
+        	
+        	String busqueda = request.getParameter("busqueda");
+            String estadoFiltro = request.getParameter("estado"); 
+            String sexoFiltro = request.getParameter("sexo");     
+            
+            
             int pagina = obtenerPagina(request);
             
-            // 2. Calcular inicio para la consulta
             int inicio = (pagina - 1) * REGISTROS_POR_PAGINA;
             
-            // 3. Obtener clientes paginados
             List<Cliente> listaClientes = clienteNegocio.listarPaginados(inicio, REGISTROS_POR_PAGINA);
             
-            // 4. Obtener total de clientes y calcular páginas
             int totalClientes = clienteNegocio.contarTotalClientes();
+            
+            if ((busqueda != null && !busqueda.trim().isEmpty()) || (estadoFiltro != null && !estadoFiltro.isEmpty()) || (sexoFiltro != null && !sexoFiltro.isEmpty())) {
+                listaClientes = clienteNegocio.filtrarPorBusquedaEstadoYSexo(busqueda, estadoFiltro, sexoFiltro);
+                totalClientes = listaClientes.size();
+                pagina = 1; 
+            } else {
+                listaClientes = clienteNegocio.listarPaginados(inicio, REGISTROS_POR_PAGINA);
+                totalClientes = clienteNegocio.contarTotalClientes();
+            }
+            
             int totalPaginas = (int) Math.ceil((double) totalClientes / REGISTROS_POR_PAGINA);
             
-            // 5. Establecer atributos para la vista
             request.setAttribute("listaClientes", listaClientes);
             request.setAttribute("paginaActual", pagina);
             request.setAttribute("totalPaginas", totalPaginas);
+            request.setAttribute("estadoFiltro", estadoFiltro);
+            request.setAttribute("sexoFiltro", sexoFiltro);
             
         } catch (Exception e) {
             request.setAttribute("error", "Error al listar clientes: " + e.getMessage());
             e.printStackTrace();
         }
         
-        // 6. Redirigir a la vista
         request.getRequestDispatcher("AdminClientes.jsp").forward(request, response);
     }
     
-    // Método auxiliar para obtener el número de página
     private int obtenerPagina(HttpServletRequest request) {
         String paginaParam = request.getParameter("pagina");
         try {

@@ -12,34 +12,44 @@
 <body>
   <my:navbar activeTab="cuentas" userRole="admin" />
   <div class="container mt-4">
-    <%-- Barra de búsqueda y filtros --%>
-    <div class="row mb-3 g-2">
+
+    <c:set var="busqueda" value="${empty param.busqueda ? '' : param.busqueda}" />
+    <c:set var="tipoCuenta" value="${empty param.tipoCuenta ? 'Todos los tipos' : param.tipoCuenta}" />
+    <c:set var="estadoFiltro" value="${empty param.estado ? '' : param.estado}" />
+
+    <form id="formularioFiltroCuentas" class="row mb-3 g-2" method="get" action="ListarCuentasServlet">
       <div class="col-md-6">
-        <input type="search" class="form-control" placeholder="Buscar (Nro. Cuenta, CBU, Cliente)">
+        <input type="search" name="busqueda" id="barraBusqueda" value="${busqueda}" class="form-control"
+               placeholder="Buscar (Nro. Cuenta, CBU, Cliente)">
       </div>
       <div class="col-md-2">
-        <select class="form-select">
-          <option selected>Todos los tipos</option>
-          <option>Caja de Ahorro</option>
-          <option>Cuenta Corriente</option>
-          <option>Cuenta Sueldo</option>
+        <select id="selectTipoCuenta" name="tipoCuenta" class="form-select">
+          <option ${tipoCuenta == '' ? 'selected' : ''}value="">Todos los tipos</option>
+          <option ${tipoCuenta == 'Caja de Ahorro' ? 'selected' : ''}>Caja de Ahorro</option>
+          <option ${tipoCuenta == 'Cuenta Corriente' ? 'selected' : ''}>Cuenta Corriente</option>
+          <option ${tipoCuenta == 'Cuenta Sueldo' ? 'selected' : ''}>Cuenta Sueldo</option>
         </select>
       </div>
       <div class="col-md-2">
-        <select class="form-select">
-          <option selected>Todos los estados</option>
-          <option>Activas</option>
-          <option>Inactivas</option>
+        <select name="estado" id="estadoCuenta" class="form-select">
+          <option ${estadoFiltro == '' ? 'selected' : ''} value="">Todos los estados</option>
+          <option ${estadoFiltro == 'Activas' ? 'selected' : ''}>Activas</option>
+          <option ${estadoFiltro == 'Inactivas' ? 'selected' : ''}>Inactivas</option>
         </select>
       </div>
-      <div class="col-md-2">
-        <a href="AdminAgregarCuenta.jsp" class="btn btn-success w-100">
-          <i class="bi bi-plus-circle"></i> Nueva
-        </a>
+      <div class="col-md-2 d-flex">
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="bi bi-search"></i> Buscar
+        </button>
       </div>
+    </form>
+
+    <div class="mb-3 text-end">
+      <a href="AdminAgregarCuenta.jsp" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nueva
+      </a>
     </div>
-    
-    <%-- Mostrar mensajes de operación --%>
+
     <c:if test="${not empty sessionScope.mensaje}">
       <div class="alert alert-success alert-dismissible fade show">
         ${sessionScope.mensaje}
@@ -55,8 +65,7 @@
       </div>
       <c:remove var="error" scope="session" />
     </c:if>
-    
-    <%-- Tabla de cuentas --%>
+
     <div class="table-responsive">
       <table class="table table-hover border shadow-sm">
         <thead class="table-light">
@@ -88,26 +97,33 @@
               </td>
               <td class="text-end">
                 <div class="btn-group" role="group">
-                  <%-- Botón Ver (modo visualización) --%>
                   <a href="${pageContext.request.contextPath}/ServletEditarCuenta?nroCuenta=${cuenta.nro_cuenta}&modo=ver"
-                     class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-eye"></i>
-                  </a>
-                  
-                  <%-- Botón Editar (modo edición) --%>
+                     class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
                   <a href="${pageContext.request.contextPath}/ServletEditarCuenta?nroCuenta=${cuenta.nro_cuenta}&modo=editar"
-                     class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-pencil"></i>
-                  </a>
-                  
-                  <%-- Formulario para eliminar --%>
-				  <form action="${pageContext.request.contextPath}/EliminarCuentaServlet" method="post" style="display:inline;">
-				      <input type="hidden" name="nro_cuenta" value="${cuenta.nro_cuenta}" />
-				      <button type="submit" class="btn btn-sm btn-outline-danger"
-				              onclick="return confirm('¿Está seguro que desea eliminar esta cuenta?');">
-				        <i class="bi bi-trash"></i>
-				      </button>
-                  </form>
+                     class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+
+                  <c:choose>
+                    <c:when test="${cuenta.estado}">
+                      <!-- Botón eliminar si está activa -->
+                      <form action="${pageContext.request.contextPath}/EliminarCuentaServlet" method="post" style="display:inline;">
+                        <input type="hidden" name="nro_cuenta" value="${cuenta.nro_cuenta}" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('¿Está seguro que desea eliminar esta cuenta?');">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    </c:when>
+                    <c:otherwise>
+                      <!-- Botón activar si está inactiva -->
+                      <form action="${pageContext.request.contextPath}/ActivarCuentaServlet" method="post" style="display:inline;">
+                        <input type="hidden" name="nro_cuenta" value="${cuenta.nro_cuenta}" />
+                        <button type="submit" class="btn btn-sm btn-outline-success"
+                                onclick="return confirm('¿Desea activar esta cuenta?');">
+                          <i class="bi bi-check-circle"></i>
+                        </button>
+                      </form>
+                    </c:otherwise>
+                  </c:choose>
                 </div>
               </td>
             </tr>
@@ -115,35 +131,59 @@
         </tbody>
       </table>
     </div>
-    <!-- 
-    <%-- Paginación --%>
+
     <c:if test="${totalPaginas > 1}">
       <nav class="mt-3">
         <ul class="pagination justify-content-center">
-          <%-- Botón Anterior --%>
           <li class="page-item ${paginaActual == 1 ? 'disabled' : ''}">
-            <a class="page-link" 
-               href="ListarCuentasServlet?pagina=${paginaActual - 1}">Anterior</a>
+            <a class="page-link"
+               href="ListarCuentasServlet?pagina=${paginaActual - 1}&busqueda=${busqueda}&tipoCuenta=${tipoCuenta}&estado=${estadoFiltro}">
+              Anterior
+            </a>
           </li>
-          
-          <%-- Páginas --%>
           <c:forEach begin="1" end="${totalPaginas}" var="i">
             <li class="page-item ${paginaActual == i ? 'active' : ''}">
-              <a class="page-link" href="ListarCuentasServlet?pagina=${i}">${i}</a>
+              <a class="page-link"
+                 href="ListarCuentasServlet?pagina=${i}&busqueda=${busqueda}&tipoCuenta=${tipoCuenta}&estado=${estadoFiltro}">
+                ${i}
+              </a>
             </li>
           </c:forEach>
-          
-          <%-- Botón Siguiente --%>
           <li class="page-item ${paginaActual == totalPaginas ? 'disabled' : ''}">
-            <a class="page-link" 
-               href="ListarCuentasServlet?pagina=${paginaActual + 1}">Siguiente</a>
+            <a class="page-link"
+               href="ListarCuentasServlet?pagina=${paginaActual + 1}&busqueda=${busqueda}&tipoCuenta=${tipoCuenta}&estado=${estadoFiltro}">
+              Siguiente
+            </a>
           </li>
         </ul>
       </nav>
     </c:if>
-     -->
+
   </div>
   <my:footer />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  					<script>
+  						const barraBusqueda = document.getElementById("barraBusqueda");
+  					  	const selectTipoCuenta = document.getElementById("selectTipoCuenta");
+  					  	const estadoCuenta = document.getElementById("estadoCuenta");
+  						const formulario = document.getElementById("formularioFiltroCuentas");
+
+  						barraBusqueda.addEventListener("input", function () {
+    					if (this.value.trim() === "") {
+      						// Si el campo se vacía, reenviamos el formulario automáticamente
+      						formulario.submit();
+    					}
+    					});
+  						selectTipoCuenta.addEventListener("change", function () {
+  						    if (this.value === "") {
+  						      formulario.submit();
+  						    }
+  						 });
+  						estadoCuenta.addEventListener("change", function () {
+  						    if (this.value === "") {
+  						      formulario.submit();
+  						    }
+  						 });
+					</script>
 </body>
 </html>

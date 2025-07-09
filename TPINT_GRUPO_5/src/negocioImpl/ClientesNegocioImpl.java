@@ -20,6 +20,11 @@ public class ClientesNegocioImpl implements ClientesNegocio {
     }
     
     @Override
+    public List<Cliente> filtrarPorBusquedaEstadoYSexo(String busqueda, String estado, String sexo) throws Exception {
+        return clienteDao.filtrarPorBusquedaEstadoYSexo(busqueda, estado, sexo);
+    }
+    
+    @Override
     public boolean eliminar(int id) {
        
         return clienteDao.eliminar(id);

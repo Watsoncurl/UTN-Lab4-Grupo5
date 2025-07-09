@@ -33,14 +33,12 @@ public class CuentasNegocioImpl implements CuentasNegocio {
 
     @Override
     public boolean actualizar(Cuentas cuenta) {
-        // Validaciones adicionales antes de actualizar
         Cuentas cuentaExistente = cuentasDao.obtenerPorNroCuenta(cuenta.getNro_cuenta());
         
         if (cuentaExistente == null) {
-            return false; // La cuenta no existe
+            return false; 
         }
         
-        // Validar que el nuevo CBU no esté en uso (si cambió)
         if (!cuentaExistente.getCbu().equals(cuenta.getCbu()) && 
             cuentasDao.existeCbu(cuenta.getCbu())) {
             return false;
@@ -58,4 +56,26 @@ public class CuentasNegocioImpl implements CuentasNegocio {
     public int contarTotalCuentas() {
         return cuentasDao.contarTotalCuentas();
     }
+    @Override
+    public List<Cuentas> listarCuentasPorCliente(int idCliente){
+    	return cuentasDao.obtenerCuentasPorCliente(idCliente);
+    }
+    
+    @Override
+    public List<Cuentas> listarPaginadasFiltradas(int inicio, int cantidad, String busqueda, String tipoCuenta, Boolean estado) {
+        return cuentasDao.listarPaginadasFiltradas(inicio, cantidad, busqueda, tipoCuenta, estado);
+    }
+
+    @Override
+    public int contarTotalCuentasFiltradas(String busqueda, String tipoCuenta, Boolean estado) {
+        return cuentasDao.contarTotalCuentasFiltradas(busqueda, tipoCuenta, estado);
+    }
+    
+    @Override
+    public boolean activarCuentaPorNroCuenta(String nroCuenta) {
+        return cuentasDao.activarCuentaPorNroCuenta(nroCuenta);
+    }
+    
+
+
 }
