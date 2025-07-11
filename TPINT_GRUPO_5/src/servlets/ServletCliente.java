@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import entidades.Cliente;
+import filtros.ClientesFiltros;
 import negocio.ClientesNegocio;
 import negocioImpl.ClientesNegocioImpl;
 
@@ -26,44 +27,50 @@ public class ServletCliente extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
+
         try {
-        	
-        	String busqueda = request.getParameter("busqueda");
+            String busqueda = request.getParameter("busqueda");
             String estadoFiltro = request.getParameter("estado"); 
             String sexoFiltro = request.getParameter("sexo");     
-            
-            
             int pagina = obtenerPagina(request);
-            
             int inicio = (pagina - 1) * REGISTROS_POR_PAGINA;
-            
-            List<Cliente> listaClientes = clienteNegocio.listarPaginados(inicio, REGISTROS_POR_PAGINA);
-            
-            int totalClientes = clienteNegocio.contarTotalClientes();
-            
-            if ((busqueda != null && !busqueda.trim().isEmpty()) || (estadoFiltro != null && !estadoFiltro.isEmpty()) || (sexoFiltro != null && !sexoFiltro.isEmpty())) {
-                listaClientes = clienteNegocio.filtrarPorBusquedaEstadoYSexo(busqueda, estadoFiltro, sexoFiltro);
+
+            ClientesFiltros filtro = new ClientesFiltros();
+            filtro.setBusqueda(busqueda);
+            filtro.setEstado(estadoFiltro);
+            filtro.setSexo(sexoFiltro);
+
+            List<Cliente> listaClientes;
+            int totalClientes;
+
+            boolean hayFiltros = 
+                (busqueda != null && !busqueda.trim().isEmpty()) ||
+                (estadoFiltro != null && !estadoFiltro.isEmpty()) ||
+                (sexoFiltro != null && !sexoFiltro.isEmpty());
+
+            if (hayFiltros) {
+                listaClientes = clienteNegocio.filtrar(filtro);
                 totalClientes = listaClientes.size();
-                pagina = 1; 
+                pagina = 1; // Reinicia a p�gina 1 si hay filtros
             } else {
                 listaClientes = clienteNegocio.listarPaginados(inicio, REGISTROS_POR_PAGINA);
                 totalClientes = clienteNegocio.contarTotalClientes();
             }
-            
+
             int totalPaginas = (int) Math.ceil((double) totalClientes / REGISTROS_POR_PAGINA);
-            
+
             request.setAttribute("listaClientes", listaClientes);
             request.setAttribute("paginaActual", pagina);
             request.setAttribute("totalPaginas", totalPaginas);
             request.setAttribute("estadoFiltro", estadoFiltro);
             request.setAttribute("sexoFiltro", sexoFiltro);
-            
+            request.setAttribute("busqueda", busqueda);
+
         } catch (Exception e) {
             request.setAttribute("error", "Error al listar clientes: " + e.getMessage());
             e.printStackTrace();
         }
-        
+
         request.getRequestDispatcher("AdminClientes.jsp").forward(request, response);
     }
     

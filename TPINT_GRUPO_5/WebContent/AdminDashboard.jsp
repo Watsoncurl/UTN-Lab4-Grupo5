@@ -71,7 +71,7 @@
                 <i class="bi bi-arrow-left-right text-info fs-1 mb-3"></i>
                 <h5 class="card-title">Movimientos</h5>
                 <p class="card-text text-muted">Registro de transacciones</p>
-                <a href="${pageContext.request.contextPath}/AdminMovimientos.jsp" class="btn btn-outline-info stretched-link">
+                <a href="${pageContext.request.contextPath}/ServletAdminMovimientos" class="btn btn-outline-info stretched-link">
                   <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
                 </a>
               </div>

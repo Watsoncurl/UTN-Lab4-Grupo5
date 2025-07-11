@@ -68,6 +68,7 @@ public class servletLogin extends HttpServlet {
                 request.setAttribute("error", "Usuario o contraseña incorrectos.");
                 request.getRequestDispatcher("Login.jsp").forward(request, response);
             }
+            conexion.commit();
 
 
         } catch (SQLException e) {

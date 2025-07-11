@@ -2,6 +2,8 @@ package datosImpl;
 
 import datos.ClienteDao;
 import entidades.Cliente;
+import filtros.ClientesFiltros;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,31 +15,6 @@ public class ClientesDaoImpl implements ClienteDao {
     public ClientesDaoImpl() {
         conexion = Conexion.getConexion().getSQLConexion();
     }
-
-    @Override
-    public List<Cliente> obtenerActivos() {
-        List<Cliente> listaClientes = new ArrayList<>();
-        String sql = "SELECT "
-                   + "c.id_cliente, c.dni, c.cuil, c.nombre, c.apellido, c.sexo, "
-                   + "c.nacionalidad, c.fecha_nacimiento, c.direccion, c.id_localidad, "
-                   + "c.email, c.telefono, c.estado, "
-                   + "l.nombre AS localidad, p.nombre AS provincia "
-                   + "FROM Clientes c "
-                   + "JOIN Localidades l ON c.id_localidad = l.id_localidad "
-                   + "JOIN Provincias p ON l.id_provincia = p.id_provincia "
-                   + "WHERE c.estado = 1";
-
-        try (Statement consulta = conexion.createStatement();
-             ResultSet resultados = consulta.executeQuery(sql)) {
-            while (resultados.next()) {
-                listaClientes.add(mapearCliente(resultados));
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al listar clientes activos: " + e.getMessage());
-        }
-        return listaClientes;
-    }
-
     private Cliente mapearCliente(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
         cliente.setIdCliente(rs.getInt("id_cliente"));
@@ -240,8 +217,13 @@ public class ClientesDaoImpl implements ClienteDao {
     }
     
     @Override
-    public List<Cliente> filtrarPorBusquedaEstadoYSexo(String busqueda,String estado, String sexo) {
+    public List<Cliente> filtrar(ClientesFiltros filtro) {
         List<Cliente> listaClientes = new ArrayList<>();
+        
+        String busqueda = filtro.getBusqueda();
+        String estado = filtro.getEstado();
+        String sexo = filtro.getSexo();
+        
         StringBuilder sql = new StringBuilder(
             "SELECT c.id_cliente, c.dni, c.cuil, c.nombre, c.apellido, c.sexo, c.nacionalidad, " +
             "c.fecha_nacimiento, c.direccion, c.email, c.telefono, c.estado, c.id_localidad, " +

@@ -2,6 +2,7 @@ package negocioImpl;
 
 import java.util.List;
 import entidades.Cuentas;
+import filtros.CuentasFiltros;
 import negocio.CuentasNegocio;
 import datos.CuentasDao;
 import datosImpl.CuentasDaoImpl;
@@ -58,17 +59,21 @@ public class CuentasNegocioImpl implements CuentasNegocio {
     }
     @Override
     public List<Cuentas> listarCuentasPorCliente(int idCliente){
-    	return cuentasDao.obtenerCuentasPorCliente(idCliente);
+        CuentasFiltros filtro = new CuentasFiltros();
+        filtro.setIdCliente(idCliente);    
+        int inicio = 0;       
+        int cantidad = 100;   
+        return cuentasDao.filtrar(filtro, inicio, cantidad);
     }
     
     @Override
-    public List<Cuentas> listarPaginadasFiltradas(int inicio, int cantidad, String busqueda, String tipoCuenta, Boolean estado) {
-        return cuentasDao.listarPaginadasFiltradas(inicio, cantidad, busqueda, tipoCuenta, estado);
+    public List<Cuentas> filtrar(CuentasFiltros filtro, int inicio, int cantidad) {
+        return cuentasDao.filtrar(filtro, inicio, cantidad);
     }
 
     @Override
-    public int contarTotalCuentasFiltradas(String busqueda, String tipoCuenta, Boolean estado) {
-        return cuentasDao.contarTotalCuentasFiltradas(busqueda, tipoCuenta, estado);
+    public int contarFiltradas(CuentasFiltros filtro) {
+        return cuentasDao.contarFiltradas(filtro);
     }
     
     @Override
@@ -76,6 +81,13 @@ public class CuentasNegocioImpl implements CuentasNegocio {
         return cuentasDao.activarCuentaPorNroCuenta(nroCuenta);
     }
     
+    @Override
+    public List<Cuentas> listarTodas(){
+    	return cuentasDao.listarTodas();
+    }
 
-
+	@Override
+	public List<Cuentas> listarPorTipo(int idTipoCuenta) {
+		return cuentasDao.listarPorTipo(idTipoCuenta);
+	}
 }

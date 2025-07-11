@@ -35,20 +35,6 @@
         </div>
       </div>
 
-      <!-- Tarjeta Movimientos -->
-      <div class="col-md-3 col-sm-6">
-        <div class="card h-100 border-success shadow-sm text-center">
-          <div class="card-body">
-            <i class="bi bi-arrow-left-right text-success fs-1 mb-3"></i>
-            <h5 class="card-title">Movimientos</h5>
-            <p class="card-text text-muted">Historial de transacciones</p>
-            <a href="${pageContext.request.contextPath}/ClientesMovimientos.jsp" class="btn btn-outline-success stretched-link">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
-            </a>
-          </div>
-        </div>
-      </div>
-
       <!-- Tarjeta Préstamos -->
       <div class="col-md-3 col-sm-6">
         <div class="card h-100 border-warning shadow-sm text-center">

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entidades.Cuentas;
+import filtros.CuentasFiltros;
 import negocio.CuentasNegocio;
 import negocioImpl.CuentasNegocioImpl;
 
@@ -31,9 +32,15 @@ public class ServletCuenta extends HttpServlet {
             int pagina = obtenerPagina(request);
             int inicio = (pagina - 1) * REGISTROS_POR_PAGINA;
 
+            // Obtener parámetros
             String busqueda = request.getParameter("busqueda");
             String tipoCuenta = request.getParameter("tipoCuenta");
             String estadoParam = request.getParameter("estado");
+
+            // Crear objeto filtro
+            CuentasFiltros filtro = new CuentasFiltros();
+            filtro.setBusqueda((busqueda != null && !busqueda.isEmpty()) ? busqueda : null);
+            filtro.setTipoCuenta((tipoCuenta != null && !tipoCuenta.isEmpty() && !"Todos los tipos".equals(tipoCuenta)) ? tipoCuenta : null);
 
             Boolean estadoFiltro = null;
             if ("Activas".equalsIgnoreCase(estadoParam)) {
@@ -41,29 +48,24 @@ public class ServletCuenta extends HttpServlet {
             } else if ("Inactivas".equalsIgnoreCase(estadoParam)) {
                 estadoFiltro = false;
             }
-            int totalCuentas = cuentasNegocio.contarTotalCuentasFiltradas(
-                    (busqueda != null && !busqueda.isEmpty()) ? busqueda : null,
-                    (tipoCuenta != null && !tipoCuenta.isEmpty() && !"Todos los tipos".equals(tipoCuenta)) ? tipoCuenta : null,
-                    estadoFiltro
-            );
 
+            filtro.setEstado(estadoFiltro);
+            
+            // Usar los métodos con filtro
+            int totalCuentas = cuentasNegocio.contarFiltradas(filtro);
             int totalPaginas = (int) Math.ceil((double) totalCuentas / REGISTROS_POR_PAGINA);
             if (pagina < 1) pagina = 1;
             if (pagina > totalPaginas && totalPaginas != 0) pagina = totalPaginas;
 
-            List<Cuentas> listaCuentas = cuentasNegocio.listarPaginadasFiltradas(
-                    inicio, REGISTROS_POR_PAGINA,
-                    (busqueda != null && !busqueda.isEmpty()) ? busqueda : null,
-                    (tipoCuenta != null && !tipoCuenta.isEmpty() && !"Todos los tipos".equals(tipoCuenta)) ? tipoCuenta : null,
-                    estadoFiltro
-            );
+            List<Cuentas> listaCuentas = cuentasNegocio.filtrar(filtro, inicio, REGISTROS_POR_PAGINA);
 
+            // Pasar datos a la vista
             request.setAttribute("listaCuentas", listaCuentas);
             request.setAttribute("paginaActual", pagina);
             request.setAttribute("totalPaginas", totalPaginas);
-            request.setAttribute("busqueda", busqueda);
-            request.setAttribute("tipoCuenta", tipoCuenta);
-            request.setAttribute("estadoFiltro", estadoParam);
+            request.setAttribute("busqueda", filtro.getBusqueda());
+            request.setAttribute("tipoCuenta", filtro.getTipoCuenta());
+            request.setAttribute("estadoFiltro", filtro.getEstado());
 
         } catch (Exception e) {
             e.printStackTrace();

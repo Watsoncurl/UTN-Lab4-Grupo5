@@ -47,7 +47,6 @@
 		    <button id="btnFiltrar" class="btn btn-primary flex-grow-1"><i class="bi bi-search"></i></button>
     		<a href="AgregarCliente" class="btn btn-success flex-grow-1"><i class="bi bi-plus-circle"></i> Nuevo</a>
 		  </div>
-
 		</form>
 		
 		<%-- Mostrar mensajes de operación --%>

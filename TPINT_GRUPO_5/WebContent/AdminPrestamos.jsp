@@ -21,15 +21,13 @@
       <div class="card-body">
         <!-- Filtros de búsqueda en una sola fila -->
         <form class="row g-2 align-items-end">
-          <div class="col-md">
-            <label for="clienteSelect" class="form-label fw-bold">Cliente</label>
-            <select class="form-select" id="clienteSelect">
-              <option value="" selected>Todos</option>
-              <option value="1">Gómez, María (30123456)</option>
-              <option value="2">Pérez, Juan (28987654)</option>
-              <option value="3">Fernández, Lucía (35678901)</option>
-            </select>
-          </div>
+        
+		  <div class="col-md-4">
+		    <input type="search" name="busqueda" id="campoBusqueda" class="form-control"
+		           placeholder="Buscar (DNI, Nombre, Apellido)" 
+		           value="${param.busqueda != null ? param.busqueda : ''}">
+		  </div>    
+
           
           <div class="col-md">
             <label for="estadoSelect" class="form-label fw-bold">Estado</label>

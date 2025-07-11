@@ -1,62 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="java.util.*,java.text.DecimalFormat,datosImpl.MockDataProvider" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
-
-<%
-  Map<String, Integer> cantidadClientesPorSegmento = MockDataProvider.getClientesPorSegmento();
-  Map<String, Double> montoTotalPorSegmento = MockDataProvider.getMontosPorSegmento();
-  Map<String, Double> porcentajeSaldoPorSegmento = MockDataProvider.calcularPorcentajeSaldo(montoTotalPorSegmento);
-
-  String fechaReporte = "01/07/2025";
-  request.setAttribute("cantidadClientesPorSegmento", cantidadClientesPorSegmento);
-  request.setAttribute("montoTotalPorSegmento", montoTotalPorSegmento);
-  request.setAttribute("porcentajeSaldoPorSegmento", porcentajeSaldoPorSegmento);
-  request.setAttribute("fechaReporte", fechaReporte);
-
-  request.setAttribute("nuevosClientesPorFecha", MockDataProvider.getNuevosClientesPorFecha());
-  request.setAttribute("nuevasCuentasPorFecha", MockDataProvider.getNuevasCuentasPorFecha());
-  request.setAttribute("cuentasPorTipo", MockDataProvider.getCuentasPorTipo());
-  request.setAttribute("tasaCrecimiento", MockDataProvider.getTasaCrecimiento());
-  request.setAttribute("fechaInicio", "01/06/2025");
-  request.setAttribute("fechaFin", "30/06/2025");
-
-  Map<String, Integer> volumenPorTipo = MockDataProvider.getVolumenTransacciones();
-  Map<String, Double> montoPorTipo = MockDataProvider.getMontoTransacciones();
-  Map<String, Double> promedioPorTipo = MockDataProvider.getPromedioTransacciones();
-  request.setAttribute("volumenPorTipo", volumenPorTipo);
-  request.setAttribute("montoPorTipo", montoPorTipo);
-  request.setAttribute("importePromedioPorTipo", promedioPorTipo);
-  request.setAttribute("tipoMovimiento", null);
-
-  //NUEVO: Datos mock para loansYieldRiskReport
- request.setAttribute("fechaInicio", "01/06/2025");
- request.setAttribute("fechaFin", "30/06/2025");
- request.setAttribute("capitalPrestado", 1250000.00);
- request.setAttribute("cantidadPrestamos", 320);
- request.setAttribute("tasaAprobacion", 72.5);
- request.setAttribute("tasaMorosidad", 5.8);
-
- Map<String, Integer> prestamosPorEstado = new HashMap<>();
- prestamosPorEstado.put("Aprobado", 180);
- prestamosPorEstado.put("En Revisión", 70);
- prestamosPorEstado.put("Rechazado", 40);
- prestamosPorEstado.put("Moroso", 30);
- request.setAttribute("prestamosPorEstado", prestamosPorEstado);
-
- Map<String, Map<String, Integer>> prestamosPorMesEstado = new LinkedHashMap<>();
- Map<String, Integer> junio = new HashMap<>();
- junio.put("Aprobado", 90);
- junio.put("Rechazado", 20);
- junio.put("Moroso", 10);
- prestamosPorMesEstado.put("Junio", junio);
-
- Map<String, Integer> julio = new HashMap<>();
- julio.put("Aprobado", 90);
- julio.put("En Revisión", 70);
- julio.put("Moroso", 20);
- prestamosPorMesEstado.put("Julio", julio);
-
- request.setAttribute("prestamosPorMesEstado", prestamosPorMesEstado);
-%>
 
 <!DOCTYPE html>
 <html>
@@ -77,114 +20,115 @@
     </div>
 
     <!-- Botones toggle centrados -->
-<div class="d-flex justify-content-center mb-4" role="group" aria-label="Toggle Informes">
-  <div class="btn-group" role="group">
-    <button class="btn btn-warning" onclick="mostrarInforme('transactionality', window['renderTransaccionalidadCharts_trans'])">Transaccionalidad</button>
-    <button class="btn btn-success" onclick="mostrarInforme('growth', window['renderGrowthCharts_grw'])">Crecimiento de clientes</button>
-    <button class="btn btn-primary" onclick="mostrarInforme('segmentation', window['renderSegmentationCharts_seg'])">Segmentación de clientes</button>
-    <button class="btn btn-danger" onclick="mostrarInforme('loans', window['renderLoansRiskCharts_loans'])">Rendimientos de préstamos</button>
-  </div>
-</div>
+    <div class="d-flex justify-content-center mb-4" role="group" aria-label="Toggle Informes">
+      <div class="btn-group" role="group">
+        <button class="btn btn-warning" onclick="mostrarInforme('transactionality', window['renderTransaccionalidadCharts_trans'])">Transaccionalidad</button>
+        <button class="btn btn-success" onclick="mostrarInforme('growth', window['renderGrowthCharts_grw'])">Crecimiento de clientes</button>
+        <button class="btn btn-primary" onclick="mostrarInforme('segmentation', window['renderSegmentationCharts_seg'])">Segmentación de clientes</button>
+        <button class="btn btn-danger" onclick="mostrarInforme('loans', window['renderLoansRiskCharts_loans'])">Rendimientos de préstamos</button>
+      </div>
+    </div>
 
-	<!-- Informes toggleados en nuevo orden -->
-	<div id="transactionality" class="report-section">
-	  <my:transactionalityReport
-	    chartIdPrefix="trans"
-	    titulo="Análisis de Transaccionalidad"
-	    icono="bi bi-arrow-left-right"
-	    colorHeader="bg-warning text-dark"
-	    fechaInicio="${fechaInicio}"
-	    fechaFin="${fechaFin}"
-	    tipoMovimiento="${tipoMovimiento}"
-	    volumenPorTipo="${volumenPorTipo}"
-	    montoPorTipo="${montoPorTipo}"
-	    importePromedioPorTipo="${importePromedioPorTipo}"
-	    actualizacion="${fechaReporte}" />
-	</div>
-	
-	<div id="growth" class="report-section d-none">
-	  <my:customerGrowthReport
-	    chartIdPrefix="grw"
-	    fechaInicio="${fechaInicio}"
-	    fechaFin="${fechaFin}"
-	    nuevosClientesPorFecha="${nuevosClientesPorFecha}"
-	    nuevasCuentasPorFecha="${nuevasCuentasPorFecha}"
-	    cuentasPorTipo="${cuentasPorTipo}"
-	    tasaCrecimiento="${tasaCrecimiento}"
-	    titulo="Crecimiento y Adquisición de Clientes"
-	    icono="bi bi-person-plus-fill"
-	    colorHeader="bg-success"
-	    actualizacion="${fechaReporte}" />
-	</div>
-	
-	<div id="segmentation" class="report-section d-none">
-	  <my:segmentationReport
-	    chartIdPrefix="seg"
-	    titulo="Segmentación de Clientes por Saldo"
-	    icono="bi bi-pie-chart-fill"
-	    colorHeader="bg-primary"
-	    actualizacion="${fechaReporte}"
-	    fechaReporte="${fechaReporte}"
-	    cantidadClientesPorSegmento="${cantidadClientesPorSegmento}"
-	    montoTotalPorSegmento="${montoTotalPorSegmento}"
-	    porcentajeSaldoPorSegmento="${porcentajeSaldoPorSegmento}" />
-	</div>
-	
-	<div id="loans" class="report-section d-none">
-	  <my:loansYieldRisk
-	    chartIdPrefix="loans"
-	    titulo="Rendimiento y Riesgo de Préstamos"
-	    icono="bi bi-bar-chart-fill"
-	    colorHeader="bg-danger"
-	    actualizacion="${fechaReporte}"
-	    fechaInicio="${fechaInicio}"
-	    fechaFin="${fechaFin}"
-	    capitalPrestado="${capitalPrestado}"
-	    cantidadPrestamos="${cantidadPrestamos}"
-	    tasaAprobacion="${tasaAprobacion}"
-	    tasaMorosidad="${tasaMorosidad}"
-	    prestamosPorEstado="${prestamosPorEstado}"
-	    prestamosPorMesEstado="${prestamosPorMesEstado}"/>
-	</div>
+    <!-- INFORMES TOGGLEADOS -->
 
-    <!-- Informes simples -->
+    <div id="transactionality" class="report-section">
+      <my:transactionalityReport
+        chartIdPrefix="trans"
+        titulo="Análisis de Transaccionalidad"
+        icono="bi bi-arrow-left-right"
+        colorHeader="bg-warning text-dark"
+        fechaInicio="${fechaInicio}"
+        fechaFin="${fechaFin}"
+        tipoMovimiento="${tipoMovimiento}"
+        volumenPorTipo="${volumenPorTipo}"
+        montoPorTipo="${montoPorTipo}"
+        importePromedioPorTipo="${importePromedioPorTipo}"
+        actualizacion="${fechaReporte}" />
+    </div>
+
+    <div id="growth" class="report-section d-none">
+      <my:customerGrowthReport
+        chartIdPrefix="grw"
+        fechaInicio="${fechaInicio}"
+        fechaFin="${fechaFin}"
+        nuevosClientesPorFecha="${nuevosClientesPorFecha}"
+        nuevasCuentasPorFecha="${nuevasCuentasPorFecha}"
+        cuentasPorTipo="${cuentasPorTipo}"
+        tasaCrecimiento="${tasaCrecimiento}"
+        titulo="Crecimiento y Adquisición de Clientes"
+        icono="bi bi-person-plus-fill"
+        colorHeader="bg-success"
+        actualizacion="${fechaReporte}" />
+    </div>
+
+    <div id="segmentation" class="report-section d-none">
+      <my:segmentationReport
+        chartIdPrefix="seg"
+        titulo="Segmentación de Clientes por Saldo"
+        icono="bi bi-pie-chart-fill"
+        colorHeader="bg-primary"
+        actualizacion="${fechaReporte}"
+        fechaReporte="${fechaReporte}"
+        cantidadClientesPorSegmento="${cantidadClientesPorSegmento}"
+        montoTotalPorSegmento="${montoTotalPorSegmento}"
+        porcentajeSaldoPorSegmento="${porcentajeSaldoPorSegmento}" />
+    </div>
+
+    <div id="loans" class="report-section d-none">
+      <my:loansYieldRisk
+        chartIdPrefix="loans"
+        titulo="Rendimiento y Riesgo de Préstamos"
+        icono="bi bi-bar-chart-fill"
+        colorHeader="bg-danger"
+        actualizacion="${fechaReporte}"
+        fechaInicio="${fechaInicio}"
+        fechaFin="${fechaFin}"
+        capitalPrestado="${capitalPrestado}"
+        cantidadPrestamos="${cantidadPrestamos}"
+        tasaAprobacion="${tasaAprobacion}"
+        tasaMorosidad="${tasaMorosidad}"
+        prestamosPorEstado="${prestamosPorEstado}"
+        prestamosPorMesEstado="${prestamosPorMesEstado}" />
+    </div>
+
+    <!-- INFORMES SIMPLES -->
     <div class="row mt-5">
-	  <div class="col-md-6 mb-4">
-	    <my:report
-	      titulo="Clientes"
-	      icono="bi bi-people-fill"
-	      colorHeader="bg-primary"
-	      columnas="Clientes Activos, Clientes Inactivos, Total de Clientes"
-	      valores="50, 10, 60" />
-	  </div>
-	
-	  <div class="col-md-6 mb-4">
-	    <my:report
-	      titulo="Préstamos"
-	      icono="bi bi-cash-coin"
-	      colorHeader="bg-success"
-	      columnas="Préstamos Activos, Préstamos Pagados, Total de Préstamos"
-	      valores="50, 10, 60" />
-	  </div>
-	
-	  <div class="col-md-6 mb-4">
-	    <my:report
-	      titulo="Cuentas"
-	      icono="bi bi-bank"
-	      colorHeader="bg-info"
-	      columnas="Cuentas Corrientes, Cuentas de Ahorro, Total de Cuentas"
-	      valores="120, 85, 205" />
-	  </div>
-	
-	  <div class="col-md-6 mb-4">
-	    <my:report
-	      titulo="Transacciones"
-	      icono="bi bi-arrow-left-right"
-	      colorHeader="bg-warning text-dark"
-	      columnas="Transferencias, Depósitos, Total Movimientos"
-	      valores="350, 210, 560" />
-	  </div>
-	</div>
+      <div class="col-md-6 mb-4">
+        <my:report
+          titulo="Clientes"
+          icono="bi bi-people-fill"
+          colorHeader="bg-primary"
+          columnas="Clientes Activos, Clientes Inactivos, Total de Clientes"
+          valores="50, 10, 60" />
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <my:report
+          titulo="Préstamos"
+          icono="bi bi-cash-coin"
+          colorHeader="bg-success"
+          columnas="Préstamos Activos, Préstamos Pagados, Total de Préstamos"
+          valores="50, 10, 60" />
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <my:report
+          titulo="Cuentas"
+          icono="bi bi-bank"
+          colorHeader="bg-info"
+          columnas="Cuentas Corrientes, Cuentas de Ahorro, Total de Cuentas"
+          valores="120, 85, 205" />
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <my:report
+          titulo="Transacciones"
+          icono="bi bi-arrow-left-right"
+          colorHeader="bg-warning text-dark"
+          columnas="Transferencias, Depósitos, Total Movimientos"
+          valores="350, 210, 560" />
+      </div>
+    </div>
 
   </div>
 
@@ -202,8 +146,7 @@
 
       if (typeof callback === 'function') callback();
     }
-    
-    // Ejecutar automáticamente al cargar si la sección transaccional está visible
+
     window.addEventListener('DOMContentLoaded', function () {
       const transaccionalidadSection = document.getElementById('transactionality');
       if (transaccionalidadSection && !transaccionalidadSection.classList.contains('d-none')) {

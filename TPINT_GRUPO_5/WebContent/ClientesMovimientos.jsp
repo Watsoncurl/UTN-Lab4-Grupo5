@@ -20,38 +20,38 @@
       
       <div class="card-body">
         <!-- Filtros de búsqueda -->
-        <form class="row g-3 align-items-end">
+        <form action="ServletIngresarCuenta" method="GET" class="row g-3 align-items-end">
           <div class="col-md-2">
             <label for="cuentaSelect" class="form-label fw-bold">Cuenta</label>
-            <select class="form-select" id="cuentaSelect">
-              <option selected disabled>Seleccionar cuenta</option>
-              <option value="1">Cuenta Corriente #1234</option>
-              <option value="2">Cuenta Ahorros #5678</option>
-              <option value="3">Cuenta Inversión #9012</option>
-            </select>
+			<select name="cuenta" id="cuentaSelect" class="form-select">
+			  <option value="">Seleccione cuenta</option>
+			  <option value="1" ${param.cuenta == '1' ? 'selected' : ''}>Caja Ahorros</option>
+			  <option value="2" ${param.cuenta == '2' ? 'selected' : ''}>Cuenta Corriente</option>
+			</select>
           </div>
           
           <div class="col-md-2">
             <label for="desdeDate" class="form-label fw-bold">Desde</label>
-            <input type="date" class="form-control" id="desdeDate">
+            <input type="date" name="desdeDate" id="desdeDate" value="${param.desdeDate}" />
           </div>
           
           <div class="col-md-2">
             <label for="hastaDate" class="form-label fw-bold">Hasta</label>
-            <input type="date" class="form-control" id="hastaDate">
+            <input type="date" name="hastaDate" id="hastaDate" value="${param.hastaDate}" />
           </div>
           
-          <div class="col-md-2">
-            <label for="tipoMovimiento" class="form-label fw-bold">Tipo</label>
-            <select class="form-select" id="tipoMovimiento">
-              <option value="" selected>Todos</option>
-              <option value="credito">Crédito</option>
-              <option value="debito">Débito</option>
-            </select>
-          </div>
+			<div class="col-md-2">
+			  <label for="tipoMovimiento" class="form-label fw-bold">Tipo</label>
+			  <select name="tipoMovimiento" class="form-select" id="tipoMovimiento">
+			    <option value="" ${empty param.tipoMovimiento ? 'selected' : ''}>Todos</option>
+			    <option value="credito" ${param.tipoMovimiento == 'credito' ? 'selected' : ''}>Crédito</option>
+			    <option value="debito" ${param.tipoMovimiento == 'debito' ? 'selected' : ''}>Débito</option>
+			  </select>
+			</div>
+
           
           <div class="col-md-2 d-grid">
-            <button type="button" class="btn btn-primary" onclick="consultarMovimientos()">
+            <button type="submit" class="btn btn-primary">
               <i class="bi bi-search me-2"></i>Buscar
             </button>
           </div>
@@ -131,40 +131,11 @@
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    function consultarMovimientos() {
-      // Obtener valores de los filtros
-      const cuenta = document.getElementById('cuentaSelect').value;
-      const desde = document.getElementById('desdeDate').value;
-      const hasta = document.getElementById('hastaDate').value;
-      const tipo = document.getElementById('tipoMovimiento').value;
-      
-      // Lógica para consultar movimientos con los filtros
-      console.log("Consultando movimientos con filtros:", {
-        cuenta,
-        desde,
-        hasta,
-        tipo
-      });
-      
-      // Aquí iría la llamada AJAX o similar para obtener los datos filtrados
-      // fetch(`/api/movimientos?cuenta=${cuenta}&desde=${desde}&hasta=${hasta}&tipo=${tipo}`)
-      //   .then(response => response.json())
-      //   .then(data => actualizarTabla(data));
-    }
-    
     function limpiarFiltros() {
       document.getElementById('cuentaSelect').value = '';
       document.getElementById('desdeDate').value = '';
       document.getElementById('hastaDate').value = '';
       document.getElementById('tipoMovimiento').value = '';
-      // Opcional: volver a cargar todos los movimientos sin filtros
-      consultarMovimientos();
-    }
-    
-    // Función de ejemplo para actualizar la tabla con los resultados
-    function actualizarTabla(data) {
-      // Implementación para actualizar la tabla con los nuevos datos
-      console.log("Actualizando tabla con:", data);
     }
   </script>
 </body>

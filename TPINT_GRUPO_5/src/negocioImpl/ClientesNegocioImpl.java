@@ -5,6 +5,7 @@ import java.util.List;
 import datos.ClienteDao;
 import datosImpl.ClientesDaoImpl;
 import entidades.Cliente;
+import filtros.ClientesFiltros;
 import negocio.ClientesNegocio;
 
 public class ClientesNegocioImpl implements ClientesNegocio {
@@ -16,12 +17,14 @@ public class ClientesNegocioImpl implements ClientesNegocio {
     
     @Override
     public List<Cliente> listarActivos() {
-        return clienteDao.obtenerActivos();
+        ClientesFiltros filtro = new ClientesFiltros();
+        filtro.setEstado("1"); // Solo activos
+        return clienteDao.filtrar(filtro);
     }
     
     @Override
-    public List<Cliente> filtrarPorBusquedaEstadoYSexo(String busqueda, String estado, String sexo) throws Exception {
-        return clienteDao.filtrarPorBusquedaEstadoYSexo(busqueda, estado, sexo);
+    public List<Cliente> filtrar(ClientesFiltros filtro) throws Exception {
+        return clienteDao.filtrar(filtro);
     }
     
     @Override

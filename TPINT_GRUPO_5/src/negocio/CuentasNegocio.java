@@ -2,6 +2,7 @@ package negocio;
 
 import java.util.List;
 import entidades.Cuentas;
+import filtros.CuentasFiltros;
 
 public interface CuentasNegocio {
 
@@ -11,8 +12,10 @@ public interface CuentasNegocio {
     List<Cuentas> listarPaginadas(int inicio, int cantidad);
     int contarTotalCuentas();
     List<Cuentas> listarCuentasPorCliente(int idCliente);
-    public List<Cuentas> listarPaginadasFiltradas(int inicio, int cantidad, String busqueda, String tipoCuenta, Boolean estado);
-    public int contarTotalCuentasFiltradas(String busqueda, String tipoCuenta, Boolean estado); 
+    List<Cuentas> filtrar(CuentasFiltros filtro, int inicio, int cantidad);
+    int contarFiltradas(CuentasFiltros filtro); 
     boolean activarCuentaPorNroCuenta(String nroCuenta);
+    List<Cuentas> listarTodas();
+    List<Cuentas> listarPorTipo(int idTipoCuenta);
 
 }

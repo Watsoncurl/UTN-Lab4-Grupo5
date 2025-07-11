@@ -2,6 +2,7 @@ package datosImpl;
 import java.util.List;
 import java.util.ArrayList;
 import entidades.Cuentas;
+import filtros.CuentasFiltros;
 
 import java.sql.*;
 
@@ -188,8 +189,8 @@ public class CuentasDaoImpl implements CuentasDao {
                     "INNER JOIN clientes cl ON c.id_cliente = cl.id_cliente " +
                     "WHERE c.nro_cuenta = ?";
         
-        try (Connection con = Conexion.getConexion().getSQLConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
             
             ps.setString(1, nroCuenta.trim());
             
@@ -313,39 +314,9 @@ public class CuentasDaoImpl implements CuentasDao {
         return cuenta;
     }
 	
-	public List<Cuentas> obtenerCuentasPorCliente(int idCliente){
-		List<Cuentas> lista = new ArrayList<>();
-		 String sql = "SELECT c.nro_cuenta, CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, " +
-                 "t.descripcion AS tipo_cuenta, c.saldo, c.estado " +
-                 "FROM cuentas c " +
-                 "INNER JOIN clientes cl ON cl.id_cliente = c.id_cliente " +
-                 "INNER JOIN tipos_cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta " +
-                 "WHERE c.id_cliente = ? AND c.estado = 1";
-
-    try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-        ps.setInt(1, idCliente);
-
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            Cuentas cuenta = new Cuentas();
-            cuenta.setNro_cuenta(rs.getString("nro_cuenta"));
-            cuenta.setCliente(rs.getString("cliente"));
-            cuenta.setTipo_cuenta(rs.getString("tipo_cuenta"));
-            cuenta.setSaldo(rs.getDouble("saldo"));
-            cuenta.setEstado(rs.getBoolean("estado"));
-            lista.add(cuenta);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    for (Cuentas c : lista) {
-        System.out.println("DEBUG - Cuenta: " + c.getNro_cuenta() + " - Saldo: " + c.getSaldo());
-    }
-    return lista;
-	}
 	
 	@Override
-	public List<Cuentas> listarPaginadasFiltradas(int inicio, int cantidad, String busqueda, String tipoCuenta, Boolean estado) {
+	public List<Cuentas> filtrar(CuentasFiltros filtro, int inicio, int cantidad) {
 	    List<Cuentas> lista = new ArrayList<>();
 	    StringBuilder sql = new StringBuilder();
 	    sql.append("SELECT c.nro_cuenta, CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, ")
@@ -355,13 +326,17 @@ public class CuentasDaoImpl implements CuentasDao {
 	       .append("INNER JOIN tipos_cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta ")
 	       .append("WHERE 1=1 ");
 
-	    if (busqueda != null && !busqueda.trim().isEmpty()) {
+	    if (filtro.getBusqueda() != null && !filtro.getBusqueda().trim().isEmpty()) {
 	        sql.append("AND (c.nro_cuenta LIKE ? OR c.cbu LIKE ? OR CONCAT(cl.nombre, ' ', cl.apellido) LIKE ?) ");
 	    }
-	    if (tipoCuenta != null && !tipoCuenta.trim().isEmpty()) {
+	    if (filtro.getTipoCuenta() != null && !filtro.getTipoCuenta().trim().isEmpty()) {
 	        sql.append("AND t.descripcion = ? ");
 	    }
-	    if (estado != null) {
+	    if (filtro.getIdCliente() != null) {
+	        sql.append("AND c.id_cliente = ? ");
+	    }
+	    Boolean estadoBool = filtro.getEstado();
+	    if (estadoBool != null) {
 	        sql.append("AND c.estado = ? ");
 	    }
 
@@ -370,21 +345,24 @@ public class CuentasDaoImpl implements CuentasDao {
 	    try (PreparedStatement ps = conexion.prepareStatement(sql.toString())) {
 	        int paramIndex = 1;
 
-	        if (busqueda != null && !busqueda.trim().isEmpty()) {
-	            String likeParam = "%" + busqueda + "%";
+	        if (filtro.getBusqueda() != null && !filtro.getBusqueda().trim().isEmpty()) {
+	            String likeParam = "%" + filtro.getBusqueda() + "%";
 	            ps.setString(paramIndex++, likeParam);
 	            ps.setString(paramIndex++, likeParam);
 	            ps.setString(paramIndex++, likeParam);
 	        }
-	        if (tipoCuenta != null && !tipoCuenta.trim().isEmpty()) {
-	            ps.setString(paramIndex++, tipoCuenta);
+	        if (filtro.getTipoCuenta() != null && !filtro.getTipoCuenta().trim().isEmpty()) {
+	            ps.setString(paramIndex++, filtro.getTipoCuenta());
 	        }
-	        if (estado != null) {
-	            ps.setBoolean(paramIndex++, estado);
+	        if (filtro.getIdCliente() != null) {
+	            ps.setInt(paramIndex++, filtro.getIdCliente());
+	        }
+	        if (estadoBool != null) {
+	            ps.setBoolean(paramIndex++, estadoBool);
 	        }
 
 	        ps.setInt(paramIndex++, cantidad);
-	        ps.setInt(paramIndex, inicio);
+	        ps.setInt(paramIndex++, inicio);
 
 	        ResultSet rs = ps.executeQuery();
 	        while (rs.next()) {
@@ -403,7 +381,7 @@ public class CuentasDaoImpl implements CuentasDao {
 	}
 
 	@Override
-	public int contarTotalCuentasFiltradas(String busqueda, String tipoCuenta, Boolean estado) {
+	public int contarFiltradas(CuentasFiltros filtro) {
 	    StringBuilder sql = new StringBuilder();
 	    sql.append("SELECT COUNT(*) AS total ")
 	       .append("FROM cuentas c ")
@@ -411,41 +389,53 @@ public class CuentasDaoImpl implements CuentasDao {
 	       .append("INNER JOIN tipos_cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta ")
 	       .append("WHERE 1=1 ");
 
-	    if (busqueda != null && !busqueda.trim().isEmpty()) {
+	    if (filtro.getBusqueda() != null && !filtro.getBusqueda().trim().isEmpty()) {
 	        sql.append("AND (c.nro_cuenta LIKE ? OR c.cbu LIKE ? OR CONCAT(cl.nombre, ' ', cl.apellido) LIKE ?) ");
 	    }
-	    if (tipoCuenta != null && !tipoCuenta.trim().isEmpty()) {
+	    if (filtro.getTipoCuenta() != null && !filtro.getTipoCuenta().trim().isEmpty()) {
 	        sql.append("AND t.descripcion = ? ");
 	    }
-	    if (estado != null) {
+	    if (filtro.getIdCliente() != null) {
+	        sql.append("AND c.id_cliente = ? ");
+	    }
+	    
+	    Boolean estadoBool = filtro.getEstado();
+	    if (estadoBool != null) {
 	        sql.append("AND c.estado = ? ");
 	    }
 
 	    try (PreparedStatement ps = conexion.prepareStatement(sql.toString())) {
 	        int paramIndex = 1;
 
-	        if (busqueda != null && !busqueda.trim().isEmpty()) {
-	            String likeParam = "%" + busqueda + "%";
+	        if (filtro.getBusqueda() != null && !filtro.getBusqueda().trim().isEmpty()) {
+	            String likeParam = "%" + filtro.getBusqueda() + "%";
 	            ps.setString(paramIndex++, likeParam);
 	            ps.setString(paramIndex++, likeParam);
 	            ps.setString(paramIndex++, likeParam);
 	        }
-	        if (tipoCuenta != null && !tipoCuenta.trim().isEmpty()) {
-	            ps.setString(paramIndex++, tipoCuenta);
+	        if (filtro.getTipoCuenta() != null && !filtro.getTipoCuenta().trim().isEmpty()) {
+	            ps.setString(paramIndex++, filtro.getTipoCuenta());
 	        }
-	        if (estado != null) {
-	            ps.setBoolean(paramIndex++, estado);
+	        if (filtro.getIdCliente() != null) {
+	            ps.setInt(paramIndex++, filtro.getIdCliente());
+	        }
+	        if (estadoBool != null) {
+	            ps.setBoolean(paramIndex++, estadoBool);
 	        }
 
-	        ResultSet rs = ps.executeQuery();
-	        if (rs.next()) {
-	            return rs.getInt("total");
+	        try (ResultSet rs = ps.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt("total");
+	            }
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
 	    return 0;
 	}
+	
+
+
 	@Override
 	public boolean activarCuentaPorNroCuenta(String nroCuenta) {
 	    String query = "UPDATE cuentas SET estado = 1 WHERE nro_cuenta = ?";
@@ -464,5 +454,64 @@ public class CuentasDaoImpl implements CuentasDao {
 	        return false;
 	    }
 	}
+	 @Override
+	    public List<Cuentas> listarTodas() { 
+	        List<Cuentas> lista = new ArrayList<>();
+	        String sql = "SELECT c.nro_cuenta, CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, " +
+	                     "t.descripcion AS tipo_cuenta, c.saldo, c.estado, c.id_cuenta " + 
+	                     "FROM cuentas c " +
+	                     "INNER JOIN clientes cl ON cl.id_cliente = c.id_cliente " +
+	                     "INNER JOIN tipos_cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta " +
+	                     "WHERE c.estado = TRUE"; 
+
+	        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+	            ResultSet rs = ps.executeQuery();
+	            while (rs.next()) {
+	                Cuentas cuenta = new Cuentas();
+	                cuenta.setNro_cuenta(rs.getString("nro_cuenta"));
+	                cuenta.setCliente(rs.getString("cliente"));
+	                cuenta.setTipo_cuenta(rs.getString("tipo_cuenta"));
+	                cuenta.setSaldo(rs.getDouble("saldo"));
+	                cuenta.setEstado(rs.getBoolean("estado"));
+	                cuenta.setId_cuenta(rs.getInt("id_cuenta"));
+	                lista.add(cuenta);
+	            }
+	        } catch (SQLException e) {
+	            System.err.println("Error al listar todas las cuentas: " + e.getMessage());
+	            e.printStackTrace();
+	        }
+	        return lista;
+	    }
+	 
+	 @Override
+	 public List<Cuentas> listarPorTipo(int idTipoCuenta) {
+	     List<Cuentas> lista = new ArrayList<>();
+	     String sql = "SELECT c.nro_cuenta, CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, " +
+	                  "t.descripcion AS tipo_cuenta, c.saldo, c.estado, c.id_cuenta " +
+	                  "FROM cuentas c " +
+	                  "INNER JOIN clientes cl ON cl.id_cliente = c.id_cliente " +
+	                  "INNER JOIN tipos_cuenta t ON t.id_tipo_cuenta = c.id_tipo_cuenta " +
+	                  "WHERE c.estado = TRUE AND c.id_tipo_cuenta = ?";
+
+	     try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+	         ps.setInt(1, idTipoCuenta); // <- el filtro por tipo de cuenta
+	         ResultSet rs = ps.executeQuery();
+	         while (rs.next()) {
+	             Cuentas cuenta = new Cuentas();
+	             cuenta.setNro_cuenta(rs.getString("nro_cuenta"));
+	             cuenta.setCliente(rs.getString("cliente"));
+	             cuenta.setTipo_cuenta(rs.getString("tipo_cuenta"));
+	             cuenta.setSaldo(rs.getDouble("saldo"));
+	             cuenta.setEstado(rs.getBoolean("estado"));
+	             cuenta.setId_cuenta(rs.getInt("id_cuenta"));
+	             lista.add(cuenta);
+	         }
+	     } catch (SQLException e) {
+	         System.err.println("Error al listar cuentas por tipo: " + e.getMessage());
+	         e.printStackTrace();
+	     }
+	     return lista;
+	 }
+
 
 }
