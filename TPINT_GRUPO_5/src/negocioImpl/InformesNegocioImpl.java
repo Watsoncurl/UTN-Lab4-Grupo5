@@ -3,6 +3,7 @@ package negocioImpl;
 import datos.InformesDao;
 import datosImpl.InformesDaoImpl;
 import entidades.RegistroPorFecha;
+import entidades.ResumenTransaccional;
 import entidades.SegmentoSaldo;
 import entidades.TasaCrecimiento;
 import negocio.InformesNegocio;
@@ -86,6 +87,48 @@ public class InformesNegocioImpl implements InformesNegocio {
     public Double obtenerTasaCrecimientoComoPorcentaje(LocalDate inicio, LocalDate fin) {
         TasaCrecimiento tasa = calcularTasaCrecimiento(inicio, fin);
         return tasa != null ? tasa.getPorcentaje() : 0.0;
+    }
+    
+    // Resumen transaccional
+    @Override
+    public Map<String, ResumenTransaccional> obtenerResumenTransaccional(String tipoMovimientoOpcional) {
+        try {
+            return dao.obtenerResumenTransaccional(tipoMovimientoOpcional);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
+
+    // Prestamos
+    @Override
+    public double obtenerCapitalPrestado() throws SQLException {
+        return dao.obtenerCapitalPrestado();
+    }
+
+    @Override
+    public int obtenerCantidadPrestamos() throws SQLException {
+        return dao.obtenerCantidadPrestamos();
+    }
+
+    @Override
+    public double obtenerTasaAprobacion() throws SQLException {
+        return dao.obtenerTasaAprobacion();
+    }
+
+    @Override
+    public double obtenerTasaMorosidad() throws SQLException {
+        return dao.obtenerTasaMorosidad();
+    }
+
+    @Override
+    public Map<String, Integer> obtenerPrestamosPorEstado() throws SQLException {
+        return dao.obtenerPrestamosPorEstado();
+    }
+
+    @Override
+    public Map<String, Map<String, Integer>> obtenerPrestamosPorMesEstado() throws SQLException {
+        return dao.obtenerPrestamosPorMesEstado();
     }
 
 }

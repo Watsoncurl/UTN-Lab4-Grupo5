@@ -76,19 +76,18 @@
 
     <div id="loans" class="report-section d-none">
       <my:loansYieldRisk
-        chartIdPrefix="loans"
-        titulo="Rendimiento y Riesgo de Préstamos"
-        icono="bi bi-bar-chart-fill"
-        colorHeader="bg-danger"
-        actualizacion="${fechaReporte}"
-        fechaInicio="${fechaInicio}"
-        fechaFin="${fechaFin}"
-        capitalPrestado="${capitalPrestado}"
-        cantidadPrestamos="${cantidadPrestamos}"
-        tasaAprobacion="${tasaAprobacion}"
-        tasaMorosidad="${tasaMorosidad}"
-        prestamosPorEstado="${prestamosPorEstado}"
-        prestamosPorMesEstado="${prestamosPorMesEstado}" />
+	    chartIdPrefix="loans"
+	    titulo="Rendimiento y Riesgo de Préstamos"
+	    icono="bi bi-bar-chart-fill"
+	    colorHeader="bg-danger"
+	    actualizacion="${fechaReporte}"
+	    fechaInicio="${fechaInicio}"
+	    fechaFin="${fechaFin}"
+	    capitalPrestado="${capitalPrestado}"
+	    cantidadPrestamos="${cantidadPrestamos}"
+	    tasaAprobacion="${tasaAprobacion}"
+	    prestamosPorEstado="${prestamosPorEstado}"
+	    prestamosPorMesEstado="${prestamosPorMesEstado}" />
     </div>
 
     <!-- INFORMES SIMPLES -->
@@ -129,7 +128,6 @@
           valores="350, 210, 560" />
       </div>
     </div>
-
   </div>
 
   <my:footer />

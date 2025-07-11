@@ -5,7 +5,6 @@
 <%@ attribute name="capitalPrestado" required="true" type="java.lang.Double" %>
 <%@ attribute name="cantidadPrestamos" required="true" type="java.lang.Integer" %>
 <%@ attribute name="tasaAprobacion" required="true" type="java.lang.Double" %>
-<%@ attribute name="tasaMorosidad" required="true" type="java.lang.Double" %>
 <%@ attribute name="prestamosPorEstado" required="true" type="java.util.Map" %>
 <%@ attribute name="prestamosPorMesEstado" required="true" type="java.util.Map" %>
 <%@ attribute name="titulo" required="true" type="java.lang.String" %>
@@ -28,21 +27,17 @@
 
   <div class="card-body">
     <div class="row text-center mb-4">
-      <div class="col-md-3">
+      <div class="col-md-4">
         <h6>Monto Total Prestado</h6>
         <h5 class="text-success">$ <%= String.format("%,.2f", capitalPrestado) %></h5>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <h6>Préstamos Nuevos</h6>
         <h5>${cantidadPrestamos}</h5>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <h6>Tasa de Aprobación</h6>
         <h5 class="text-primary">${tasaAprobacion}%</h5>
-      </div>
-      <div class="col-md-3">
-        <h6>Tasa de Morosidad</h6>
-        <h5 class="text-danger">${tasaMorosidad}%</h5>
       </div>
     </div>
 
@@ -74,13 +69,14 @@
 (function() {
   const chartId = '<%= stackedBarChartId %>';
 
+  // Obtener labels (meses)
   const labels = [
     <c:forEach var="entry" items="${prestamosPorMesEstado}" varStatus="status">
       "${entry.key}"<c:if test="${!status.last}">,</c:if>
     </c:forEach>
   ];
 
-  const estadosUnicos = [];
+  // Construir estructura de datos: prestamosPorMesEstado = { mes: { estado: cantidad, ... }, ... }
   const prestamosData = {
     <c:forEach var="mesEntry" items="${prestamosPorMesEstado}" varStatus="mesStatus">
       "${mesEntry.key}": {
@@ -91,22 +87,16 @@
     </c:forEach>
   };
 
-  // Extraer todos los estados únicos desde prestamosData
-  for (let mes in prestamosData) {
-    for (let estado in prestamosData[mes]) {
-      if (!estadosUnicos.includes(estado)) {
-        estadosUnicos.push(estado);
-      }
-    }
-  }
+  // Solo estados válidos según la tabla Prestamos
+  const estadosValidos = ['pendiente', 'aprobado', 'pagado'];
 
   const datasets = [];
-  const colors = ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#0dcaf0'];
+  const colors = ['#ffc107', '#0d6efd', '#198754']; // amarillo, azul, verde (puedes ajustar)
 
-  estadosUnicos.forEach((estado, index) => {
+  estadosValidos.forEach((estado, index) => {
     const data = labels.map(mes => prestamosData[mes]?.[estado] || 0);
     datasets.push({
-      label: estado,
+      label: estado.charAt(0).toUpperCase() + estado.slice(1), // capitalizar estado
       data: data,
       backgroundColor: colors[index % colors.length]
     });

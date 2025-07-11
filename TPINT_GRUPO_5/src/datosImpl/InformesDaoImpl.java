@@ -7,9 +7,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 import datos.InformesDao;
+import entidades.ResumenTransaccional;
 
 public class InformesDaoImpl implements InformesDao {
 
@@ -159,6 +161,116 @@ public class InformesDaoImpl implements InformesDao {
         return 0;
     }
     
-    // customerGrowthReport
+    // Resumen Transaccional
+    @Override
+    public Map<String, ResumenTransaccional> obtenerResumenTransaccional(String tipoMovimientoOpcional) throws SQLException {
+        Map<String, ResumenTransaccional> resumen = new HashMap<>();
+
+        String sql = "SELECT tm.descripcion AS tipo, COUNT(*) AS volumen, SUM(m.importe) AS monto_total, AVG(m.importe) AS importe_promedio " +
+                     "FROM movimientos m " +
+                     "JOIN tipos_movimiento tm ON m.id_tipo_movimiento = tm.id_tipo_movimiento ";
+
+        if (tipoMovimientoOpcional != null && !tipoMovimientoOpcional.isEmpty()) {
+            sql += "WHERE tm.descripcion = ? ";
+        }
+
+        sql += "GROUP BY tm.descripcion";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            if (tipoMovimientoOpcional != null && !tipoMovimientoOpcional.isEmpty()) {
+                ps.setString(1, tipoMovimientoOpcional);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String tipo = rs.getString("tipo");
+                    int volumen = rs.getInt("volumen");
+                    double monto = rs.getDouble("monto_total");
+                    double promedio = rs.getDouble("importe_promedio");
+
+                    ResumenTransaccional resumenItem = new ResumenTransaccional(tipo, volumen, monto, promedio);
+                    resumen.put(tipo, resumenItem);
+                }
+            }
+        }
+
+        return resumen;
+    }
     
+    // Prestamos
+    
+    @Override
+    public double obtenerCapitalPrestado() throws SQLException {
+        String sql = "SELECT COALESCE(SUM(importe), 0) AS total FROM Prestamos";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getDouble("total");
+        }
+        return 0.0;
+    }
+
+    @Override
+    public int obtenerCantidadPrestamos() throws SQLException {
+        String sql = "SELECT COUNT(*) AS total FROM Prestamos";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt("total");
+        }
+        return 0;
+    }
+
+    @Override
+    public double obtenerTasaAprobacion() throws SQLException {
+        String sql = "SELECT (COUNT(CASE WHEN estado = 'aprobado' THEN 1 END) * 100.0 / COUNT(*)) AS tasa " +
+                     "FROM Prestamos";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getDouble("tasa");
+        }
+        return 0.0;
+    }
+
+    @Override
+    public double obtenerTasaMorosidad() throws SQLException {
+        String sql = "SELECT (COUNT(CASE WHEN estado = 'pendiente' THEN 1 END) * 100.0 / COUNT(*)) AS tasa " +
+                     "FROM Prestamos";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getDouble("tasa");
+        }
+        return 0.0;
+    }
+
+    @Override
+    public Map<String, Integer> obtenerPrestamosPorEstado() throws SQLException {
+        String sql = "SELECT estado, COUNT(*) AS cantidad FROM Prestamos GROUP BY estado";
+        Map<String, Integer> resultado = new HashMap<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                resultado.put(rs.getString("estado"), rs.getInt("cantidad"));
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public Map<String, Map<String, Integer>> obtenerPrestamosPorMesEstado() throws SQLException {
+        String sql = "SELECT DATE_FORMAT(fecha_alta, '%M') AS mes, estado, COUNT(*) AS cantidad " +
+                     "FROM Prestamos GROUP BY mes, estado ORDER BY STR_TO_DATE(CONCAT('01 ', mes, ' 2025'), '%d %M %Y')";
+        Map<String, Map<String, Integer>> resultado = new LinkedHashMap<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String mes = rs.getString("mes");
+                String estado = rs.getString("estado");
+                int cantidad = rs.getInt("cantidad");
+                resultado.putIfAbsent(mes, new HashMap<>());
+                resultado.get(mes).put(estado, cantidad);
+            }
+        }
+        return resultado;
+    }
+
+
 }
