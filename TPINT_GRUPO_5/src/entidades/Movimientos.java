@@ -9,13 +9,15 @@ public class Movimientos {
     private Date fecha;
     private String concepto;
     private double importe;
+    private String tipoMovimientoDescripcion;
+
     
     
 
     public Movimientos() {};
 
 	public Movimientos(int idMovimiento, int idCuenta, int idTipoMovimiento, Date fecha, String concepto,
-			double importe) {
+			double importe, String tipoMovimientoDescripcion) {
 		super();
 		this.idMovimiento = idMovimiento;
 		this.idCuenta = idCuenta;
@@ -23,6 +25,8 @@ public class Movimientos {
 		this.fecha = fecha;
 		this.concepto = concepto;
 		this.importe = importe;
+		this.tipoMovimientoDescripcion = tipoMovimientoDescripcion;
+		
 	}
 
 	public int getIdMovimiento() {
@@ -44,6 +48,16 @@ public class Movimientos {
     public int getIdTipoMovimiento() {
         return idTipoMovimiento;
     }
+    
+
+    public String getTipoMovimientoDescripcion() {
+        return tipoMovimientoDescripcion;
+    }
+
+    public void setTipoMovimientoDescripcion(String tipoMovimientoDescripcion) {
+        this.tipoMovimientoDescripcion = tipoMovimientoDescripcion;
+    }
+
 
     public void setIdTipoMovimiento(int idTipoMovimiento) {
         this.idTipoMovimiento = idTipoMovimiento;

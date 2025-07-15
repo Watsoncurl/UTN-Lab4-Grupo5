@@ -11,7 +11,7 @@ public class Cuentas {
     private boolean estado;
     private String cliente; 
     private String tipo_cuenta; 
-    private Timestamp fecha_creacion; // ← Agregado
+    private Timestamp fecha_creacion; 
 
     public Cuentas() {}
 
@@ -24,7 +24,7 @@ public class Cuentas {
         this.estado = estado;
         this.cliente = cliente;
         this.tipo_cuenta = tipo_cuenta;
-        this.fecha_creacion = fecha_creacion; // ← Agregado
+        this.fecha_creacion = fecha_creacion; 
     }
 
     public int getId_cuenta() {

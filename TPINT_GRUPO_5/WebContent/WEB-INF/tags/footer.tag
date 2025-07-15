@@ -16,7 +16,7 @@
         <p class="mb-0 small">
           <h5>💻 Proyecto de Laboratorio 4 "Grupo 5"</h5>
           <span class="d-block d-md-inline">
-            Nadia Hospitaleche, Iván Ignacio Lecumberry, Hernán Darío Molina, 
+            Nadia Hospitaleche, Hernán Darío Molina, 
             Lucía Griselda Monges, Facundo Ezequiel Romano, Nicolás Marcelo Romero
           </span>
       </div>

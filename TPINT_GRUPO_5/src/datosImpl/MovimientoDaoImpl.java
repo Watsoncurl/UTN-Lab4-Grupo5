@@ -27,6 +27,20 @@ public class MovimientoDaoImpl implements MovimientoDao {
 		movimiento.setImporte(rs.getDouble("importe"));
 		return movimiento;
 	}
+	
+	private Movimientos mapearMovimientoConDescripcion(ResultSet rs) throws SQLException {
+	    Movimientos movimiento = new Movimientos();
+	    movimiento.setIdMovimiento(rs.getInt("id_movimiento"));
+	    movimiento.setIdTipoMovimiento(rs.getInt("id_tipo_movimiento"));
+	    movimiento.setTipoMovimientoDescripcion(rs.getString("tipo_movimiento_descripcion"));
+	    movimiento.setIdCuenta(rs.getInt("id_cuenta"));
+	    movimiento.setFecha(rs.getTimestamp("fecha"));
+	    movimiento.setConcepto(rs.getString("concepto"));
+	    movimiento.setImporte(rs.getDouble("importe"));
+	    return movimiento;
+	}
+
+	
 
 	@Override
 	public List<Movimientos> ListarTodosFiltrados(MovimientosFiltros filtro) {
@@ -94,6 +108,30 @@ public class MovimientoDaoImpl implements MovimientoDao {
 
 		return listaMovimientos;
 	}
+	
+	public List<Movimientos> ListarTodosConDescripcion() {
+	    List<Movimientos> listaMovimientos = new ArrayList<>();
+
+	    String sql = "SELECT m.id_movimiento, m.id_tipo_movimiento, tm.descripcion AS tipo_movimiento_descripcion, " +
+	                 "m.id_cuenta, m.fecha, m.concepto, m.importe " +
+	                 "FROM Movimientos m " +
+	                 "INNER JOIN Tipos_Movimiento tm ON m.id_tipo_movimiento = tm.id_tipo_movimiento " +
+	                 "ORDER BY m.fecha DESC";
+
+	    try (PreparedStatement ps = conexion.prepareStatement(sql);
+	         ResultSet rs = ps.executeQuery()) {
+
+	        while (rs.next()) {
+	            listaMovimientos.add(mapearMovimientoConDescripcion(rs));
+	        }
+
+	    } catch (SQLException e) {
+	        System.err.println("Error al listar movimientos con descripción: " + e.getMessage());
+	    }
+
+	    return listaMovimientos;
+	}
+
 
 	@Override
 	public List<Movimientos> ListarTodos() {

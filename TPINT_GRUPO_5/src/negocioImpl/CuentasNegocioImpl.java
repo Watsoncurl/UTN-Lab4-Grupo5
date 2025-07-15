@@ -9,8 +9,20 @@ import datosImpl.CuentasDaoImpl;
 
 public class CuentasNegocioImpl implements CuentasNegocio {
 
-    private CuentasDao cuentasDao = new CuentasDaoImpl();
+	private CuentasDao cuentasDao = new CuentasDaoImpl();
+	
+	 private CuentasDao cuentasDao1;
 
+	    public CuentasNegocioImpl() {
+	    }
+
+	    public void setCuentasDao(CuentasDao cuentasDao) {
+	        this.cuentasDao1 = cuentasDao;
+	    }
+	    public CuentasNegocioImpl(CuentasDao cuentasDao) {
+	        this.cuentasDao = cuentasDao;
+	    }
+    
     @Override
     public boolean crearCuenta(Cuentas cuenta) {
         if (cuentasDao.existeNroCuenta(cuenta.getNro_cuenta())) {
@@ -90,4 +102,15 @@ public class CuentasNegocioImpl implements CuentasNegocio {
 	public List<Cuentas> listarPorTipo(int idTipoCuenta) {
 		return cuentasDao.listarPorTipo(idTipoCuenta);
 	}
+	@Override
+	public List<Cuentas> obtenerCuentasPorIdCliente(int idCliente) {
+	    return cuentasDao.obtenerCuentasPorIdCliente(idCliente);
+	}
+
+	 @Override
+	    public Cuentas obtenerCuentaPorCBU(String cbu) {
+	        return cuentasDao.obtenerCuentaPorCBU(cbu);
+	    }
+	 
+
 }

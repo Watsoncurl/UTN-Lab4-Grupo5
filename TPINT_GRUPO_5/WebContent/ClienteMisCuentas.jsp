@@ -38,7 +38,7 @@
           </div>
           <div class="btn-group btn-group-sm">
             <a href="ServletIngresarCuenta?nroCuenta=${cuenta.nro_cuenta}" class="btn btn-outline-primary">Ingresar</a>
-            <a href="#" class="btn btn-outline-secondary">Transferir</a>
+			<a href="${pageContext.request.contextPath}/TransferirServlet" class="btn btn-outline-secondary">Transferir</a>
           </div>
         </li>
       </c:forEach>

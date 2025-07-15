@@ -8,11 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import datosImpl.Conexion;
 
 @WebServlet("/EliminarClienteServlet")
 public class ServletEliminarCliente extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,12 +25,12 @@ public class ServletEliminarCliente extends HttpServlet {
             PreparedStatement stmt = null;
 
             try {
-                conexion = Conexion.getConexion().getSQLConexion();
-                conexion.setAutoCommit(true);  
+                Conexion connect = Conexion.getConexion();
+                conexion = connect.getSQLConexion();
+                conexion.setAutoCommit(true); //Dejar el autocommit activado
                 String sql = "UPDATE clientes SET estado = 0 WHERE id_cliente = ?";
                 stmt = conexion.prepareStatement(sql);
                 stmt.setInt(1, idCliente);
-
                 int filasAfectadas = stmt.executeUpdate();
 
                 if (filasAfectadas > 0) {
@@ -41,14 +41,17 @@ public class ServletEliminarCliente extends HttpServlet {
 
             } catch (Exception e) {
                 System.err.println("Error al desactivar cliente: " + e.getMessage());
-            } finally {
-                try {
-                    if (stmt != null) stmt.close();
-                } catch (Exception e) {
-                    System.err.println("Error al cerrar statement: " + e.getMessage());
+                 if (conexion != null) {
+                    try {
+                        Conexion.getConexion().rollbackConexion(conexion); //Rollback
+                    } catch (Exception ex) {
+                        System.err.println("Error al hacer rollback: " + ex.getMessage());
+                    }
                 }
+            } finally {
+                try { if (stmt != null) stmt.close(); } catch (Exception e) { System.err.println("Error al cerrar statement: " + e.getMessage()); }
                 if (conexion != null) {
-                    Conexion.getConexion().cerrarConexion();
+                    Conexion.getConexion().cerrarConexion(conexion); // Cierra la conexión usando el método de Conexion
                 }
             }
         }

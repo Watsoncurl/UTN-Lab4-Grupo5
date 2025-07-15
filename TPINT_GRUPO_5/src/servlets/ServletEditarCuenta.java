@@ -123,7 +123,10 @@ public class ServletEditarCuenta extends HttpServlet {
         
         String nroCuentaOriginal = request.getParameter("nroCuentaOriginal");
         cuenta.setNro_cuenta(nroCuentaOriginal != null ? nroCuentaOriginal : request.getParameter("nroCuenta"));
-        
+        String saldoStr = request.getParameter("saldo");
+        if ( saldoStr != null && !saldoStr.trim().isEmpty()) {
+        	cuenta.setSaldo(Double.parseDouble(saldoStr));
+        }
         cuenta.setId_cliente(Integer.parseInt(request.getParameter("idCliente")));
         cuenta.setCbu(request.getParameter("cbu"));
         cuenta.setEstado(Boolean.parseBoolean(request.getParameter("estado")));

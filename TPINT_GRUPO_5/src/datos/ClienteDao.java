@@ -3,6 +3,7 @@ package datos;
 import java.util.List;
 
 import entidades.Cliente;
+import entidades.Cuentas;
 import filtros.ClientesFiltros;
 
 public interface ClienteDao {
@@ -14,4 +15,5 @@ public interface ClienteDao {
     boolean eliminar(int id);
     List<Cliente> listarPaginados(int inicio, int cantidad);
     int contar();
+    
 }

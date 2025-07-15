@@ -29,6 +29,11 @@ public class MovimientosNegocioImpl implements MovimientosNegocio{
 		return movimientoDao.ListarTodos();
 	}
 	
+	@Override
+	public List<Movimientos> ListarTodosConDescripcion() {
+	    return movimientoDao.ListarTodosConDescripcion();
+	}
+
 	
 
 }

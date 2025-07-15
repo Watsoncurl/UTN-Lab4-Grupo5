@@ -19,5 +19,8 @@ public interface CuentasDao {
     public boolean activarCuentaPorNroCuenta(String nroCuenta);
     List<Cuentas> listarTodas();
     List<Cuentas>listarPorTipo(int idTipoCuenta);
+    List<Cuentas> obtenerCuentasPorIdCliente(int idCliente);
+    Cuentas obtenerCuentaPorCBU(String cbu);
+    
 }
 

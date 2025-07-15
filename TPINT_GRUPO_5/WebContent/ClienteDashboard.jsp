@@ -42,9 +42,9 @@
             <i class="bi bi-cash-stack text-warning fs-1 mb-3"></i>
             <h5 class="card-title">Préstamos</h5>
             <p class="card-text text-muted">Solicitud y consulta</p>
-            <a href="${pageContext.request.contextPath}/ClientePrestamos_1.jsp" class="btn btn-outline-warning stretched-link">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
-            </a>
+            <a href="${pageContext.request.contextPath}/SolicitarPrestamoServlet" class="btn btn-outline-warning stretched-link">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+    </a>
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@
             <i class="bi bi-send text-info fs-1 mb-3"></i>
             <h5 class="card-title">Transferencias</h5>
             <p class="card-text text-muted">Realizar transferencias</p>
-            <a href="${pageContext.request.contextPath}/ClienteTransferir.jsp" class="btn btn-outline-info stretched-link">
+            <a href="${pageContext.request.contextPath}/TransferirServlet" class="btn btn-outline-info stretched-link">
               <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
             </a>
           </div>

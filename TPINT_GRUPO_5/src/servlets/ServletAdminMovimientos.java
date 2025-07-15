@@ -42,7 +42,6 @@ public class ServletAdminMovimientos extends HttpServlet {
 	    List<Cuentas> cuentas = cuentasNegocio.listarTodas();
 	    request.setAttribute("cuentas", cuentas);
 
-	    // Parámetros recibidos del formulario
 	    String busqueda = request.getParameter("busqueda");
 	    String tipoMovimiento = request.getParameter("tipoMovimiento");
 	    String fechaDesde = request.getParameter("desdeDate");
@@ -52,7 +51,6 @@ public class ServletAdminMovimientos extends HttpServlet {
 	    if ("buscar".equals(accion)) {
 	        MovimientosFiltros filtro = new MovimientosFiltros();
 
-	        // En lugar de setNroCuenta, pasamos la búsqueda general
 	        filtro.setBusqueda(busqueda); // Si MovimientosFiltros tiene este campo, sino adaptá.
 
 	        filtro.setTipoMovimiento(tipoMovimiento);

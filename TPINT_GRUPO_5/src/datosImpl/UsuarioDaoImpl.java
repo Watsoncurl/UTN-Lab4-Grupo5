@@ -28,7 +28,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 			+ "LEFT JOIN Localidades l ON c.id_localidad = l.id_localidad "
 			+ "LEFT JOIN Provincias p ON l.id_provincia = p.id_provincia";
 
-	private static final String INSERT_USUARIO = "INSERT INTO Usuarios (id_cliente, id_tipo_usuario, usuario, contrasena, estado) VALUES (?, ?, ?, ?, ?)";
+	private static final String INSERT_USUARIO = "INSERT INTO Usuarios (id_cliente, id_tipo_usuario, usuario, contrasena, estado) VALUES (?, ?, ?, SHA2(?, 256), ?)";
 	private static final String SELECT_USUARIO_BY_ID = SELECT_USUARIO_BASE + " WHERE u.id_usuario = ?";
 	private static final String UPDATE_USUARIO = "UPDATE Usuarios SET id_cliente = ?, id_tipo_usuario = ?, usuario = ?, contrasena = ?, estado = ? WHERE id_usuario = ?";
 	private static final String DELETE_USUARIO = "UPDATE Usuarios SET estado = 0 WHERE id_usuario = ?";

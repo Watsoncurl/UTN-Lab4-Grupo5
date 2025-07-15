@@ -17,5 +17,7 @@ public interface CuentasNegocio {
     boolean activarCuentaPorNroCuenta(String nroCuenta);
     List<Cuentas> listarTodas();
     List<Cuentas> listarPorTipo(int idTipoCuenta);
-
+    List<Cuentas> obtenerCuentasPorIdCliente(int idCliente);
+    Cuentas obtenerCuentaPorCBU(String cbu);
+    
 }

@@ -44,7 +44,7 @@ public class ServletIngresarCuenta extends HttpServlet {
 	    try {
 	        String nroCuenta = request.getParameter("nroCuenta");
 	        if (nroCuenta == null || nroCuenta.isEmpty()) {
-	            // manejar error o redirigir
+	           
 	            response.sendRedirect("error.jsp");
 	            return;
 	        }
@@ -52,9 +52,9 @@ public class ServletIngresarCuenta extends HttpServlet {
 	        Cuentas cuenta = cuentasNegocio.obtenerPorNroCuenta(nroCuenta);
 
 	        MovimientosFiltros filtro = new MovimientosFiltros();
-	        filtro.setNroCuenta(nroCuenta);  // Asegurate que este campo exista en MovimientosFiltros
+	        filtro.setNroCuenta(nroCuenta); 
 
-	        // Leer filtros opcionales
+	
 	        String tipoCuenta = request.getParameter("cuenta");
 	        if (tipoCuenta != null && !tipoCuenta.isEmpty()) filtro.setTipoCuenta(tipoCuenta);
 
@@ -67,7 +67,7 @@ public class ServletIngresarCuenta extends HttpServlet {
 	        String fechaHasta = request.getParameter("hastaDate");
 	        if (fechaHasta != null && !fechaHasta.isEmpty()) filtro.setFechaHasta(fechaHasta);
 
-	        List<Movimientos> movimientosFiltrados = movimientosNegocio.ListarTodosFiltrados(filtro);
+	        List<Movimientos> movimientosFiltrados = movimientosNegocio.obtenerPorCuenta(filtro.getNroCuenta());
 
 	        request.setAttribute("Cuenta", cuenta);
 	        request.setAttribute("listaMovimientos", movimientosFiltrados);
@@ -87,7 +87,7 @@ public class ServletIngresarCuenta extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		doGet(request, response);
 	}
 
