@@ -91,43 +91,43 @@
     </div>
 
     <!-- INFORMES SIMPLES -->
-    <div class="row mt-5">
-      <div class="col-md-6 mb-4">
-        <my:report
-          titulo="Clientes"
-          icono="bi bi-people-fill"
-          colorHeader="bg-primary"
-          columnas="Clientes Activos, Clientes Inactivos, Total de Clientes"
-          valores="50, 10, 60" />
-      </div>
-
-      <div class="col-md-6 mb-4">
-        <my:report
-          titulo="Préstamos"
-          icono="bi bi-cash-coin"
-          colorHeader="bg-success"
-          columnas="Préstamos Activos, Préstamos Pagados, Total de Préstamos"
-          valores="50, 10, 60" />
-      </div>
-
-      <div class="col-md-6 mb-4">
-        <my:report
-          titulo="Cuentas"
-          icono="bi bi-bank"
-          colorHeader="bg-info"
-          columnas="Cuentas Corrientes, Cuentas de Ahorro, Total de Cuentas"
-          valores="120, 85, 205" />
-      </div>
-
-      <div class="col-md-6 mb-4">
-        <my:report
-          titulo="Transacciones"
-          icono="bi bi-arrow-left-right"
-          colorHeader="bg-warning text-dark"
-          columnas="Transferencias, Depósitos, Total Movimientos"
-          valores="350, 210, 560" />
-      </div>
-    </div>
+	<div class="row mt-5">
+	  <div class="col-md-6 mb-4">
+	    <my:report
+	      titulo="Clientes"
+	      icono="bi bi-people-fill"
+	      colorHeader="bg-primary"
+	      columnas="${informeClientes.columnas}"
+	      valores="${informeClientes.valores}" />
+	  </div>
+	
+	  <div class="col-md-6 mb-4">
+	    <my:report
+	      titulo="Préstamos"
+	      icono="bi bi-cash-coin"
+	      colorHeader="bg-success"
+	      columnas="${informePrestamos.columnas}"
+	      valores="${informePrestamos.valores}" />
+	  </div>
+	
+	  <div class="col-md-6 mb-4">
+	    <my:report
+	      titulo="Cuentas"
+	      icono="bi bi-bank"
+	      colorHeader="bg-info"
+	      columnas="${informeCuentas.columnas}"
+	      valores="${informeCuentas.valores}" />
+	  </div>
+	
+	  <div class="col-md-6 mb-4">
+	    <my:report
+	      titulo="Transacciones"
+	      icono="bi bi-arrow-left-right"
+	      colorHeader="bg-warning text-dark"
+	      columnas="${informeTransacciones.columnas}"
+	      valores="${informeTransacciones.valores}" />
+	  </div>
+	</div>
   </div>
 
   <my:footer />

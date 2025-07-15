@@ -2,6 +2,7 @@ package negocioImpl;
 
 import datos.InformesDao;
 import datosImpl.InformesDaoImpl;
+import entidades.InformeSimple;
 import entidades.RegistroPorFecha;
 import entidades.ResumenTransaccional;
 import entidades.SegmentoSaldo;
@@ -130,5 +131,24 @@ public class InformesNegocioImpl implements InformesNegocio {
     public Map<String, Map<String, Integer>> obtenerPrestamosPorMesEstado() throws SQLException {
         return dao.obtenerPrestamosPorMesEstado();
     }
+    
+    @Override
+    public InformeSimple obtenerInformeClientes() {
+        return dao.obtenerInformeClientes();
+    }
 
+    @Override
+    public InformeSimple obtenerInformePrestamos() {
+        return dao.obtenerInformePrestamos();
+    }
+
+    @Override
+    public InformeSimple obtenerInformeCuentas() {
+        return dao.obtenerInformeCuentas();
+    }
+
+    @Override
+    public InformeSimple obtenerInformeTransacciones() {
+        return dao.obtenerInformeTransacciones();
+    }
 }

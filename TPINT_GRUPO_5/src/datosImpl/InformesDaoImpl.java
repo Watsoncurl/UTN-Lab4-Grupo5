@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 import datos.InformesDao;
+import entidades.InformeSimple;
 import entidades.ResumenTransaccional;
 
 public class InformesDaoImpl implements InformesDao {
@@ -272,5 +273,87 @@ public class InformesDaoImpl implements InformesDao {
         return resultado;
     }
 
+    // Informes Simples
+    @Override
+    public InformeSimple obtenerInformeClientes() {
+        String columnas = "Clientes Activos, Clientes Inactivos, Total de Clientes";
+        String valores = "0,0,0";
+        try {
+            String sql = "SELECT " +
+                         "SUM(CASE WHEN estado = 1 THEN 1 ELSE 0 END) AS activos, " +
+                         "SUM(CASE WHEN estado = 0 THEN 1 ELSE 0 END) AS inactivos, " +
+                         "COUNT(*) AS total " +
+                         "FROM Clientes";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                valores = rs.getInt("activos") + "," + rs.getInt("inactivos") + "," + rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new InformeSimple(columnas, valores);
+    }
 
+    @Override
+    public InformeSimple obtenerInformePrestamos() {
+        String columnas = "Préstamos Activos, Préstamos Pagados, Total de Préstamos";
+        String valores = "0,0,0";
+        try {
+            String sql = "SELECT " +
+                         "SUM(CASE WHEN estado IN ('pendiente', 'aprobado') THEN 1 ELSE 0 END) AS activos, " +
+                         "SUM(CASE WHEN estado = 'pagado' THEN 1 ELSE 0 END) AS pagados, " +
+                         "COUNT(*) AS total " +
+                         "FROM Prestamos";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                valores = rs.getInt("activos") + "," + rs.getInt("pagados") + "," + rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new InformeSimple(columnas, valores);
+    }
+
+    @Override
+    public InformeSimple obtenerInformeCuentas() {
+        String columnas = "Cuentas Corrientes, Cuentas de Ahorro, Total de Cuentas";
+        String valores = "0,0,0";
+        try {
+            String sql = "SELECT " +
+                         "SUM(CASE WHEN id_tipo_cuenta = 1 THEN 1 ELSE 0 END) AS corriente, " +
+                         "SUM(CASE WHEN id_tipo_cuenta = 2 THEN 1 ELSE 0 END) AS ahorro, " +
+                         "COUNT(*) AS total " +
+                         "FROM Cuentas";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                valores = rs.getInt("corriente") + "," + rs.getInt("ahorro") + "," + rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new InformeSimple(columnas, valores);
+    }
+
+    @Override
+    public InformeSimple obtenerInformeTransacciones() {
+        String columnas = "Transferencias, Depósitos, Total Movimientos";
+        String valores = "0,0,0";
+        try {
+            String sql = "SELECT " +
+                         "(SELECT COUNT(*) FROM Transferencias) AS transferencias, " +
+                         "(SELECT COUNT(*) FROM Movimientos WHERE id_tipo_movimiento = 1) AS depositos, " +
+                         "(SELECT COUNT(*) FROM Movimientos) AS total";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                valores = rs.getInt("transferencias") + "," + rs.getInt("depositos") + "," + rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new InformeSimple(columnas, valores);
+    }
 }

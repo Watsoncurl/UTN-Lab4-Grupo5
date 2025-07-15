@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import entidades.SegmentoSaldo;
+import entidades.InformeSimple;
 import entidades.RegistroPorFecha;
 import entidades.ResumenTransaccional;
 import entidades.TasaCrecimiento;
@@ -34,5 +35,9 @@ public interface InformesNegocio {
     double obtenerTasaMorosidad() throws SQLException;
     Map<String, Integer> obtenerPrestamosPorEstado() throws SQLException;
     Map<String, Map<String, Integer>> obtenerPrestamosPorMesEstado() throws SQLException;
-
+    
+    InformeSimple obtenerInformeClientes();
+    InformeSimple obtenerInformePrestamos();
+    InformeSimple obtenerInformeCuentas();
+    InformeSimple obtenerInformeTransacciones();
 }

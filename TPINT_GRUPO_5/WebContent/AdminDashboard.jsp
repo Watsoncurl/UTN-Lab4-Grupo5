@@ -84,7 +84,7 @@
                 <i class="bi bi-graph-up text-danger fs-1 mb-3"></i>
                 <h5 class="card-title">Informes</h5>
                 <p class="card-text text-muted">Reportes y estadísticas</p>
-                <a href="${pageContext.request.contextPath}/AdminInformes.jsp" class="btn btn-outline-danger stretched-link">
+                <a href="${pageContext.request.contextPath}/AdminInformes" class="btn btn-outline-danger stretched-link">
                   <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
                 </a>
               </div>

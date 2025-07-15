@@ -26,11 +26,16 @@ public class ServletAdminInformes extends HttpServlet {
             LocalDate fechaInicio = LocalDate.parse("01/06/2025", formatter);
             LocalDate fechaFin = LocalDate.parse("30/06/2025", formatter);
 
-            // Segmentación
+            // ----- Informes simples -----
+            request.setAttribute("informeClientes", informesNegocio.obtenerInformeClientes());
+            request.setAttribute("informePrestamos", informesNegocio.obtenerInformePrestamos());
+            request.setAttribute("informeCuentas", informesNegocio.obtenerInformeCuentas());
+            request.setAttribute("informeTransacciones", informesNegocio.obtenerInformeTransacciones());
+
+            // ----- Segmentación -----
             Map<String, Integer> cantidadClientesPorSegmento = informesNegocio.obtenerCantidadClientesPorSegmento();
             Map<String, Double> montoTotalPorSegmento = informesNegocio.obtenerMontosPorSegmento();
 
-            // Porcentaje por segmento
             double totalMontos = montoTotalPorSegmento.values().stream().mapToDouble(Double::doubleValue).sum();
             Map<String, Double> porcentajeSaldoPorSegmento = new HashMap<>();
             for (String segmento : montoTotalPorSegmento.keySet()) {
@@ -38,39 +43,33 @@ public class ServletAdminInformes extends HttpServlet {
                 porcentajeSaldoPorSegmento.put(segmento, porcentaje);
             }
 
-            // Nuevos clientes y cuentas por fecha
+            // ----- Nuevos clientes/cuentas, crecimiento -----
             Map<LocalDate, Integer> nuevosClientesPorFecha = informesNegocio.obtenerNuevosClientesPorFecha();
             Map<LocalDate, Integer> nuevasCuentasPorFecha = informesNegocio.obtenerNuevasCuentasPorFecha();
-
-            // Cuentas por tipo
             Map<String, Integer> cuentasPorTipo = informesNegocio.obtenerCuentasPorTipo();
-
-            // Tasa de crecimiento
             TasaCrecimiento tasaCrecimiento = informesNegocio.calcularTasaCrecimiento(fechaInicio, fechaFin);
 
-            // Datos de préstamos reales
+            // ----- Préstamos -----
             double capitalPrestado = informesNegocio.obtenerCapitalPrestado();
             int cantidadPrestamos = informesNegocio.obtenerCantidadPrestamos();
             double tasaAprobacion = informesNegocio.obtenerTasaAprobacion();
-
             Map<String, Integer> prestamosPorEstado = informesNegocio.obtenerPrestamosPorEstado();
             Map<String, Map<String, Integer>> prestamosPorMesEstado = informesNegocio.obtenerPrestamosPorMesEstado();
 
-            // Resumen transaccional
+            // ----- Transacciones -----
             Map<String, ResumenTransaccional> resumenTransaccional = informesNegocio.obtenerResumenTransaccional(null);
             Map<String, Integer> volumenPorTipo = new HashMap<>();
             Map<String, Double> montoPorTipo = new HashMap<>();
             Map<String, Double> promedioPorTipo = new HashMap<>();
-
             for (Map.Entry<String, ResumenTransaccional> entry : resumenTransaccional.entrySet()) {
                 volumenPorTipo.put(entry.getKey(), entry.getValue().getVolumen());
                 montoPorTipo.put(entry.getKey(), entry.getValue().getMontoTotal());
                 promedioPorTipo.put(entry.getKey(), entry.getValue().getImportePromedio());
             }
 
-            String tipoMovimiento = null; // podría venir como parámetro
+            // ----- Parámetros generales -----
+            String tipoMovimiento = null;
 
-            // Seteo de atributos para JSP
             request.setAttribute("fechaInicio", "01/06/2025");
             request.setAttribute("fechaFin", "30/06/2025");
             request.setAttribute("fechaReporte", "01/07/2025");
@@ -96,6 +95,7 @@ public class ServletAdminInformes extends HttpServlet {
             request.setAttribute("prestamosPorEstado", prestamosPorEstado);
             request.setAttribute("prestamosPorMesEstado", prestamosPorMesEstado);
 
+            // Redirección a la vista
             request.getRequestDispatcher("/AdminInformes.jsp").forward(request, response);
 
         } catch (Exception e) {

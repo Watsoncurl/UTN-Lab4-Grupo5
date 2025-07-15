@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.TreeMap;
 
+import entidades.InformeSimple;
 import entidades.ResumenTransaccional;
 
 public interface InformesDao {
@@ -37,4 +38,10 @@ public interface InformesDao {
     double obtenerTasaMorosidad() throws SQLException;
     Map<String, Integer> obtenerPrestamosPorEstado() throws SQLException;
     Map<String, Map<String, Integer>> obtenerPrestamosPorMesEstado() throws SQLException;
+    
+    // Informes Simples
+    InformeSimple obtenerInformeClientes();
+    InformeSimple obtenerInformePrestamos();
+    InformeSimple obtenerInformeCuentas();
+    InformeSimple obtenerInformeTransacciones();
 }
