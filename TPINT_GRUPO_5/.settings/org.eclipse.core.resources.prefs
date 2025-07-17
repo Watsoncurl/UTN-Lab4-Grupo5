@@ -1,2 +1,6 @@
 eclipse.preferences.version=1
 encoding//WebContent/AdminDashboard.jsp=UTF-8
+encoding//src/datosImpl/PrestamosDaoImpl.java=UTF-8
+encoding//src/servlets/PrestamoServlet.java=UTF-8
+encoding//src/servlets/ServletAdminPrestamosDetalle.java=UTF-8
+encoding//src/servlets/ServletClientePrestamo.java=UTF-8

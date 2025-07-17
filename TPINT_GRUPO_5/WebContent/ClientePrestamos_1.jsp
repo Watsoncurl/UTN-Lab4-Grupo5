@@ -25,7 +25,7 @@
                 <i class="bi bi-exclamation-triangle me-2"></i>${requestScope.error}
               </div>
             </c:if>
-            <form class="needs-validation" novalidate action="PrestamoServlet" method="post">
+            <form class="needs-validation" novalidate action="PrestamoServlet" method="post" id="prestamoForm">
               <div class="mb-3">
                 <label for="idCuenta" class="form-label">Cuenta a depositar</label>
                 <select class="form-select" id="idCuenta" name="idCuenta" required>
@@ -46,7 +46,7 @@
               </div>
               <div class="mb-4">
                 <label for="plazoMeses" class="form-label">Cantidad de cuotas</label>
-                <select class="form-select" id="plazoMeses" name="plazoMeses" required>
+                <select class="form-select" id="plazoMeses" name="plazoMeses" required onchange="calcularCuota()">
                   <option value="" selected disabled>-- Seleccione una opción --</option>
                   <option value="6">6 cuotas</option>
                   <option value="12">12 cuotas</option>
@@ -56,6 +56,24 @@
                 </select>
                 <div class="invalid-feedback">Seleccione la cantidad de cuotas</div>
               </div>
+
+              <!-- Caja de texto para mostrar el valor de la cuota -->
+              <div class="mb-3">
+                <label for="valorCuota" class="form-label">Valor de la Cuota</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="text" class="form-control" id="valorCuota" name="valorCuota" value="0.00" readonly>
+                </div>
+              </div>
+
+              <!-- Caja de texto para mostrar la tasa de interés anual -->
+              <div class="mb-3">
+                <label for="tasaInteresAnual" class="form-label">Tasa de Interés Anual</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="tasaInteresAnual" name="tasaInteresAnual" value="10.00%" readonly>
+                </div>
+              </div>
+
               <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-primary px-4" name="accion" value="Siguiente">
                   <i class="bi bi-arrow-right-circle me-2"></i>Siguiente
@@ -73,7 +91,6 @@
   <my:footer />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Ejemplo de validación de formulario de Bootstrap
     (function() {
       'use strict';
       const forms = document.querySelectorAll('.needs-validation');
@@ -87,6 +104,31 @@
         }, false);
       });
     })();
+
+    function calcularCuota() {
+      const importe = parseFloat(document.getElementById('importe').value);
+      const plazoMeses = parseInt(document.getElementById('plazoMeses').value);
+      const valorCuotaInput = document.getElementById('valorCuota');
+
+      // Tasa de interés anual (dividida entre 12 para obtener la tasa mensual)
+      const tasaInteresAnual = 0.1; // 10% anual
+      const tasaInteresMensual = tasaInteresAnual / 12;
+
+      if (isNaN(importe) || isNaN(plazoMeses) || importe <= 0 || plazoMeses <= 0) {
+        valorCuotaInput.value = "0.00";
+        return;
+      }
+
+      // Calcular el valor de la cuota usando la fórmula proporcionada
+      const cuotaMensual = (importe + (importe * tasaInteresAnual * plazoMeses / 12)) / plazoMeses; //Corregido y simplificado
+
+      // Mostrar el valor de la cuota formateado
+      valorCuotaInput.value = cuotaMensual.toFixed(2); // Formatea a 2 decimales
+    }
+
+    // Agregar eventos de escucha para el cambio de importe
+    document.getElementById('importe').addEventListener('input', calcularCuota);
+
   </script>
 </body>
 </html>

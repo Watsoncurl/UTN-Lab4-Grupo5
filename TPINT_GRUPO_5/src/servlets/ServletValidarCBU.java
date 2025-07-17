@@ -13,11 +13,14 @@ import java.io.PrintWriter;
 
 @WebServlet("/ServletValidarCBU")
 public class ServletValidarCBU extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	
+
+    private static final long serialVersionUID = 1L;
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String cbu = request.getParameter("cbu");
         response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
+
         PrintWriter out = response.getWriter();
 
         if (cbu != null && !cbu.isEmpty()) {
@@ -26,12 +29,14 @@ public class ServletValidarCBU extends HttpServlet {
 
             if (cuenta != null) {
                 String nombreCompleto = cuenta.getCliente();
-                out.println("<span style='color:green;'>CBU Válido - Destinatario: " + nombreCompleto + "</span>");
+                out.println("<div class='alert alert-success mt-2' role='alert'><i class='bi bi-check-circle me-2'></i>CBU VÃ¡lido - Destinatario: <b>" + nombreCompleto + "</b></div>");
             } else {
-                out.println("<span style='color:red;'>CBU No Encontrado</span>");
+                out.println("<div class='alert alert-danger mt-2' role='alert'><i class='bi bi-exclamation-triangle me-2'></i>CBU No Encontrado</div>");
             }
         } else {
-            out.println("<span style='color:red;'>Ingrese un CBU</span>");
+            out.println("<div class='alert alert-warning mt-2' role='alert'><i class='bi bi-exclamation-triangle me-2'></i>Ingrese un CBU</div>");
         }
+
+        out.flush();
     }
 }

@@ -47,11 +47,12 @@ public class ServletAdminAgregarCuenta extends HttpServlet {
 			boolean existo = new CuentasNegocioImpl().crearCuenta(cuenta);
 			
 			if(existo) {
-				response.sendRedirect("AdminCuenta.jsp");
+			    request.getSession().setAttribute("mensaje", "Cuenta creada exitosamente.");
 			} else {
-				request.setAttribute("error", "No se pudo crear la cuenta.");
-	            request.getRequestDispatcher("AdminAgregarCuenta.jsp").forward(request, response);
+			    request.getSession().setAttribute("error", "No se pudo crear la cuenta.");
 			}
+			response.sendRedirect("ListarCuentasServlet");
+
 		}
 	}
 

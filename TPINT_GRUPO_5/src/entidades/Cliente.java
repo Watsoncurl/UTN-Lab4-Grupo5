@@ -13,7 +13,7 @@ public class Cliente {
     private String direccion;
     private int idLocalidad;
     private String localidadNombre;
-    private int idProvincia;           // <-- Nuevo campo para el ID
+    private int idProvincia;           
     private String provincia;
     private String email;
     private String telefono;
@@ -35,7 +35,7 @@ public class Cliente {
         this.direccion = direccion;
         this.idLocalidad = idLocalidad;
         this.localidadNombre = localidadNombre;
-        this.idProvincia = idProvincia;       // Seteado acá
+        this.idProvincia = idProvincia;       
         this.provincia = provincia;
         this.email = email;
         this.telefono = telefono;

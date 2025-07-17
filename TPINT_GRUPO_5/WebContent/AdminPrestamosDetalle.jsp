@@ -1,5 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,22 +25,25 @@
                 </div>
                 
                 <div class="card-body">
-                    <!-- Cambié el formulario por enlaces simples -->
+                    <!-- Datos del préstamo -->
                     <div class="row g-3">
                         <!-- Primera columna -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control-plaintext" id="cuentaDeposito" value="12345678" readonly>
+                                <input type="text" class="form-control-plaintext" id="cuentaDeposito" 
+                                       value="${prestamo.idCuenta}" readonly>
                                 <label for="cuentaDeposito">Cuenta a depositar</label>
                             </div>
-                            
+
                             <div class="form-floating mt-3">
-                                <input type="text" class="form-control-plaintext" id="importe" value="$50.000" readonly>
-                                <label for="importe">Importe solicitado</label>
+                                <input type="text" class="form-control-plaintext text-end" 
+                                       value="$<fmt:formatNumber value='${prestamo.importe}' type='number' minFractionDigits='2'/>" readonly>
+                                <label>Importe solicitado</label>
                             </div>
                             
                             <div class="form-floating mt-3">
-                                <input type="text" class="form-control-plaintext" id="cuotas" value="12" readonly>
+                                <input type="text" class="form-control-plaintext" id="cuotas" 
+                                       value="${prestamo.plazoMeses}" readonly>
                                 <label for="cuotas">Cantidad de cuotas</label>
                             </div>
                         </div>
@@ -45,30 +51,52 @@
                         <!-- Segunda columna -->
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control-plaintext" id="interes" value="10%" readonly>
+                                <input type="text" class="form-control-plaintext" id="interes" 
+                                       value="10%" readonly>
                                 <label for="interes">Interés aplicado</label>
                             </div>
                             
                             <div class="form-floating mt-3">
-                                <input type="text" class="form-control-plaintext" id="montoFinal" value="$55.000" readonly>
-                                <label for="montoFinal">Monto final con intereses</label>
+                                <input type="text" class="form-control-plaintext text-end" 
+                                       value="$<fmt:formatNumber value='${prestamo.importe + (prestamo.importe * 0.10 * (prestamo.plazoMeses / 12.0))}' type='number' minFractionDigits='2'/>" readonly>
+                                <label>Monto final con intereses</label>
                             </div>
                             
                             <div class="form-floating mt-3">
-                                <input type="text" class="form-control-plaintext" id="valorCuota" value="$4.583,33" readonly>
-                                <label for="valorCuota">Valor por cuota</label>
+                                <input type="text" class="form-control-plaintext text-end" 
+                                       value="$<fmt:formatNumber value='${prestamo.cuotaMensual}' type='number' minFractionDigits='2'/>" readonly>
+                                <label>Valor por cuota</label>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="d-flex justify-content-between mt-4 pt-3 border-top">
-                        <a href="AdminPrestamos.jsp" class="btn btn-success px-4">
-                            <i class="bi bi-check-circle me-2"></i> Autorizar
-                        </a>
-                        <a href="AdminPrestamos.jsp" class="btn btn-danger px-4">
-                            <i class="bi bi-x-circle me-2"></i> Rechazar
-                        </a>
-                    </div>
+                    <!-- Botones de acción -->
+					<div class="d-flex justify-content-between mt-4 pt-3 border-top">
+					    <!-- Botón para volver a la lista a la izquierda -->
+					    <a href="ServletAdminPrestamos" class="btn btn-secondary px-4">
+					        <i class="bi bi-arrow-left-circle me-2"></i> Volver a la lista
+					    </a>
+					
+					    <div>
+					        <c:if test="${prestamo.estado == 'pendiente'}">
+					            <form action="ServletAdminPrestamosDetalle" method="post" class="d-inline me-2">
+					                <input type="hidden" name="id" value="${prestamo.idPrestamo}" />
+					                <input type="hidden" name="accion" value="aceptar" />
+					                <button type="submit" class="btn btn-success px-4">
+					                    <i class="bi bi-check-circle me-2"></i> Autorizar
+					                </button>
+					            </form>
+					            <form action="ServletAdminPrestamosDetalle" method="post" class="d-inline">
+					                <input type="hidden" name="id" value="${prestamo.idPrestamo}" />
+					                <input type="hidden" name="accion" value="rechazar" />
+					                <button type="submit" class="btn btn-danger px-4">
+					                    <i class="bi bi-x-circle me-2"></i> Rechazar
+					                </button>
+					            </form>
+					        </c:if>
+					    </div>
+					</div>
+
                 </div>
             </div>
         </div>

@@ -18,9 +18,7 @@ import negocioImpl.CuentasNegocioImpl;
 
 @WebServlet("/TransferirServlet")
 public class TransferirServlet extends HttpServlet {
-
     private static final long serialVersionUID = 1L;
-
     private CuentasNegocio cuentasNegocio;
     private TransferenciaNegocio transferenciaNegocio;
 
@@ -39,10 +37,19 @@ public class TransferirServlet extends HttpServlet {
             response.sendRedirect("Login.jsp");
             return;
         }
+
         try {
             int idCliente = (int) session.getAttribute("idCliente");
+            // Obtener las cuentas RECIENTES desde la base de datos
             List<Cuentas> cuentas = cuentasNegocio.obtenerCuentasPorIdCliente(idCliente);
             request.setAttribute("cuentas", cuentas);
+
+            // Obtener el ID de la cuenta origen (si existe)
+            String cuentaOrigenStr = request.getParameter("cuentaOrigen");
+            if (cuentaOrigenStr != null && !cuentaOrigenStr.isEmpty()) {
+                request.setAttribute("cuentaOrigen", cuentaOrigenStr);
+            }
+
             request.getRequestDispatcher("ClienteTransferir.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,7 +72,8 @@ public class TransferirServlet extends HttpServlet {
 
         if (cbuDestino.isEmpty() || idCuentaOrigenStr.isEmpty() || importeStr.isEmpty() || concepto.isEmpty()) {
             request.setAttribute("error", "Faltan datos obligatorios.");
-            request.getRequestDispatcher("ClienteTransferir.jsp").forward(request, response);
+            if (idCuentaOrigenStr != null) request.setAttribute("cuentaOrigen", idCuentaOrigenStr); // Mantener la cuenta seleccionada
+            doGet(request, response); // Volver a cargar las cuentas
             return;
         }
 
@@ -75,27 +83,23 @@ public class TransferirServlet extends HttpServlet {
 
             if (importe <= 0) {
                 request.setAttribute("error", "El importe debe ser mayor a cero.");
-                request.getRequestDispatcher("ClienteTransferir.jsp").forward(request, response);
+                request.setAttribute("cuentaOrigen", idCuentaOrigen); // Mantener la cuenta seleccionada
+                doGet(request, response); // Volver a cargar las cuentas
                 return;
             }
-
-            System.out.println("CBU Destino: " + cbuDestino);
-            System.out.println("ID Cuenta Origen: " + idCuentaOrigen);
-            System.out.println("Importe: " + importe);
-            System.out.println("Concepto: " + concepto);
 
             Cuentas cuentaDestino = this.cuentasNegocio.obtenerCuentaPorCBU(cbuDestino);
             if (cuentaDestino == null) {
                 request.setAttribute("error", "CBU no encontrado.");
-                request.getRequestDispatcher("ClienteTransferir.jsp").forward(request, response);
+                request.setAttribute("cuentaOrigen", idCuentaOrigen); // Mantener la cuenta seleccionada
+                doGet(request, response); // Volver a cargar las cuentas
                 return;
             }
 
-            System.out.println("Cuenta Destino Encontrada: " + cuentaDestino.toString());
-
             if (idCuentaOrigen == cuentaDestino.getId_cuenta()) {
                 request.setAttribute("error", "No puede transferirse a la misma cuenta.");
-                request.getRequestDispatcher("ClienteTransferir.jsp").forward(request, response);
+                request.setAttribute("cuentaOrigen", idCuentaOrigen); // Mantener la cuenta seleccionada
+                doGet(request, response); // Volver a cargar las cuentas
                 return;
             }
 
@@ -106,31 +110,41 @@ public class TransferirServlet extends HttpServlet {
             transferencia.setConcepto(concepto);
             transferencia.setCbuDestino(cbuDestino);
 
-          
-             System.out.println("ID Cuenta Origen: " + transferencia.getIdCuentaOrigen());
-            System.out.println("ID Cuenta Destino: " + transferencia.getIdCuentaDestino());
-            System.out.println("Importe: " + transferencia.getImporte());
-            System.out.println("Concepto: " + transferencia.getConcepto());
-            System.out.println("CBU Destino: " + transferencia.getCbuDestino());
-
             boolean exito = transferenciaNegocio.realizarTransferencia(transferencia);
 
             if (exito) {
-                request.setAttribute("mensaje", "Transferencia realizada con éxito.");
+                request.setAttribute("mensaje", "Transferencia realizada con ï¿½xito.");
+                 request.setAttribute("cuentaOrigen", idCuentaOrigen); // Mantener la cuenta seleccionada
+
+                HttpSession session = request.getSession();
+                int idCliente = (int) session.getAttribute("idCliente");
+                List<Cuentas> cuentas = cuentasNegocio.obtenerCuentasPorIdCliente(idCliente);
+
+                 
+                for (Cuentas cuenta : cuentas) {
+                    System.out.println("Cuenta " + cuenta.getId_cuenta() + ": Saldo = " + cuenta.getSaldo());
+                }
+                  request.setAttribute("cuentaOrigen", idCuentaOrigen);
+
+                request.setAttribute("cuentas", cuentas); 
                 request.getRequestDispatcher("TransferenciaExitosa.jsp").forward(request, response);
+                //response.sendRedirect("TransferenciaExitosa.jsp?cuentaOrigen=" + idCuentaOrigen); //Redirecciono aca
             } else {
                 request.setAttribute("error", "No se pudo completar la transferencia.");
-                request.getRequestDispatcher("ClienteTransferir.jsp").forward(request, response);
+                request.setAttribute("cuentaOrigen", idCuentaOrigen); 
+                doGet(request, response); 
             }
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            request.setAttribute("error", "Error en el formato de los datos numéricos.");
-            request.getRequestDispatcher("ClienteTransferir.jsp").forward(request, response);
+            request.setAttribute("error", "Error en el formato de los datos numï¿½ricos.");
+            if (idCuentaOrigenStr != null) request.setAttribute("cuentaOrigen", idCuentaOrigenStr); // Mantener la cuenta seleccionada
+            doGet(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error inesperado: " + e.getMessage());
-            request.getRequestDispatcher("ClienteTransferir.jsp").forward(request, response);
+              if (idCuentaOrigenStr != null) request.setAttribute("cuentaOrigen", idCuentaOrigenStr); // Mantener la cuenta seleccionada
+            doGet(request, response); 
         }
     }
 }

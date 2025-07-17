@@ -21,6 +21,12 @@ public interface CuentasDao {
     List<Cuentas>listarPorTipo(int idTipoCuenta);
     List<Cuentas> obtenerCuentasPorIdCliente(int idCliente);
     Cuentas obtenerCuentaPorCBU(String cbu);
+    int obtenerIdPorNroCuenta(String nroCuenta);
+    int obtenerIdCuentaPorNroCuenta(String nroCuenta);
+    Cuentas obtenerCuentaPorId(int idCuenta);
+    Cuentas obtenerPorId(int idCuenta);
+    boolean actualizar(Cuentas cuenta);
+    boolean cambiaSaldo(Cuentas cuenta);
     
 }
 

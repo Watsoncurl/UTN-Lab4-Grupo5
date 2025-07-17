@@ -24,8 +24,8 @@
       <div class="btn-group" role="group">
         <button class="btn btn-warning" onclick="mostrarInforme('transactionality', window['renderTransaccionalidadCharts_trans'])">Transaccionalidad</button>
         <button class="btn btn-success" onclick="mostrarInforme('growth', window['renderGrowthCharts_grw'])">Crecimiento de clientes</button>
-        <button class="btn btn-primary" onclick="mostrarInforme('segmentation', window['renderSegmentationCharts_seg'])">Segmentación de clientes</button>
-        <button class="btn btn-danger" onclick="mostrarInforme('loans', window['renderLoansRiskCharts_loans'])">Rendimientos de préstamos</button>
+        <button class="btn btn-primary" onclick="mostrarInforme('segmentation', window['renderSegmentationCharts_seg'])">Segmentacion de clientes</button>
+        <button class="btn btn-danger" onclick="mostrarInforme('loans', window['renderLoansRiskCharts_loans'])">Rendimientos de prestamos</button>
       </div>
     </div>
 

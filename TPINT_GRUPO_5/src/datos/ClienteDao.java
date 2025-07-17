@@ -12,8 +12,9 @@ public interface ClienteDao {
     Cliente obtenerPorId(int id);
     boolean insertar(Cliente cliente);
     boolean actualizar(Cliente cliente);
-    boolean eliminar(int id);
+    boolean eliminarCliente(int id);
     List<Cliente> listarPaginados(int inicio, int cantidad);
     int contar();
+    void activarCliente(int idCliente);
     
 }

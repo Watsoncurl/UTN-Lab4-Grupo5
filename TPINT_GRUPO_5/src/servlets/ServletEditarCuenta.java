@@ -1,143 +1,98 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import entidades.Cuentas;
+import entidades.tipo_cuenta;
 import negocio.CuentasNegocio;
+import negocio.TiposCuentaNegocio;
 import negocioImpl.CuentasNegocioImpl;
+import negocioImpl.TipoCuentaNegocioImpl;
+import entidades.Cliente;
+import negocio.ClientesNegocio;
+import negocioImpl.ClientesNegocioImpl;
 
 @WebServlet("/ServletEditarCuenta")
 public class ServletEditarCuenta extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private CuentasNegocio cuentaNegocio;
+    private CuentasNegocio cuentasNegocio = new CuentasNegocioImpl();
+    private TiposCuentaNegocio tiposCuentaNegocio = new TipoCuentaNegocioImpl();
+    private ClientesNegocio clientesNegocio = new ClientesNegocioImpl();
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        cuentaNegocio = new CuentasNegocioImpl();
-    }
-
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // 1. Obtener parámetros de la solicitud
-        String nroCuenta = request.getParameter("nroCuenta");
+
+        HttpSession session = request.getSession();
         String modo = request.getParameter("modo");
-        
-        // 2. Validaciones iniciales
-        if (nroCuenta == null || nroCuenta.trim().isEmpty()) {
-            manejarError(request, response, "Número de cuenta no proporcionado");
-            return;
-        }
-        
-        // Limpiar y estandarizar el número de cuenta
-        nroCuenta = nroCuenta.trim();
-        
-        try {
-            // 3. Debug: Mostrar parámetros recibidos
-            System.out.println("[DEBUG] Parámetros recibidos - NroCuenta: " + nroCuenta + ", Modo: " + modo);
-            
-            // 4. Obtener la cuenta desde la capa de negocio
-            Cuentas cuenta = cuentaNegocio.obtenerPorNroCuenta(nroCuenta);
-            
-            // 5. Validar si la cuenta existe
-            if (cuenta == null) {
-                System.out.println("[WARNING] No se encontró cuenta con número: " + nroCuenta);
-                manejarError(request, response, "Cuenta no encontrada");
+        String nroCuenta = request.getParameter("nroCuenta");
+        int idCuenta = 0;
+
+        if (nroCuenta != null && !nroCuenta.isEmpty()) {
+            try {
+                idCuenta = cuentasNegocio.obtenerIdCuentaPorNroCuenta(nroCuenta);
+            } catch (NumberFormatException e) {
+                session.setAttribute("error", "Número de cuenta no válido.");
+                response.sendRedirect("ListarCuentasServlet");
                 return;
             }
-            
-            // 6. Debug: Mostrar datos de la cuenta encontrada
-            System.out.println("[DEBUG] Cuenta encontrada: " + cuenta.getNro_cuenta() + 
-                             " - Tipo: " + cuenta.getTipo_cuenta() + 
-                             " - Cliente: " + cuenta.getCliente());
-            
-            // 7. Determinar el modo de visualización (con valor por defecto 'ver')
-            String modoVista = "ver"; // Valor por defecto
-            if ("editar".equalsIgnoreCase(modo)) {
-                modoVista = "editar";
-            }
-            
-            // 8. Configurar atributos para la vista
-            request.setAttribute("cuenta", cuenta);
-            request.setAttribute("modo", modoVista);
-            
-            // 9. Debug: Mostrar modo de visualización
-            System.out.println("[DEBUG] Modo de visualización: " + modoVista);
-            
-            // 10. Despachar a la vista JSP
-            request.getRequestDispatcher("AdminEditarCuenta.jsp").forward(request, response);
-            
-        } catch (Exception e) {
-            // 11. Manejo de excepciones mejorado
-            System.err.println("[ERROR] Error al procesar solicitud GET para cuenta: " + nroCuenta);
-            e.printStackTrace();
-            
-            // Mensaje de error más descriptivo
-            String mensajeError = "Error al procesar la solicitud: " + 
-                                (e.getMessage() != null ? e.getMessage() : "Consulte los logs para más detalles");
-            
-            manejarError(request, response, mensajeError);
+        } else {
+            session.setAttribute("error", "Número de cuenta no proporcionado.");
+            response.sendRedirect("ListarCuentasServlet");
+            return;
         }
+
+        Cuentas cuenta = cuentasNegocio.obtenerCuentaPorId(idCuenta);
+        if (cuenta == null) {
+            session.setAttribute("error", "No se encontró la cuenta con el número: " + nroCuenta);
+            response.sendRedirect("ListarCuentasServlet");
+            return;
+        }
+
+        List<tipo_cuenta> listaTiposCuenta = tiposCuentaNegocio.listarTodos();
+        request.setAttribute("listaTiposCuenta", listaTiposCuenta);
+
+        List<Cliente> listaClientes = clientesNegocio.listarTodos();
+        request.setAttribute("listaClientes", listaClientes);
+
+        request.setAttribute("cuenta", cuenta);
+        request.setAttribute("modo", modo);
+        request.getRequestDispatcher("AdminEditarCuenta.jsp").forward(request, response);
     }
 
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-    	if ("true".equals(request.getParameter("cambiarModo"))) {
-            String nroCuenta = request.getParameter("nroCuenta"); // Cambiamos id por nroCuenta
-            String modo = request.getParameter("nuevoModo");
-            response.sendRedirect("ServletEditarCuenta?nroCuenta=" + nroCuenta + "&modo=" + modo);
-            return;
-        }
+        HttpSession session = request.getSession();
+        int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));
+        String nroCuenta = request.getParameter("nroCuenta");
+        String cbu = request.getParameter("cbu");
+        int idCliente = Integer.parseInt(request.getParameter("idCliente"));
+        String tipoCuenta = request.getParameter("tipoCuenta");
+        double saldo = Double.parseDouble(request.getParameter("saldo")); 
 
-        try {
-            Cuentas cuentaActualizada = mapearCuentaDesdeRequest(request);
-            
-            boolean exito = cuentaNegocio.actualizar(cuentaActualizada);
-            
-            if (exito) {
-                request.getSession().setAttribute("mensaje", "Cuenta actualizada exitosamente.");
-                response.sendRedirect("ServletEditarCuenta?nroCuenta=" + cuentaActualizada.getNro_cuenta() + "&modo=ver");
-            } else {
-                request.getSession().setAttribute("error", "No se pudo actualizar la cuenta.");
-
-                request.setAttribute("cuenta", cuentaActualizada);
-                request.setAttribute("modo", "editar");
-                request.getRequestDispatcher("AdminEditarCuenta.jsp").forward(request, response);
-            }
-            
-        } catch (NumberFormatException e) {
-            manejarError(request, response, "Error en el formato de los datos: " + e.getMessage());
-        } catch (Exception e) {
-            manejarError(request, response, "Error al actualizar cuenta: " + e.getMessage());
-        }
-    }
-
-    private Cuentas mapearCuentaDesdeRequest(HttpServletRequest request) {
         Cuentas cuenta = new Cuentas();
-        
-        String nroCuentaOriginal = request.getParameter("nroCuentaOriginal");
-        cuenta.setNro_cuenta(nroCuentaOriginal != null ? nroCuentaOriginal : request.getParameter("nroCuenta"));
-        String saldoStr = request.getParameter("saldo");
-        if ( saldoStr != null && !saldoStr.trim().isEmpty()) {
-        	cuenta.setSaldo(Double.parseDouble(saldoStr));
+        cuenta.setId_cuenta(idCuenta);
+        cuenta.setNro_cuenta(nroCuenta);
+        cuenta.setCbu(cbu);
+        cuenta.setId_cliente(idCliente);
+        cuenta.setTipo_cuenta(tipoCuenta);
+        cuenta.setSaldo(saldo); 
+
+        boolean actualizado = cuentasNegocio.actualizar(cuenta);
+
+        if (actualizado) {
+            session.setAttribute("mensaje", "Cuenta actualizada correctamente.");
+        } else {
+            session.setAttribute("error", "Error al actualizar la cuenta.  Verifique los datos.");
         }
-        cuenta.setId_cliente(Integer.parseInt(request.getParameter("idCliente")));
-        cuenta.setCbu(request.getParameter("cbu"));
-        cuenta.setEstado(Boolean.parseBoolean(request.getParameter("estado")));
-        cuenta.setTipo_cuenta(request.getParameter("tipoCuenta"));
-        
-        return cuenta;
-    }
-    
-    private void manejarError(HttpServletRequest request, HttpServletResponse response, String mensaje)
-            throws IOException {
-        request.getSession().setAttribute("error", mensaje);
+
         response.sendRedirect("ListarCuentasServlet");
     }
 }

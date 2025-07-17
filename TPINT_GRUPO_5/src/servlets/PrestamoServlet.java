@@ -72,27 +72,30 @@ public class PrestamoServlet extends HttpServlet {
                 return;
             }
 
-            //Crear objeto Prestamo
+         
             Prestamos prestamo = new Prestamos();
             prestamo.setIdCliente(idCliente);
             prestamo.setIdCuenta(idCuenta);
             prestamo.setImporte(importe);
             prestamo.setPlazoMeses(plazoMeses);
-            prestamo.setEstado("pendiente"); //Estado inicial
+            prestamo.setEstado("pendiente"); 
+            prestamo.setCuotasPendientes(plazoMeses);
+            prestamo.setCuotasPagas(0);
+
 
             boolean exito = prestamoNegocio.solicitarPrestamo(prestamo);
 
             if (exito) {
-                request.setAttribute("mensaje", "Solicitud de préstamo enviada correctamente.");
+                request.setAttribute("mensaje", "Solicitud de prestamo enviada correctamente.");
                 request.getRequestDispatcher("SolicitudPrestamo.jsp").forward(request, response);
             } else {
-                request.setAttribute("error", "No se pudo completar la solicitud de préstamo.");
+                request.setAttribute("error", "No se pudo completar la solicitud de prestamo.");
                 request.getRequestDispatcher("ClientePrestamos_1.jsp").forward(request, response);
             }
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            request.setAttribute("error", "Error en el formato de los datos numéricos.");
+            request.setAttribute("error", "Error en el formato de los datos numericos.");
             request.getRequestDispatcher("ClientePrestamos_1.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

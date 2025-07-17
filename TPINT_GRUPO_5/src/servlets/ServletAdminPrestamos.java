@@ -16,39 +16,44 @@ import entidades.Prestamos;
 public class ServletAdminPrestamos extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    // Instancia de negocio para usar métodos de instancia
     private PrestamosNegocio negocio = new PrestamosNegocioImpl();
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String busqueda = request.getParameter("busqueda");
+        if (busqueda == null) busqueda = "";
 
-        // Parámetros de filtros
-        String busqueda = request.getParameter("busqueda") != null ? request.getParameter("busqueda").trim() : "";
-        String estado = request.getParameter("estado") != null ? request.getParameter("estado").trim() : "";
+        String estado = request.getParameter("estado");
+        if (estado == null) estado = "";
 
-        // Paginación
-        int paginaActual = 1;
+        String paginaParam = request.getParameter("pagina");
+        int pagina = 1;
         int cantidadPorPagina = 10;
 
-        if (request.getParameter("pagina") != null) {
+        if (paginaParam != null) {
             try {
-                paginaActual = Integer.parseInt(request.getParameter("pagina"));
+                pagina = Integer.parseInt(paginaParam);
             } catch (NumberFormatException e) {
-                paginaActual = 1;
+                pagina = 1;
             }
         }
 
-        // Datos desde la base
-        List<Prestamos> prestamos = negocio.obtenerPrestamosPaginados(busqueda, estado, paginaActual, cantidadPorPagina);
-        int totalRegistros = negocio.contarPrestamos(busqueda, estado);
-        int totalPaginas = (int) Math.ceil((double) totalRegistros / cantidadPorPagina);
+        List<Prestamos> listaPrestamos = negocio.obtenerPrestamosPaginados(busqueda, estado, pagina, cantidadPorPagina);
+        int totalPrestamos = negocio.contarPrestamos(busqueda, estado);
+        int totalPaginas = (int) Math.ceil((double) totalPrestamos / cantidadPorPagina);
 
-        // Enviar datos a la JSP
-        request.setAttribute("listaPrestamos", prestamos);
-        request.setAttribute("paginaActual", paginaActual);
+        request.setAttribute("listaPrestamos", listaPrestamos);
         request.setAttribute("totalPaginas", totalPaginas);
+        request.setAttribute("paginaActual", pagina);
         request.setAttribute("busqueda", busqueda);
         request.setAttribute("estado", estado);
 
+        // Evitar cache en la respuesta HTTP
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+        response.setDateHeader("Expires", 0); // Proxies.
+
         request.getRequestDispatcher("/AdminPrestamos.jsp").forward(request, response);
     }
+
 }

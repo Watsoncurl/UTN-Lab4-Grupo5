@@ -9,8 +9,11 @@ public class Prestamos {
     private double importe;
     private int plazoMeses;
     private double cuotaMensual;
+    private int cuotasPendientes;
+    private int cuotasPagas;
     private String estado;
     private Cliente cliente;
+    private double saldo;
 
     public Prestamos() {}
 
@@ -26,7 +29,7 @@ public class Prestamos {
         this.cliente = cliente;
     }
 
-    // Getters y setters
+
     public int getIdPrestamo() {
         return idPrestamo;
     }
@@ -99,7 +102,6 @@ public class Prestamos {
         this.cliente = cliente;
     }
 
-    // Métodos auxiliares para facilitar acceso desde JSP
     public String getNombreCliente() {
         return cliente != null ? cliente.getNombre() : "";
     }
@@ -110,5 +112,27 @@ public class Prestamos {
 
     public String getDniCliente() {
         return cliente != null ? cliente.getDni() : "";
+    }
+    public int getCuotasPendientes() {
+        return cuotasPendientes;
+    }
+
+    public void setCuotasPendientes (int cuota) {
+        this.cuotasPendientes = cuota;
+    }
+    
+    public int getCuotasPagas() {
+        return cuotasPagas;
+    }
+
+    public void setCuotasPagas(int cuota) {
+        this.cuotasPagas = cuota;
+    }
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
     }
 }

@@ -49,7 +49,7 @@ public class SolicitarPrestamoServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Error al cargar el formulario de préstamo: " + e.getMessage());
+            request.setAttribute("error", "Error al cargar el formulario de prestamo: " + e.getMessage());
             request.getRequestDispatcher("ClienteDashboard.jsp").forward(request, response);
         }
     }

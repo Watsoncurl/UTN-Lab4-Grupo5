@@ -22,7 +22,7 @@
 
       <div class="col-md-6">
         <input type="search" name="busqueda" id="barraBusqueda" value="${busqueda}" class="form-control"
-          placeholder="Buscar (Nro. Cuenta, Tipo de Cuenta, Cliente)">
+          placeholder="Buscar (Nro. Cuenta, Tipo de Cuenta)">
       </div>
 
       <div class="col-md-2">
@@ -35,14 +35,7 @@
         <input type="date" id="hastaDate" name="hastaDate" class="form-control" value="${param.hastaDate}">
       </div>
 
-      <div class="col-md-2">
-        <label for="tipoMovimiento" class="form-label fw-bold">Tipo</label>
-        <select class="form-select" id="tipoMovimiento" name="tipoMovimiento">
-          <option value="">Todos</option>
-          <option value="credito" ${param.tipoMovimiento == 'credito' ? 'selected' : ''}>Crédito</option>
-          <option value="debito" ${param.tipoMovimiento == 'debito' ? 'selected' : ''}>Débito</option>
-        </select>
-      </div>
+     
 
       <div class="col-md-3 d-flex gap-2">
         <button type="submit" class="btn btn-primary w-100">
@@ -79,7 +72,6 @@
             <th>Fecha y Hora</th>
             <th>Cuenta</th>
             <th>Concepto</th>
-            <th>Tipo</th>
             <th class="text-end">Importe</th>
           </tr>
         </thead>
@@ -101,21 +93,7 @@
               <!-- Concepto -->
               <td>${mov.concepto}</td>
 
-              <!-- Tipo de Movimiento -->
-              <td>
-                <c:choose>
-                  <c:when test="${not empty mov.tipoMovimientoDescripcion}">
-                    <span class="badge ${mov.tipoMovimientoDescripcion == 'Crédito' ? 'bg-success' : 'bg-danger'}">
-                      ${mov.tipoMovimientoDescripcion}
-                    </span>
-                  </c:when>
-                  <c:otherwise>
-                    <span class="badge ${mov.idTipoMovimiento == 5 ? 'bg-success' : 'bg-danger'}">
-                      ${mov.idTipoMovimiento == 5 ? 'Crédito' : 'Débito'}
-                    </span>
-                  </c:otherwise>
-                </c:choose>
-              </td>
+              
 
               <!-- Importe -->
               <td class="text-end 

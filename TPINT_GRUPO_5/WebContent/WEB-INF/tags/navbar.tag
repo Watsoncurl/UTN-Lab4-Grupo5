@@ -39,7 +39,7 @@
               <a class="nav-link <%= "cuentas".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/ListarCuentasServlet?pagina=1">Cuentas</a>
             </li>
             <li class="nav-item px-2">
-              <a class="nav-link <%= "prestamos".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/AdminPrestamos.jsp">Préstamos</a>
+              <a class="nav-link <%= "prestamos".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/ServletAdminPrestamos">Préstamos</a>
             </li>
             <li class="nav-item px-2">
               <a class="nav-link <%= "movimientos".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" 
@@ -48,7 +48,7 @@
               </a>
             </li>
             <li class="nav-item px-2">
-              <a class="nav-link <%= "informes".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/AdminInformes.jsp">Informes</a>
+              <a class="nav-link <%= "informes".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/AdminInformes">Informes</a>
             </li>
           <% } else if ("cliente".equals(userRole)) { %>
             <li class="nav-item px-2">
@@ -58,7 +58,7 @@
               <c:when test="${not empty sessionScope.nroCuentaSesion}">
                 <li class="nav-item px-2">
                   <a class="nav-link <%= "movimientos".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" 
-                     href="${pageContext.request.contextPath}/ServletIngresarCuenta?nroCuenta=${sessionScope.nroCuentaSesion}">
+                     href="${pageContext.request.contextPath}/ServletIngresarCuenta">
                     <i class="bi bi-arrow-left-right me-1"></i> Movimientos
                   </a>
                 </li>
@@ -70,10 +70,10 @@
               </c:otherwise>
             </c:choose>
             <li class="nav-item px-2">
-              <a class="nav-link <%= "prestamos".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/ClientePrestamos_1.jsp">Préstamos</a>
+              <a class="nav-link <%= "prestamos".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/PrestamosDashboardServlet">Préstamos</a>
             </li>
             <li class="nav-item px-2">
-              <a class="nav-link <%= "transferencias".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/ClienteTransferir.jsp">Transferencias</a>
+              <a class="nav-link <%= "transferencias".equals(jspContext.getAttribute("activeTab")) ? "active" : "" %>" href="${pageContext.request.contextPath}/TransferirServlet">Transferencias</a>
             </li>
           <% } %>
         </ul>

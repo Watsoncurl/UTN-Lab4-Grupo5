@@ -21,49 +21,35 @@
     </div>
 
     <div class="row g-4 justify-content-center">
-      <!-- Tarjeta Cuentas -->
-      <div class="col-md-3 col-sm-6">
-        <div class="card h-100 border-primary shadow-sm text-center">
-          <div class="card-body">
-            <i class="bi bi-bank text-primary fs-1 mb-3"></i>
-            <h5 class="card-title">Mis Cuentas</h5>
-            <p class="card-text text-muted">Consulta y gestión de cuentas</p>
-            <a href="${pageContext.request.contextPath}/ServletMisCuentas" class="btn btn-outline-primary stretched-link">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
-            </a>
-          </div>
-        </div>
-      </div>
-
+      
       <!-- Tarjeta Préstamos -->
       <div class="col-md-3 col-sm-6">
         <div class="card h-100 border-warning shadow-sm text-center">
           <div class="card-body">
             <i class="bi bi-cash-stack text-warning fs-1 mb-3"></i>
             <h5 class="card-title">Préstamos</h5>
-            <p class="card-text text-muted">Solicitud, consulta y pago</p>
-            <a href="${pageContext.request.contextPath}/PrestamosDashboardServlet" class="btn btn-outline-warning stretched-link">
+            <p class="card-text text-muted">Solicitud y consulta</p>
+            <a href="${pageContext.request.contextPath}/SolicitarPrestamoServlet" class="btn btn-outline-warning stretched-link">
        				 <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
     		</a>
           </div>
         </div>
       </div>
       
-   
-      <!-- Tarjeta Transferencias -->
-      <div class="col-md-3 col-sm-6">
-        <div class="card h-100 border-info shadow-sm text-center">
-          <div class="card-body">
-            <i class="bi bi-send text-info fs-1 mb-3"></i>
-            <h5 class="card-title">Transferencias</h5>
-            <p class="card-text text-muted">Realizar transferencias</p>
-            <a href="${pageContext.request.contextPath}/TransferirServlet" class="btn btn-outline-info stretched-link">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+    <div class="col-md-3 col-sm-6">
+    <div class="card h-100 border-warning shadow-sm text-center">
+        <div class="card-body">
+            <i class="bi bi-cash-stack text-warning fs-1 mb-3"></i>
+            <h5 class="card-title">Pago de Préstamos</h5>
+            <p class="card-text text-muted">Realizar Pago</p>
+            <a href="${pageContext.request.contextPath}/ServletClientePrestamo" 
+               class="btn btn-outline-warning stretched-link">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
             </a>
-          </div>
         </div>
-      </div>
-      
+    </div>
+</div>
+     
     </div>
   </div>
 

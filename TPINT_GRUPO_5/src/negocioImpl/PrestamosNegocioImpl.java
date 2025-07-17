@@ -17,7 +17,6 @@ public class PrestamosNegocioImpl implements PrestamosNegocio {
 
     public PrestamosNegocioImpl() {
     	this.prestamoDao = new PrestamosDaoImpl();
-    	// Si no usás CuentasNegocio acá, lo podés dejar como null o agregar una implementación real si la tenés
     	this.cuentasNegocio = null;
     }
     
@@ -30,12 +29,10 @@ public class PrestamosNegocioImpl implements PrestamosNegocio {
     public boolean solicitarPrestamo(Prestamos prestamo) {
     	double importe = prestamo.getImporte();
     	int plazoMeses = prestamo.getPlazoMeses();
-    	double tasaInteresMensual = 0.1; 
-        //double cuotaMensual = prestamo.getImporte() * (tasaInteresMensual / (1 - Math.pow(1 + tasaInteresMensual, -prestamo.getPlazoMeses())));
-    	double cuotaMensual = (importe + (importe * tasaInteresMensual * (plazoMeses / 12))) / plazoMeses;
+    	double tasaInteresMensual = 0.1/12; 
+    	double cuotaMensual = (importe + (importe * tasaInteresMensual * plazoMeses)) / plazoMeses;
     	prestamo.setCuotaMensual(cuotaMensual);
 
-        // Aqu� podr�as agregar validaciones adicionales, como verificar si el cliente cumple con los requisitos para solicitar el pr�stamo.
 
         return prestamoDao.solicitarPrestamo(prestamo);
     }
@@ -48,6 +45,30 @@ public class PrestamosNegocioImpl implements PrestamosNegocio {
     @Override
     public int contarPrestamos(String busqueda, String estado) {
         return prestamoDao.contarPrestamos(busqueda, estado);
+    }
+
+    @Override
+    public Prestamos obtenerPrestamoPorId(int id) {
+        return prestamoDao.obtenerPrestamoPorId(id);
+    }
+    
+    @Override
+    public boolean cambiarEstadoPrestamo(int idPrestamo, String nuevoEstado) {
+        return prestamoDao.actualizarEstadoPrestamo(idPrestamo, nuevoEstado);
+    }
+    
+    @Override
+    public List<Prestamos> obtenerPrestamosPaginadosPorCliente(int idCliente, String busqueda, String estado, int pagina, int cantidadPorPagina) {
+        return prestamoDao.obtenerPrestamosPaginadosPorCliente(idCliente, busqueda, estado, pagina, cantidadPorPagina);
+    }
+
+    @Override
+    public int contarPrestamosPorCliente(int idCliente, String busqueda, String estado) {
+        return prestamoDao.contarPrestamosPorCliente(idCliente, busqueda, estado);
+    }
+    @Override
+    public boolean pagarCuota(int nroCuenta, int idPrestamo) {
+        return prestamoDao.pagarCuota(nroCuenta, idPrestamo);
     }
 
 }
